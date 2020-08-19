@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const test = require('ava');
 const looksSame = require('looks-same');
+const pdflib = require('pdf-lib')
 
 
 var fs = require('fs');
@@ -16,50 +17,31 @@ const defaultParams = {
     ec_level: 'Q',
     margin: 1,
     parse_url: true,
-}
-
-test.cb('write PNG stream without parse URL', t => {
-    const image = qr.image(text, { type: 'png', ...defaultParams, parse_url: false, margin: 1 });
-    image.on('end', t.end);
-    image.pipe(file('qr_f.png'));
-});
+};
 
 [{
-    name: 'PNG stream with parse URL', type: 'png', filename: 'qr.png', params: { parse_url: true }
-},
-{
-    name: 'PNG stream with logo', type: 'png', filename: 'qr.png', params: { parse_url: true, logo: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==' }
-}].forEach((testData) => {
-    test.cb(testData.name, t => {
-        const image = qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
-        image.pipe(file(testData.filename)).on('finish', () => {
-            looksSame(__dirname + '/' + testData.filename, __dirname + '/golden/' + testData.filename, { strict: true }, function (error, { equal } = {}) {
-                t.is(equal, true, testData.filename + ' is not equal to golden:' + error);
-                t.end();
-            });
-        });;
-    });
-});
-
-[{
-    name: 'SVG stream', type: 'svg', filename: 'qr.svg', 
+    name: 'SVG', type: 'svg', filename: 'qr.svg', 
 }, {
-    name: 'SVG stream with logo', type: 'svg', filename: 'qr_with_logo.svg', 
+    name: 'SVG with logo', type: 'svg', filename: 'qr_with_logo.svg', 
     params: {logo: fs.readFileSync(__dirname + '/golden/logo.png')}
 }, {
-    name: 'PDF stream', type: 'pdf', filename: 'qr.pdf',
-},
-{
+    name: 'PDF without pdfkit', type: 'pdf', filename: 'qr.pdf',
+},{
+    name: 'PDF with pdfkit', type: 'pdf', filename: 'qr_pdfkit.pdf',
+    params: {pdflib}
+}, {
+    name: 'PDF with logo', type: 'pdf', filename: 'qr_with_logo.pdf',
+    params: {logo: fs.readFileSync(__dirname + '/golden/logo.png'), pdflib}
+}, {
     name: 'EPS stream', type: 'eps', filename: 'qr.eps'
 }].forEach((testData) => {
-    test.cb(testData.name, t => {
-        const image = qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
-        image.pipe(file(testData.filename)).on('finish', () => {
-            t.is(fs.readFileSync(__dirname + '/' + testData.filename).toString(), fs.readFileSync(__dirname + '/golden/' + testData.filename).toString(), testData.filename + ' is not equal to golden');
-            t.end();
-        });;
+    test(testData.name, async t => {
+        const image = await qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
+        fs.writeFileSync(__dirname + '/' + testData.filename, image);
+        t.assert(image.toString() === fs.readFileSync(__dirname + '/golden/' + testData.filename).toString(), testData.filename + ' is not equal to golden');
     });
 });
+
 
 test('write sync png', t => {
     fs.writeFileSync('qr_sync.png', qr.imageSync(text));

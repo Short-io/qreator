@@ -30,7 +30,8 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "ava": "^3.11.1"
+    "ava": "^3.11.1",
+    "pdf-lib": "^1.10.0"
   },
   "dependencies": {
     "looks-same": "^7.2.3"
