@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+const test = require('ava');
+const looksSame = require('looks-same');
+
 
 var fs = require('fs');
 function file(name) {
@@ -6,14 +9,53 @@ function file(name) {
 }
 
 var qr = require('./../');
-var text = 'I \u2764\uFE0F QR code!';
-var text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
-var ec_level = 'Q';
+const text = 'I \u2764\uFE0F QR code!';
+//const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
 
-qr.image(text, { type: 'png', ec_level: ec_level, parse_url: false, margin: 1}).pipe(file('qr_f.png'));
-qr.image(text, { type: 'png', ec_level: ec_level, parse_url: true,  margin: 1}).pipe(file('qr_t.png'));
-qr.image(text, { type: 'svg', ec_level: ec_level}).pipe(file('qr.svg'));
-qr.image(text, { type: 'eps', ec_level: ec_level}).pipe(file('qr.eps'));
-qr.image(text, { type: 'pdf', ec_level: ec_level}).pipe(file('qr.pdf'));
+const defaultParams = {
+    ec_level: 'Q',
+    margin: 1,
+    parse_url: true,
+}
 
-fs.writeFileSync('qr_sync.png', qr.imageSync(text));
+test.cb('write PNG stream without parse URL', t => {
+    const image = qr.image(text, { type: 'png', ...defaultParams, parse_url: false, margin: 1 });
+    image.on('end', t.end);
+    image.pipe(file('qr_f.png'));
+});
+
+[{
+    name: 'PNG stream with parse URL', type: 'png', filename: 'qr.png', params: { parse_url: true }
+}].forEach((testData) => {
+    test.cb(testData.name, t => {
+        const image = qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
+        image.pipe(file(testData.filename)).on('finish', () => {
+            looksSame(__dirname + '/' + testData.filename, __dirname + '/golden/' + testData.filename, { strict: true }, function (error, { equal } = {}) {
+                t.is(equal, true, testData.filename + ' is not equal to golden:' + error);
+                t.end();
+            });
+        });;
+    });
+});
+
+[{
+    name: 'SVG stream', type: 'svg', filename: 'qr.svg',
+}, {
+    name: 'PDF stream', type: 'pdf', filename: 'qr.pdf',
+},
+{
+    name: 'EPS stream', type: 'eps', filename: 'qr.eps'
+}].forEach((testData) => {
+    test.cb(testData.name, t => {
+        const image = qr.image(text, { type: testData.type, ...defaultParams, });
+        image.pipe(file(testData.filename)).on('finish', () => {
+            t.is(fs.readFileSync(__dirname + '/' + testData.filename).toString(), fs.readFileSync(__dirname + '/golden/' + testData.filename).toString(), testData.filename + ' is not equal to golden');
+            t.end();
+        });;
+    });
+});
+
+test('write sync png', t => {
+    fs.writeFileSync('qr_sync.png', qr.imageSync(text));
+    t.pass();
+});
