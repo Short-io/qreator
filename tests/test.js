@@ -26,6 +26,9 @@ test.cb('write PNG stream without parse URL', t => {
 
 [{
     name: 'PNG stream with parse URL', type: 'png', filename: 'qr.png', params: { parse_url: true }
+},
+{
+    name: 'PNG stream with logo', type: 'png', filename: 'qr.png', params: { parse_url: true, logo: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==' }
 }].forEach((testData) => {
     test.cb(testData.name, t => {
         const image = qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
@@ -39,7 +42,10 @@ test.cb('write PNG stream without parse URL', t => {
 });
 
 [{
-    name: 'SVG stream', type: 'svg', filename: 'qr.svg',
+    name: 'SVG stream', type: 'svg', filename: 'qr.svg', 
+}, {
+    name: 'SVG stream with logo', type: 'svg', filename: 'qr_with_logo.svg', 
+    params: {logo: fs.readFileSync(__dirname + '/golden/logo.png')}
 }, {
     name: 'PDF stream', type: 'pdf', filename: 'qr.pdf',
 },
@@ -47,7 +53,7 @@ test.cb('write PNG stream without parse URL', t => {
     name: 'EPS stream', type: 'eps', filename: 'qr.eps'
 }].forEach((testData) => {
     test.cb(testData.name, t => {
-        const image = qr.image(text, { type: testData.type, ...defaultParams, });
+        const image = qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
         image.pipe(file(testData.filename)).on('finish', () => {
             t.is(fs.readFileSync(__dirname + '/' + testData.filename).toString(), fs.readFileSync(__dirname + '/golden/' + testData.filename).toString(), testData.filename + ' is not equal to golden');
             t.end();
