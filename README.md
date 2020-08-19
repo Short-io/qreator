@@ -28,26 +28,13 @@ Usage
 
 Example:
 ```javascript
-var qr = require('@shortcm/qr-image');
+const qr = require('@shortcm/qr-image');
 
-var qr_svg = qr.image('I love QR!', { type: 'svg' });
-qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
+const svgString = await qr.image('I love QR!', { type: 'svg' });
 
-var svg_string = qr.imageSync('I love QR!', { type: 'svg' });
-```
+const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.openFileSync('my logo') });
 
-Example For generate images in client side:
-```javascript in your app.js
-var qr = require('@shortcm/qr-image');
-router.get('/qr', function(){
-  var code = qr.image('http://www.google.com', { type: 'png' });
-  res.setHeader('Content-type', 'image/png');  //sent qr image to client side
-  code.pipe(res);
-});
-```
-then in the html files:
-```
-<img src="/qr" alt="qrcode">
+
 ```
 
 [More examples](./examples)
@@ -66,6 +53,9 @@ then in the html files:
 
   * `text` — text to encode;
   * `ec_level` — error correction level. One of `L`, `M`, `Q`, `H`. Default `M`.
+  * `logo` — Buffer with PNG image
+  * `logo_width` — Height of image (in percent)
+  * `logo_height` — Width of image (in percent)
   * `options` — image options object:
     * `ec_level` — default `M`.
     * `type` — image type. Possible values `png` (default), `svg`, `pdf` and `eps`.
