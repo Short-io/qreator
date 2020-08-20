@@ -2,6 +2,9 @@
 const test = require('ava');
 const looksSame = require('looks-same');
 const pdflib = require('pdf-lib');
+const { promisify } = require('util');
+
+const looksSamePromise = promisify(looksSame);
 
 var fs = require('fs');
 function file(name) {
@@ -39,7 +42,11 @@ const defaultParams = {
     test(testData.name, async t => {
         const image = await qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
         fs.writeFileSync(__dirname + '/' + testData.filename, image);
-        if (testData.type != 'pdf') {
+        if (testData.type === 'png') {
+            const lsRes = await looksSamePromise(__dirname + '/' + testData.filename,  __dirname + '/golden/' + testData.filename, {strict: true});
+            console.log(lsRes);
+            t.assert(lsRes.equal);
+        } else if (testData.type != 'pdf') {
             t.assert(fs.readFileSync(__dirname + '/' + testData.filename).toString() === fs.readFileSync(__dirname + '/golden/' + testData.filename).toString(), testData.filename + ' is not equal to golden');
         } else {
             t.pass();
