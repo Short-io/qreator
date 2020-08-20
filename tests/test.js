@@ -3,6 +3,7 @@ const test = require('ava');
 const looksSame = require('looks-same');
 const pdflib = require('pdf-lib');
 const { promisify } = require('util');
+const jimp = require('jimp');
 
 const looksSamePromise = promisify(looksSame);
 
@@ -33,13 +34,14 @@ const defaultParams = {
     name: 'PNG', type: 'png', filename: 'qr.png',
 }, {
     name: 'PNG with logo', type: 'png', filename: 'qr_with_logo.png',
+    params: {logo: fs.readFileSync(__dirname + '/golden/logo.png')}
 },{
     name: 'SVG', type: 'svg', filename: 'qr.svg', 
 }, {
     name: 'SVG with logo as buffer', type: 'svg', filename: 'qr_with_logo.svg', 
     params: {logo: fs.readFileSync(__dirname + '/golden/logo.png')}
 }, {
-    name: 'SVG with logo as string', type: 'svg', filename: 'qr_with_logo_as_string.svg', 
+    name: 'SVG with logo as arraybuffer', type: 'svg', filename: 'qr_with_logo_as_arraybuffer.svg', 
     params: {logo: fs.readFileSync(__dirname + '/golden/logo.png').buffer}
 }, {
     name: 'PDF without pdfkit', type: 'pdf', filename: 'qr.pdf',

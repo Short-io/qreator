@@ -1,6 +1,6 @@
 {
   "name": "@shortcm/qr-image",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "QR Code generator (png, svg, pdf, eps)",
   "homepage": "https://github.com/alexeyten/qr-image",
   "keywords": [
@@ -31,11 +31,12 @@
   ],
   "devDependencies": {
     "ava": "^3.11.1",
-    "looks-same": "^7.2.3",
-    "pdf-lib": "^1.10.0"
+    "looks-same": "^7.2.3"
   },
   "dependencies": {
-    "pngjs": "^5.0.0",
+    "pdf-lib": "^1.10.0",
+    "@jimp/png": "^0.16.0",
+    "jimp": "^0.16.0",
     "upng": "^1.0.1"
   }
 }
