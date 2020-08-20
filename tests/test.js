@@ -7,13 +7,21 @@ const { promisify } = require('util');
 const looksSamePromise = promisify(looksSame);
 
 var fs = require('fs');
-function file(name) {
-    return fs.createWriteStream(__dirname + '/' + name);
-}
 
 var qr = require('./../');
 const text = 'I \u2764\uFE0F QR code!';
 //const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
+
+const assertEqual = async (t, type, filename) => {
+    if (type === 'png') {
+        const lsRes = await looksSamePromise(__dirname + '/' + filename,  __dirname + '/golden/' + filename, {strict: true});
+        t.assert(lsRes.equal);
+    } else if (type != 'pdf') {
+        t.assert(fs.readFileSync(__dirname + '/' + filename).toString() === fs.readFileSync(__dirname + '/golden/' + filename).toString(), filename + ' is not equal to golden');
+    } else {
+        t.pass();
+    }
+}
 
 const defaultParams = {
     ec_level: 'Q',
@@ -28,8 +36,11 @@ const defaultParams = {
 },{
     name: 'SVG', type: 'svg', filename: 'qr.svg', 
 }, {
-    name: 'SVG with logo', type: 'svg', filename: 'qr_with_logo.svg', 
+    name: 'SVG with logo as buffer', type: 'svg', filename: 'qr_with_logo.svg', 
     params: {logo: fs.readFileSync(__dirname + '/golden/logo.png')}
+}, {
+    name: 'SVG with logo as string', type: 'svg', filename: 'qr_with_logo_as_string.svg', 
+    params: {logo: fs.readFileSync(__dirname + '/golden/logo.png').buffer}
 }, {
     name: 'PDF without pdfkit', type: 'pdf', filename: 'qr.pdf',
 },{
@@ -42,14 +53,6 @@ const defaultParams = {
     test(testData.name, async t => {
         const image = await qr.image(text, { type: testData.type, ...defaultParams, ...testData.params });
         fs.writeFileSync(__dirname + '/' + testData.filename, image);
-        if (testData.type === 'png') {
-            const lsRes = await looksSamePromise(__dirname + '/' + testData.filename,  __dirname + '/golden/' + testData.filename, {strict: true});
-            console.log(lsRes);
-            t.assert(lsRes.equal);
-        } else if (testData.type != 'pdf') {
-            t.assert(fs.readFileSync(__dirname + '/' + testData.filename).toString() === fs.readFileSync(__dirname + '/golden/' + testData.filename).toString(), testData.filename + ' is not equal to golden');
-        } else {
-            t.pass();
-        }
+        await assertEqual(t, testData.type, testData.filename);
     });
 });
