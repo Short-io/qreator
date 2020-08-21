@@ -36,7 +36,7 @@ const defaultParams = {
   type: 'png',
   filename: 'qr_with_colors.png',
   params: {
-    color: 0x600000ff,
+    color: 0x0000a0ff,
     bgColor: 0xffa0ffff,
   },
 }, {
@@ -58,6 +58,15 @@ const defaultParams = {
   params: { logo: fs.readFileSync(`${__dirname}/golden/logo.png`).buffer },
 }, {
   name: 'PDF', type: 'pdf', filename: 'qr.pdf',
+}, {
+  name: 'PDF with colors', type: 'pdf', filename: 'qr_with_colors.pdf', params: { color: 0xff0000ff, bgColor: 0x00ff00ff },
+}, {
+  name: 'PDF with arraybuffer',
+  type: 'pdf',
+  filename: 'qr_logo_arraybuffer.pdf',
+  params: {
+    logo: fs.readFileSync(`${__dirname}/golden/logo.png`).buffer,
+  },
 }, {
   name: 'PDF with logo',
   type: 'pdf',
