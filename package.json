@@ -25,13 +25,23 @@
   "scripts": {
     "test": "ava ./tests/test.js"
   },
+  "size-limit": [
+    {
+      "path": "lib/qr.js"
+    }
+  ],
   "files": [
     "lib",
     "LICENSE"
   ],
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.5.6",
     "ava": "^3.11.1",
-    "looks-same": "^7.2.3"
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "looks-same": "^7.2.3",
+    "size-limit": "^4.5.6"
   },
   "dependencies": {
     "@jimp/png": "^0.16.0",

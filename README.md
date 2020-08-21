@@ -9,7 +9,7 @@ Overview
 --------
 
   * No dependecies;
-  * generate image in `png`, `svg`, `eps` and `pdf` formats;
+  * generate image in `png`, `svg` and `pdf` formats;
   * numeric and alphanumeric modes;
   * support UTF-8.
 
@@ -44,8 +44,6 @@ const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.o
 ### Methods
 
   * `qr.image(text, [ec_level | options])` — Readable stream with image data;
-  * `qr.imageSync(text, [ec_level | options])` — string with image data. (Buffer for `png`);
-  * `qr.svgObject(text, [ec_level | options])` — object with SVG path and size;
   * `qr.matrix(text, [ec_level])` — 2D array of booleans. __Y__ is indexed first (e.g. `[y][x]` NOT `[x][y]`), `[0][0]` is the top left, and `true` means black.
 
 
@@ -53,9 +51,6 @@ const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.o
 
   * `text` — text to encode;
   * `ec_level` — error correction level. One of `L`, `M`, `Q`, `H`. Default `M`.
-  * `logo` — Buffer with PNG image
-  * `logo_width` — Height of image (in percent)
-  * `logo_height` — Width of image (in percent)
   * `options` — image options object:
     * `ec_level` — default `M`.
     * `type` — image type. Possible values `png` (default), `svg`, `pdf` and `eps`.
@@ -63,6 +58,11 @@ const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.o
     * `margin` — white space around QR image in modules. Default `4` for `png` and `1` for others.
     * `customize` (only png) — function to customize qr bitmap before encoding to PNG.
     * `parse_url` (experimental, default `false`) — try to optimize QR-code for URLs.
+    * `logo` — Buffer with PNG image
+    * `logoWidth` — Height of image (in percent)
+    * `logoHeight` — Width of image (in percent)
+    * `color` - dot color
+    * `bgColor` - background color
 
 Changes
 -------
