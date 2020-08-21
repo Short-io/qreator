@@ -1,6 +1,6 @@
 {
   "name": "@shortcm/qr-image",
-  "version": "4.1.3",
+  "version": "4.1.6",
   "description": "QR Code generator (png, svg, pdf, eps)",
   "homepage": "https://github.com/alexeyten/qr-image",
   "keywords": [
