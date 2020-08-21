@@ -47,6 +47,14 @@ const defaultParams = {
 }, {
   name: 'SVG', type: 'svg', filename: 'qr.svg',
 }, {
+  name: 'SVG with colors',
+  type: 'svg',
+  filename: 'qr_with_colors.svg',
+  params: {
+    color: 0xff0000ff,
+    bgColor: 0x00ff00ff,
+  },
+}, {
   name: 'SVG with logo as buffer',
   type: 'svg',
   filename: 'qr_with_logo.svg',

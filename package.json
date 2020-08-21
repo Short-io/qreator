@@ -45,8 +45,10 @@
   },
   "dependencies": {
     "@jimp/png": "^0.16.0",
+    "@svgdotjs/svg.js": "^3.0.16",
     "jimp": "^0.16.0",
     "pdf-lib": "^1.10.0",
+    "svgdom": "^0.1.8",
     "upng": "^1.0.1"
   }
 }
