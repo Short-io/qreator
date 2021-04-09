@@ -64,7 +64,7 @@ Changes
 
   * Use `zlib.deflateSync` instead of `pako`
   * Fix deprecation warning for NodeJS 7
-  * Customize function removed
+  * `customize` function removed
 
 TODO
 ----
