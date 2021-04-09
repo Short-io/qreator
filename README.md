@@ -8,7 +8,7 @@ This is yet another QR Code generator (based on [alexeyten/qr-image](https://git
 Overview
 --------
 
-  * generate image in `png`, `svg`, `pdf` and `eps` formats
+  * generate image in `png`, `svg` and `pdf` formats
   * numeric and alphanumeric modes
   * support UTF-8
 
@@ -49,7 +49,7 @@ const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.o
   * `text`: text to encode
   * `options`: image options object
     * `ec_level`: one of `L`, `M`, `Q`, `H`; default `M`
-    * `type`: image type; possible values `png`, `svg`, `pdf` and `eps`; default `png`
+    * `type`: image type; possible values `png`, `svg` and `pdf`; default `png`
     * `size`: (types `png` and `svg` only) size of one module in pixels; default `5` for `png` and `0` for `svg`
     * `margin`: white space around QR image in modules; default `4` for `png` and `1` for others
     * `parse_url`: (experimental) try to optimize QR-code for URLs; default `false`
