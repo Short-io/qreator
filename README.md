@@ -70,6 +70,7 @@ Changes
   * Use `zlib.deflateSync` instead of `pako`
   * Fix deprecation warning for NodeJS 7
   * `customize` function removed
+  * Add TypeScript definitions
 
 TODO
 ----
