@@ -1,14 +1,15 @@
 {
   "name": "@shortcm/qr-image",
   "version": "4.2.1",
-  "description": "QR Code generator (png, svg, pdf, eps)",
-  "homepage": "https://github.com/alexeyten/qr-image",
+  "description": "QR Code generator (png, svg, pdf)",
+  "homepage": "https://github.com/Short-io/qr-image/qr-image",
   "keywords": [
     "qrcode",
     "qr code",
     "qr",
     "png",
     "svg",
+    "pdf",
     "image"
   ],
   "author": {
@@ -21,7 +22,14 @@
     "url": "https://github.com/alexeyten/qr-image.git"
   },
   "bugs": "https://github.com/alexeyten/qr-image/issues",
-  "main": "./lib/qr.js",
+  "type": "commonjs",
+  "main": "./lib/qr.cjs",
+  "module": "./lib/qr.mjs",
+  "exports": {
+    "import": "./lib/qr.mjs",
+    "require": "./lib/qr.cjs"
+  },
+  "types": "./lib/qr.d.ts",
   "scripts": {
     "test": "ava ./tests/test.js"
   },
