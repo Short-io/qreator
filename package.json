@@ -2,7 +2,7 @@
   "name": "@shortcm/qr-image",
   "version": "4.2.1",
   "description": "QR Code generator (png, svg, pdf)",
-  "homepage": "https://github.com/Short-io/qr-image/qr-image",
+  "homepage": "https://github.com/Short-io/qr-image",
   "keywords": [
     "qrcode",
     "qr code",
