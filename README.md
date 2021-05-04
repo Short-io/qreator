@@ -47,17 +47,22 @@ const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.o
 ### Options
 
   * `text`: text to encode
-  * `options`: image options object
-    * `ec_level`: one of `L`, `M`, `Q`, `H`; default `M`
-    * `type`: image type; possible values `png`, `svg` and `pdf`; default `png`
-    * `size`: (types `png` and `svg` only) size of one module in pixels; default `5` for `png` and `0` for `svg`
-    * `margin`: white space around QR image in modules; default `4` for `png` and `1` for others
-    * `parse_url`: (experimental) try to optimize QR-code for URLs; default `false`
-    * `logo`: buffer with PNG image; default `undefined`
-    * `logoWidth`: height of image (in percent); default `20`
-    * `logoHeight`: width of image (in percent); default `20`
-    * `color`: dot color in RGBA format; does not support CSS syntax; must be number; default `0x000000FF` for black with 100% opacity
-    * `bgColor`: background color in RGBA format; does not support CSS syntax; must be number; default `0xFFFFFFFF` for white with 100% opacity
+  * `options`: additional image options object
+
+#### Additional Options ####
+
+| Name         | Description                                        | Type    | Possible Values     | Default                     |
+| :---:        | :---:                                              | :---:   | :---:               | :---:                       |
+| `ec_level`   | error correction level                             | string  | `L`, `M`, `Q`, `H`  | `M`                         |
+| `type`       | image type                                         | string  | `png`, `svg`, `pdf` | `png`                       |
+| `size`       | png and svg only<br />size of one module in pixels | number  | `0` - n             | `5` (png)<br />`0` (others) |
+| `margin`     | white space around QR image in modules             | number  | `0` - n             | `4` (png)<br />`1` (others) |
+| `parse_url`  | EXPERIMENTAL<br />try to optimize QR-code for URLs | boolean | `true`, `false`     | `false`                     |
+| `logo`       | buffer with png image                              | Buffer  | -                   | `undefined`                 |
+| `logoWidth`  | height of logo in percent                          | number  | `0` - `100`         | `20`                        |
+| `logoHeight` | width of logo in percent                           | number  | `0` - `100`         | `20`                        |
+| `color`      | module color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0x000000FF`<br />(black with 100% opacity) |
+| `bgColor`    | background color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0xFFFFFFFF`<br />(white with 100% opacity) |
 
 Changes
 -------
@@ -65,6 +70,7 @@ Changes
   * Use `zlib.deflateSync` instead of `pako`
   * Fix deprecation warning for NodeJS 7
   * `customize` function removed
+  * Add TypeScript definitions
 
 TODO
 ----
