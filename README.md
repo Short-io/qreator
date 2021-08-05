@@ -11,6 +11,8 @@ Overview
   * generate image in `png`, `svg` and `pdf` formats
   * numeric and alphanumeric modes
   * support UTF-8
+  * supports color customization
+  * supports logos
 
 [Releases](https://github.com/Short-io/qr-image/releases)
 
