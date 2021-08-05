@@ -80,6 +80,4 @@ Changes
 TODO
 ----
 
-  * Tests
-  * mixing modes
-  * Kanji (???)
+  * Use lighter versions of SVG/PNG/PDF libraries
