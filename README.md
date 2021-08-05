@@ -35,6 +35,11 @@ import qr from '@shortcm/qr-image';
 const svgString = await qr.image('I love QR!', { type: 'svg' });
 
 const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.openFileSync('my logo') });
+
+// or
+
+import { getSVG } from '@shortcm/qr-image/lib/svg.js';
+const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg')})
 ```
 
 [More examples](./examples)
