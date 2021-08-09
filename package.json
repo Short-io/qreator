@@ -27,6 +27,8 @@
   "module": "./lib/qr.mjs",
   "exports": {
     "import": "./lib/qr.mjs",
+    "./lib/png": "./lib/png.js",
+    "./lib/svg": "./lib/svg.js",
     "require": "./lib/qr.cjs"
   },
   "types": "./lib/qr.d.ts",
