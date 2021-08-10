@@ -1,55 +1,17 @@
-const { QR } = require('./qr-base');
-const PDF = require('./pdf');
-const PNG = require('./png');
-const SVG = require('./svg');
+import { getPDF } from "./pdf";
+import { getPNG } from "./png";
+import { getSVG } from "./svg";
+import { ImageOptions } from "./typing/types";
 
-const commonOptions = {
-  type: 'png',
-  parse_url: false,
-  ec_level: 'M',
-  logo: undefined,
-  logoWidth: 20,
-  logoHeight: 20,
-  bgColor: 0xffffffff,
-  color: 0x000000ff,
-};
-
-const BITMAP_OPTIONS = {
-  ...commonOptions,
-  margin: 4,
-  size: 5,
-};
-
-const VECTOR_OPTIONS = {
-  ...commonOptions,
-  margin: 1,
-  size: 0,
-};
-
-function getOptions(inOptions) {
-  const type = !inOptions || !inOptions.type ? 'png' : inOptions.type;
-  const defaults = type === 'png' ? BITMAP_OPTIONS : VECTOR_OPTIONS;
-  return { ...defaults, ...inOptions };
+export async function qrImage(text: string, options: ImageOptions) {
+    switch (options.type) {
+        case "svg":
+            return getSVG(text, options);
+        case "pdf":
+            return getPDF(text, options);
+        case "png":
+            return getPNG(text, options);
+        default:
+            throw new Error("Unknown type");
+    }
 }
-
-async function qrImage(text, inOptions) {
-  const options = getOptions(inOptions);
-
-  const matrix = QR(text, options.ec_level, options.parse_url);
-
-  switch (options.type) {
-    case 'svg':
-      return SVG({ matrix, ...options });
-    case 'pdf':
-      return PDF({ matrix, ...options });
-    case 'png':
-      return PNG({ matrix, ...options });
-    default:
-      throw new Error('Unknown type');
-  }
-}
-
-module.exports = {
-  matrix: QR,
-  image: qrImage,
-};

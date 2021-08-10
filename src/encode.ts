@@ -1,9 +1,10 @@
-// {{{1 Choose encode mode and generates struct with data for different version
-export function encode(data: string | number | Buffer, parse_url: string) {
-    let str;
-    const t = typeof data;
+import { NumberData } from "./typing/types";
 
-    if (t == "string" || t == "number") {
+// {{{1 Choose encode mode and generates struct with data for different version
+export function encode(data: string | number | Buffer, parse_url: boolean) {
+    let str: string;
+
+    if (typeof data === "string" || typeof data === "number") {
         str = `${data}`;
         data = Buffer.from(str);
     } else if (Buffer.isBuffer(data)) {
@@ -32,7 +33,6 @@ export function encode(data: string | number | Buffer, parse_url: string) {
     if (parse_url && /^https?:/i.test(str)) {
         return encode_url(str);
     }
-
     if (data.length > 2953) {
         throw new Error("Too much data");
     }
@@ -40,14 +40,14 @@ export function encode(data: string | number | Buffer, parse_url: string) {
 }
 
 /* eslint-disable no-bitwise */
-function pushBits(arr: any[], n: number, value: Buffer) {
+function pushBits(arr: number[], n: number, value: number) {
     for (let bit = 1 << (n - 1); bit; bit >>>= 1) {
         arr.push(bit & value ? 1 : 0);
     }
 }
 
 // {{{1 8bit encode
-function encode_8bit(data: Buffer[]) {
+function encode_8bit(data: Buffer): NumberData {
     const len = data.length;
     const bits: number[] = [];
 
@@ -61,12 +61,12 @@ function encode_8bit(data: Buffer[]) {
         data27?: number[];
     } = {};
 
-    var d = [0, 1, 0, 0];
+    let d = [0, 1, 0, 0];
     pushBits(d, 16, len);
     res.data10 = res.data27 = d.concat(bits);
 
     if (len < 256) {
-        var d = [0, 1, 0, 0];
+        let d = [0, 1, 0, 0];
         pushBits(d, 8, len);
         res.data1 = d.concat(bits);
     }
@@ -75,17 +75,17 @@ function encode_8bit(data: Buffer[]) {
 }
 
 // {{{1 alphanumeric encode
-const ALPHANUM = (function (s) {
-    const res = {};
+const ALPHANUM = (function (s: string) {
+    const res: { [key: string]: number } = {};
     for (let i = 0; i < s.length; i++) {
         res[s[i]] = i;
     }
     return res;
 })("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:");
 
-function encode_alphanum(str) {
+function encode_alphanum(str: string) {
     const len = str.length;
-    const bits = [];
+    const bits: number[] = [];
 
     for (let i = 0; i < len; i += 2) {
         let b = 6;
@@ -97,20 +97,20 @@ function encode_alphanum(str) {
         pushBits(bits, b, n);
     }
 
-    const res = {};
+    const res: NumberData = {};
 
-    var d = [0, 0, 1, 0];
+    let d = [0, 0, 1, 0];
     pushBits(d, 13, len);
     res.data27 = d.concat(bits);
 
     if (len < 2048) {
-        var d = [0, 0, 1, 0];
+        let d = [0, 0, 1, 0];
         pushBits(d, 11, len);
         res.data10 = d.concat(bits);
     }
 
     if (len < 512) {
-        var d = [0, 0, 1, 0];
+        let d = [0, 0, 1, 0];
         pushBits(d, 9, len);
         res.data1 = d.concat(bits);
     }
@@ -119,9 +119,9 @@ function encode_alphanum(str) {
 }
 
 // {{{1 numeric encode
-function encode_numeric(str) {
+function encode_numeric(str: string) {
     const len = str.length;
-    const bits = [];
+    const bits: number[] = [];
 
     for (let i = 0; i < len; i += 3) {
         const s = str.substr(i, 3);
@@ -129,20 +129,20 @@ function encode_numeric(str) {
         pushBits(bits, b, parseInt(s, 10));
     }
 
-    const res = {};
+    const res: NumberData = {};
 
-    var d = [0, 0, 0, 1];
+    let d = [0, 0, 0, 1];
     pushBits(d, 14, len);
     res.data27 = d.concat(bits);
 
     if (len < 4096) {
-        var d = [0, 0, 0, 1];
+        let d = [0, 0, 0, 1];
         pushBits(d, 12, len);
         res.data10 = d.concat(bits);
     }
 
     if (len < 1024) {
-        var d = [0, 0, 0, 1];
+        let d = [0, 0, 0, 1];
         pushBits(d, 10, len);
         res.data1 = d.concat(bits);
     }
@@ -151,7 +151,7 @@ function encode_numeric(str) {
 }
 
 // {{{1 url encode
-function encode_url(str) {
+function encode_url(str: string): NumberData {
     const slash = str.indexOf("/", 8) + 1 || str.length;
     const res = encode(str.slice(0, slash).toUpperCase(), false);
 
