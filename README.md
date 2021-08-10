@@ -11,6 +11,8 @@ Overview
   * generate image in `png`, `svg` and `pdf` formats
   * numeric and alphanumeric modes
   * support UTF-8
+  * supports color customization
+  * supports logos
 
 [Releases](https://github.com/Short-io/qr-image/releases)
 
@@ -35,6 +37,11 @@ import qr from '@shortcm/qr-image';
 const svgString = await qr.image('I love QR!', { type: 'svg' });
 
 const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.openFileSync('my logo') });
+
+// or
+
+import { getSVG } from '@shortcm/qr-image/lib/svg.js';
+const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg')})
 ```
 
 [More examples](./examples)
@@ -75,6 +82,4 @@ Changes
 TODO
 ----
 
-  * Tests
-  * mixing modes
-  * Kanji (???)
+  * Use lighter versions of SVG/PNG/PDF libraries
