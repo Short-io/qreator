@@ -1,5 +1,5 @@
 import { Jimp } from "@jimp/core";
-import Blit from "@jimp/plugin-blit";
+import { Blit } from "@jimp/plugin-blit";
 import { QR } from "./qr-base";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions } from "./utils";
@@ -55,7 +55,7 @@ async function PNG({
             (logoWidth / 100) * imageSize,
             (logoHeight / 100) * imageSize
         );
-        Blit().blit(
+        (jimp as Jimp & Blit).blit(
             logoJimp,
             imageSize / 2 - (logoWidth / 2 / 100) * imageSize,
             imageSize / 2 - (logoHeight / 2 / 100) * imageSize
