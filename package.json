@@ -25,7 +25,10 @@
     "type": "commonjs",
     "main": "lib/qr.js",
     "exports": {
-        ".": "./lib/qr.js"
+        ".": "./lib/qr.js",
+        "./lib/png": "./lib/png.js",
+        "./lib/svg": "./lib/svg.js",
+        "./lib/pdf": "./lib/pdf.js"
     },
     "types": "./lib/qr.d.ts",
     "scripts": {
