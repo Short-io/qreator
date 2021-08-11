@@ -19,7 +19,7 @@ if (!process.browser) {
     registerWindow(svgWin, svgWin.document);
 }
 
-const colorToHex = (color) => `#${(color >>> 8).toString(16).padStart(6, "0")}`;
+const colorToHex = (color: number) => `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 
 async function renderSVG({
     matrix,
