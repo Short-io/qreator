@@ -30,6 +30,7 @@
     "types": "./lib/qr.d.ts",
     "scripts": {
         "test": "ava ./tests/test.js",
+        "build": "tsc",
         "release": "release-it"
     },
     "size-limit": [
