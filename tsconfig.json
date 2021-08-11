@@ -9,8 +9,6 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "noUnusedLocals": true,
-        "sourceMap": true,
-        "inlineSources": true,
         "lib": ["ES2020", "DOM"],
         "esModuleInterop": true
     },
