@@ -7,7 +7,7 @@ const looksSamePromise = promisify(looksSame);
 
 const fs = require('fs');
 
-const qr = require('..');
+const { getQRImage } = require('../lib/qr');
 
 const text = 'I \u2764\uFE0F QR code!';
 // const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
@@ -111,7 +111,7 @@ const defaultParams = {
   },
 ].forEach((testData) => {
   test(testData.name, async (t) => {
-    const image = await qr.image(text, {
+    const image = await getQRImage(text, {
       type: testData.type,
       ...defaultParams,
       ...testData.params,
