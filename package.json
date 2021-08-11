@@ -1,65 +1,62 @@
 {
-  "name": "@shortcm/qr-image",
-  "version": "4.4.4",
-  "description": "QR Code generator (png, svg, pdf)",
-  "homepage": "https://github.com/Short-io/qr-image",
-  "keywords": [
-    "qrcode",
-    "qr code",
-    "qr",
-    "png",
-    "svg",
-    "pdf",
-    "image"
-  ],
-  "author": {
-    "name": "Alexey Ten",
-    "url": "http://git.io/alexeyten"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alexeyten/qr-image.git"
-  },
-  "bugs": "https://github.com/alexeyten/qr-image/issues",
-  "type": "commonjs",
-  "main": "./lib/qr.cjs",
-  "module": "./lib/qr.mjs",
-  "exports": {
-    ".": "./lib/qr.mjs",
-    "./lib/png": "./lib/png.js",
-    "./lib/svg": "./lib/svg.js"
-  },
-  "types": "./lib/qr.d.ts",
-  "scripts": {
-    "test": "ava ./tests/test.js",
-    "release": "release-it"
-  },
-  "size-limit": [
-    {
-      "path": "lib/qr.js"
+    "name": "@shortcm/qr-image",
+    "version": "4.4.4",
+    "description": "QR Code generator (png, svg, pdf)",
+    "homepage": "https://github.com/Short-io/qr-image",
+    "keywords": [
+        "qrcode",
+        "qr code",
+        "qr",
+        "png",
+        "svg",
+        "pdf",
+        "image"
+    ],
+    "author": {
+        "name": "Alexey Ten",
+        "url": "http://git.io/alexeyten"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/alexeyten/qr-image.git"
+    },
+    "bugs": "https://github.com/alexeyten/qr-image/issues",
+    "type": "commonjs",
+    "main": "lib/qr.js",
+    "exports": {
+        ".": "./lib/qr.js"
+    },
+    "types": "./lib/qr.d.ts",
+    "scripts": {
+        "test": "ava ./tests/test.js",
+        "release": "release-it"
+    },
+    "size-limit": [
+        {
+            "path": "lib/qr.js"
+        }
+    ],
+    "files": [
+        "lib",
+        "LICENSE"
+    ],
+    "devDependencies": {
+        "@size-limit/preset-small-lib": "^4.10.2",
+        "ava": "^3.15.0",
+        "eslint": "^7.23.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-plugin-import": "^2.22.1",
+        "looks-same": "^7.3.0",
+        "release-it": "^14.10.1",
+        "size-limit": "^4.10.2"
+    },
+    "dependencies": {
+        "@jimp/png": "^0.16.1",
+        "@svgdotjs/svg.js": "^3.0.16",
+        "jimp": "^0.16.1",
+        "pdf-lib": "^1.16.0",
+        "svgdom": "^0.1.8",
+        "upng": "^1.0.1"
     }
-  ],
-  "files": [
-    "lib",
-    "LICENSE"
-  ],
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.10.2",
-    "ava": "^3.15.0",
-    "eslint": "^7.23.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "looks-same": "^7.3.0",
-    "release-it": "^14.10.1",
-    "size-limit": "^4.10.2"
-  },
-  "dependencies": {
-    "@jimp/png": "^0.16.1",
-    "@svgdotjs/svg.js": "^3.0.16",
-    "jimp": "^0.16.1",
-    "pdf-lib": "^1.16.0",
-    "svgdom": "^0.1.8",
-    "upng": "^1.0.1"
-  }
 }
