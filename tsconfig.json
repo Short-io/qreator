@@ -12,7 +12,8 @@
         "noUnusedLocals": true,
         "sourceMap": true,
         "inlineSources": true,
-        "lib": ["ES2020", "DOM"]
+        "lib": ["ES2020", "DOM"],
+        "esModuleInterop": true
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules"]
