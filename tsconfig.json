@@ -4,7 +4,7 @@
         "module": "commonjs",
         "target": "ES2020",
         "rootDir": "./src",
-        "outDir": "./dist",
+        "outDir": "./lib",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
