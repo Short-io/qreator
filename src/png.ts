@@ -4,7 +4,7 @@ import { QR } from "./qr-base";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions } from "./utils";
 
-async function getPNG(text: string, inOptions: ImageOptions) {
+export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
     const matrix = QR(text, options.ec_level, options.parse_url);
     return PNG({ matrix, ...options });
@@ -64,5 +64,3 @@ async function PNG({
 
     return jimp.getBufferAsync("image/png");
 }
-
-module.exports = { getPNG };

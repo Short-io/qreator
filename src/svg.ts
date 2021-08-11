@@ -4,14 +4,14 @@ import { QR } from "./qr-base";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions } from "./utils";
 
-const { createSVGWindow } =
-    typeof process === "object" ? require("svgdom") : () => window;
-
-async function getSVG(text: string, inOptions: ImageOptions) {
+export async function getSVG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
     const matrix = QR(text, options.ec_level, options.parse_url);
     return renderSVG({ matrix, ...options });
 }
+
+const { createSVGWindow } =
+    typeof process === "object" ? require("svgdom") : () => window;
 
 let svgWin = typeof process === "object" ? null : window;
 if (!process.browser) {
@@ -19,7 +19,8 @@ if (!process.browser) {
     registerWindow(svgWin, svgWin.document);
 }
 
-const colorToHex = (color: number) => `#${(color >>> 8).toString(16).padStart(6, "0")}`;
+const colorToHex = (color: number) =>
+    `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 
 async function renderSVG({
     matrix,
@@ -67,5 +68,3 @@ async function renderSVG({
     }
     return Buffer.from('<?xml version="1.0" encoding="utf-8"?>' + svg.svg());
 }
-
-module.exports = { getSVG };
