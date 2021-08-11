@@ -10,7 +10,8 @@
         "preserveConstEnums": true,
         "noUnusedLocals": true,
         "lib": ["ES2020", "DOM"],
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "declaration": true
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules"]
