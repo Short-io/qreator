@@ -1,5 +1,5 @@
 declare module NodeJS {
-    interface Process extends NodeJS.Process {
+    interface Process {
         browser?: string;
     }
 }
