@@ -33,8 +33,8 @@ async function createSVG({
     const X = matrix.length + 2 * margin;
     const XY = X * (actualSize || 1);
 
-    const xmlTag = "<?xml version='1.0' encoding='utf-8'?>";
-    const svgOpeningTag = `<svg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 ${XY} ${XY}'>`;
+    const xmlTag = `<?xml version="1.0" encoding="utf-8"?>`;
+    const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${XY} ${XY}">`;
     const svgBody = getSVGBody(matrix, {
         color,
         bgColor,
@@ -51,18 +51,18 @@ async function createSVG({
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
     let svgBody =
-        `<rect width='${options.size}' height='${options.size}' ` +
-        `fill='${colorToHex(options.bgColor)}'></rect>`;
+        `<rect width="${options.size}" height="${options.size}" ` +
+        `fill="${colorToHex(options.bgColor)}"></rect>`;
 
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix[y].length; x++) {
             if (matrix[y][x]) {
                 svgBody +=
-                    `<rect width='${options.blockSize}' height='${options.blockSize}' ` +
-                    `fill='${colorToHex(options.color)}' ` +
-                    `stroke='${colorToHex(options.color)}' ` +
-                    `x='${(x + 1) * options.blockSize}' ` +
-                    `y='${(y + 1) * options.blockSize}'>` +
+                    `<rect width="${options.blockSize}" height="${options.blockSize}" ` +
+                    `fill="${colorToHex(options.color)}" ` +
+                    `stroke="${colorToHex(options.color)}" ` +
+                    `x="${(x + 1) * options.blockSize}" ` +
+                    `y="${(y + 1) * options.blockSize}">` +
                     `</rect>`;
             }
         }
@@ -84,11 +84,11 @@ function getLogoImage(
 
     return (
         `<image ` +
-        `width='${(logoWidth / 100) * XY}' ` +
-        `height='${(logoHeight / 100) * XY}' ` +
-        `xlink:href='${imageBase64}' ` +
-        `x='${XY / 2 - ((logoWidth / 100) * XY) / 2}' ` +
-        `y='${XY / 2 - ((logoHeight / 100) * XY) / 2}'>` +
+        `width="${(logoWidth / 100) * XY}" ` +
+        `height="${(logoHeight / 100) * XY}" ` +
+        `xlink:href="${imageBase64}" ` +
+        `x="${XY / 2 - ((logoWidth / 100) * XY) / 2}" ` +
+        `y="${XY / 2 - ((logoHeight / 100) * XY) / 2}">` +
         `</image>`
     );
 }
