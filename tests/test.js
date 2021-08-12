@@ -64,6 +64,22 @@ const defaultParams = {
         filename: "qr.svg",
     },
     {
+        name: "SVG with EC level",
+        type: "svg",
+        filename: "qr_with_ec_level.svg",
+        params: {
+            ec_level: "H",
+        },
+    },
+    {
+        name: "SVG with size",
+        type: "svg",
+        filename: "qr_with_size.svg",
+        params: {
+            size: 6,
+        },
+    },
+    {
         name: "SVG with colors",
         type: "svg",
         filename: "qr_with_colors.svg",
