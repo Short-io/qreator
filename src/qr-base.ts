@@ -7,6 +7,8 @@ interface LevelNumber {
     [key: string]: Pick<Data, "data_len" | "ec_level">;
 }
 
+const EC_LEVELS: EcLevel[] = ["L", "M", "Q", "H"];
+
 // {{{1 Get version template
 export function getTemplate(message: NumberData, ec_level: EcLevel) {
     let i = 1;
@@ -92,7 +94,7 @@ export function fillTemplate(message: NumberData, template: Data): Data {
 
 // {{{1 All-in-one
 export function QR(text: string, ec_level: EcLevel, parse_url: boolean) {
-    ec_level = EC_LEVELS.indexOf(ec_level) > -1 ? ec_level : "M";
+    ec_level = EC_LEVELS.includes(ec_level) ? ec_level : "M";
     const message = encode(text, parse_url);
     const data = fillTemplate(message, getTemplate(message, ec_level));
     return getMatrix(data);
@@ -101,8 +103,6 @@ export function QR(text: string, ec_level: EcLevel, parse_url: boolean) {
 function deepCopy(obj: object) {
     return JSON.parse(JSON.stringify(obj));
 }
-
-const EC_LEVELS: EcLevel[] = ["L", "M", "Q", "H"];
 
 // {{{1 Versions
 let versions: (number[] | LevelNumber | {})[] = [
