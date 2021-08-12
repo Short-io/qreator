@@ -22,6 +22,8 @@ async function createSVG({
     margin,
     size,
     logo,
+    logoWidth,
+    logoHeight,
     color,
     bgColor,
 }: ImageOptions & {
@@ -40,8 +42,11 @@ async function createSVG({
         blockSize: actualSize,
     });
     const svgEndTag = "</svg>";
+    const logoImage = logo ? getLogoImage(logo, XY, logoWidth, logoHeight) : "";
 
-    return Buffer.from(xmlTag + svgOpeningTag + svgBody + svgEndTag);
+    return Buffer.from(
+        xmlTag + svgOpeningTag + svgBody + logoImage + svgEndTag
+    );
 }
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
@@ -63,4 +68,27 @@ function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
         }
     }
     return svgBody;
+}
+
+function getLogoImage(
+    logo: ImageOptions["logo"],
+    XY: number,
+    logoWidth: ImageOptions["logoWidth"],
+    logoHeight: ImageOptions["logoHeight"]
+): string {
+    const imageBase64 = `data:image/png;base64,${
+        Buffer.isBuffer(logo)
+            ? logo.toString("base64")
+            : Buffer.from(logo).toString("base64")
+    }`;
+
+    return (
+        `<image ` +
+        `width='${(logoWidth / 100) * XY}' ` +
+        `height='${(logoHeight / 100) * XY}' ` +
+        `xlink:href='${imageBase64}' ` +
+        `x='${XY / 2 - ((logoWidth / 100) * XY) / 2}' ` +
+        `y='${XY / 2 - ((logoHeight / 100) * XY) / 2}'>` +
+        `</image>`
+    );
 }
