@@ -46,15 +46,15 @@
         "LICENSE"
     ],
     "devDependencies": {
-        "@size-limit/preset-small-lib": "^6.0.4",
-        "ava": "^3.15.0",
-        "eslint": "^7.32.0",
-        "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-plugin-import": "^2.24.0",
+        "@size-limit/preset-small-lib": "^7.0.8",
+        "ava": "^4.2.0",
+        "eslint": "^8.15.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.26.0",
         "looks-same": "^7.3.0",
-        "release-it": "^14.11.3",
-        "size-limit": "^6.0.4",
-        "typescript": "^4.3.5"
+        "release-it": "^15.0.0",
+        "size-limit": "^7.0.8",
+        "typescript": "^4.6.4"
     },
     "dependencies": {
         "@jimp/png": "^0.16.1",
