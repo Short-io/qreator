@@ -57,9 +57,7 @@
         "typescript": "^4.6.4"
     },
     "dependencies": {
-        "@jimp/png": "^0.16.1",
-        "jimp": "^0.16.1",
-        "pdf-lib": "^1.17.1",
-        "upng": "^1.0.1"
+        "canvas": "^2.9.1",
+        "pdf-lib": "^1.17.1"
     }
 }
