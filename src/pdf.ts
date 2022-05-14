@@ -1,7 +1,7 @@
 import { PDFDocument, rgb } from "pdf-lib";
-import { QR } from "./qr-base";
+import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions } from "./utils";
+import { getOptions } from "./utils.js";
 
 export async function getPDF(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);

@@ -1,6 +1,6 @@
 {
     "name": "@shortcm/qr-image",
-    "version": "4.6.1",
+    "version": "5.0.s",
     "description": "QR Code generator (png, svg, pdf)",
     "homepage": "https://github.com/Short-io/qr-image",
     "keywords": [
@@ -22,7 +22,7 @@
         "url": "https://github.com/alexeyten/qr-image.git"
     },
     "bugs": "https://github.com/alexeyten/qr-image/issues",
-    "type": "commonjs",
+    "type": "module",
     "main": "lib/qr.js",
     "exports": {
         ".": "./lib/qr.js",

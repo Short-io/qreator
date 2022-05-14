@@ -1,13 +1,18 @@
 #!/usr/bin/env node
-const test = require("ava");
-const looksSame = require("looks-same");
-const { promisify } = require("util");
+import test from "ava";
+import looksSame from "looks-same";
+import { promisify } from "util";
+import { fileURLToPath } from "url"
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const looksSamePromise = promisify(looksSame);
 
-const fs = require("fs");
+import { readFileSync, writeFileSync } from "fs";
 
-const { getQRImage } = require("../lib/qr");
+import { getQRImage } from "../lib/qr.js";
 
 const text = "I \u2764\uFE0F QR code!";
 // const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
@@ -22,8 +27,8 @@ const assertEqual = async (t, type, filename) => {
         t.assert(lsRes.equal);
     } else if (type !== "pdf") {
         t.assert(
-            fs.readFileSync(`${__dirname}/${filename}`).toString() ===
-                fs.readFileSync(`${__dirname}/golden/${filename}`).toString(),
+            readFileSync(`${__dirname}/${filename}`).toString() ===
+                readFileSync(`${__dirname}/golden/${filename}`).toString(),
             `${filename} is not equal to golden`
         );
     } else {
@@ -56,7 +61,7 @@ const defaultParams = {
         name: "PNG with logo",
         type: "png",
         filename: "qr_with_logo.png",
-        params: { logo: fs.readFileSync(`${__dirname}/golden/logo.png`) },
+        params: { logo: readFileSync(`${__dirname}/golden/logo.png`) },
     },
     {
         name: "SVG",
@@ -92,14 +97,14 @@ const defaultParams = {
         name: "SVG with logo as buffer",
         type: "svg",
         filename: "qr_with_logo.svg",
-        params: { logo: fs.readFileSync(`${__dirname}/golden/logo.png`) },
+        params: { logo: readFileSync(`${__dirname}/golden/logo.png`) },
     },
     {
         name: "SVG with logo as arraybuffer",
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
-            logo: fs.readFileSync(`${__dirname}/golden/logo.png`).buffer,
+            logo: readFileSync(`${__dirname}/golden/logo.png`).buffer,
         },
     },
     {
@@ -118,14 +123,14 @@ const defaultParams = {
         type: "pdf",
         filename: "qr_logo_arraybuffer.pdf",
         params: {
-            logo: fs.readFileSync(`${__dirname}/golden/logo.png`).buffer,
+            logo: readFileSync(`${__dirname}/golden/logo.png`).buffer,
         },
     },
     {
         name: "PDF with logo",
         type: "pdf",
         filename: "qr_with_logo.pdf",
-        params: { logo: fs.readFileSync(`${__dirname}/golden/logo.png`) },
+        params: { logo: readFileSync(`${__dirname}/golden/logo.png`) },
     },
 ].forEach((testData) => {
     test(testData.name, async (t) => {
@@ -134,7 +139,7 @@ const defaultParams = {
             ...defaultParams,
             ...testData.params,
         });
-        fs.writeFileSync(`${__dirname}/${testData.filename}`, image);
+        writeFileSync(`${__dirname}/${testData.filename}`, image);
         await assertEqual(t, testData.type, testData.filename);
     });
 });

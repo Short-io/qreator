@@ -1,6 +1,6 @@
-import { getPDF } from "./pdf";
-import { getPNG } from "./png";
-import { getSVG } from "./svg";
+import { getPDF } from "./pdf.js";
+import { getPNG } from "./png.js";
+import { getSVG } from "./svg.js";
 import { ImageOptions } from "./typing/types";
 
 export async function getQRImage(

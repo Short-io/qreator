@@ -1,6 +1,6 @@
-import { encode } from "./encode";
-import { calculateEC } from "./errorcode";
-import { getMatrix } from "./matrix";
+import { encode } from "./encode.js";
+import { calculateEC } from "./errorcode.js";
+import { getMatrix } from "./matrix.js";
 import { Data, EcLevel, NumberData } from "./typing/types";
 
 interface LevelNumber {

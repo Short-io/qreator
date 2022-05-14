@@ -1,5 +1,7 @@
 import { ImageOptions, Matrix } from "./typing/types";
-import { createCanvas, loadImage } from "canvas";
+import CanvasModule from "canvas";
+
+const { createCanvas, loadImage } = CanvasModule;
 
 function colorToHex(color: number): string {
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;

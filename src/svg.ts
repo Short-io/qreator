@@ -1,6 +1,6 @@
-import { QR } from "./qr-base";
+import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions } from "./utils";
+import { getOptions } from "./utils.js";
 
 interface FillSVGOptions
     extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin"> {

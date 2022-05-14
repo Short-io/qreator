@@ -1,7 +1,7 @@
-import { generateImage } from "./canvas";
-import { QR } from "./qr-base";
+import { generateImage } from "./canvas.js";
+import { QR } from "./qr-base.js";
 import { ImageOptions } from "./typing/types";
-import { getOptions } from "./utils";
+import { getOptions } from "./utils.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
