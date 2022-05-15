@@ -19,9 +19,9 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/alexeyten/qr-image.git"
+        "url": "https://github.com/Short-io/qr-image.git"
     },
-    "bugs": "https://github.com/alexeyten/qr-image/issues",
+    "bugs": "https://github.com/Short-io/qr-image/issues",
     "type": "module",
     "main": "lib/qr.js",
     "exports": {
