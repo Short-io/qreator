@@ -32,7 +32,7 @@
     },
     "types": "./lib/qr.d.ts",
     "scripts": {
-        "test": "ava ./tests/test.js",
+        "test": "ava",
         "prepare": "tsc",
         "release": "release-it"
     },
@@ -48,6 +48,7 @@
     "devDependencies": {
         "@size-limit/preset-small-lib": "^7.0.8",
         "ava": "^4.2.0",
+        "browser-env": "^3.3.0",
         "eslint": "^8.15.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.26.0",
