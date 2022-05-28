@@ -7,26 +7,6 @@ function colorToHex(color: number): string {
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
 
-function dataURItoArrayBuffer(dataURI: string) {
-  // convert base64 to raw binary data held in a string
-  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  var byteString = atob(dataURI.split(',')[1]);
-
-  // write the bytes of the string to an ArrayBuffer
-  var ab = new ArrayBuffer(byteString.length);
-
-  // create a view into the buffer
-  var ia = new Uint8Array(ab);
-
-  // set the bytes of the buffer to the correct values
-  for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-  }
-
-  // write the ArrayBuffer to a blob, and you're done
-  return ab
-}
-
 export async function generateImage({
     matrix,
     size,
@@ -69,10 +49,5 @@ export async function generateImage({
             (logoHeight / 100) * imageSize
         );
     }
-    if (canvas.toBuffer) {
-        return canvas.toBuffer('image/png');
-    } else { // Frontend
-        return dataURItoArrayBuffer(canvas.toDataURL('image/png'));
-    }
-
+    return canvas.toBuffer('image/png');
 }

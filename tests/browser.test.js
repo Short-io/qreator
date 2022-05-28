@@ -1,5 +1,5 @@
 import './_setup_browser_env.js';
-import { getPNG } from "../lib/png.js";
+import { getPNG } from "../lib/png_browser.js";
 import { getPDF } from "../lib/pdf.js";
 import { getSVG } from "../lib/svg.js";
 import test from "ava";
@@ -147,7 +147,7 @@ const functions = {
             ...defaultParams,
             ...testData.params,
         });
-        writeFileSync(`${__dirname}/${testData.filename}`, image);
+        writeFileSync(`${__dirname}/browser_${testData.filename}`, Buffer.from(image));
         await assertEqual(t, testData.type, testData.filename);
     });
 });
