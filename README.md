@@ -32,17 +32,19 @@ Usage
 
 Example:
 ```javascript
-import { getSVG } from '@shortcm/qr-image/lib/svg';
-import { getSVG } from '@shortcm/qr-image/lib/png';
+import { getSVG } from '@shortcm/qr-image/svg';
+import { getPNG } from '@shortcm/qr-image/png';
 const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
+const pngBuffer = await getPNG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
 ```
 
 [More examples](./examples)
 
-### Methods
+### Syntax
 
-  * `qr.image(text, [options])`: Readable stream with image data.
-  * `qr.matrix(text, [ec_level], [parse_url])`: 2D array of "booleans" (numbers). __Y__ is indexed first (e.g. `[y][x]` NOT `[x][y]`), `[0][0]` is the top left, and `1` (`true`) means black.
+  * `getPNG(text, [options])`: Readable stream with image data.
+  * `getSVG(text, [options])`: Readable stream with image data.
+  * `getPDF(text, [options])`: Readable stream with image data.
 
 ### Options
 
@@ -64,15 +66,7 @@ const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg
 | `color`      | module color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0x000000FF`<br />(black with 100% opacity) |
 | `bgColor`    | background color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0xFFFFFFFF`<br />(white with 100% opacity) |
 
-Changes
--------
-
-  * Use `zlib.deflateSync` instead of `pako`
-  * Fix deprecation warning for NodeJS 7
-  * `customize` function removed
-  * Add TypeScript definitions
-
 TODO
 ----
 
-  * Use lighter versions of SVG/PNG/PDF libraries
+  * Use lighter versions of PDF library
