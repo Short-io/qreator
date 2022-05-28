@@ -25,16 +25,16 @@
     "type": "module",
     "main": "lib/qr.js",
     "exports": {
-        "./png": {
+        "./lib/png": {
             "node": "./lib/png.js",
             "types": "./lib/png.d.ts",
             "default": "./lib/png_browser.js"
         },
-        "./svg": {
+        "./lib/svg": {
             "types": "./lib/svg.d.ts",
             "default": "./lib/svg.js"
         },
-        "./pdf": {
+        "./lib/pdf": {
             "types": "./lib/pdf.d.ts",
             "default": "./lib/pdf.js"
         }

@@ -32,8 +32,9 @@ Usage
 
 Example:
 ```javascript
-import { getSVG } from '@shortcm/qr-image/svg';
-import { getPNG } from '@shortcm/qr-image/png';
+import { getSVG } from '@shortcm/qr-image/lib/svg';
+import { getPNG } from '@shortcm/qr-image/lib/png'; // imports canvas implementation in browser and sharp module in node.js
+import { getPDF } from '@shortcm/qr-image/lib/pdf'; // this import is large, consider async import
 const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
 const pngBuffer = await getPNG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
 ```
