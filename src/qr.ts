@@ -3,6 +3,13 @@ import { getPNG } from "./png.js";
 import { getSVG } from "./svg.js";
 import { ImageOptions } from "./typing/types";
 
+/**
+ * @deprecated
+ * 
+ * @param text text to encode
+ * @param options options
+ * @returns Buffer of the image
+ */
 export async function getQRImage(
     text: string,
     options: Omit<ImageOptions, "type"> & Required<Pick<ImageOptions, "type">>

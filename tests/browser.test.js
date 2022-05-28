@@ -21,15 +21,15 @@ const text = "I \u2764\uFE0F QR code!";
 const assertEqual = async (t, type, filename) => {
     if (type === "png") {
         const lsRes = await looksSamePromise(
-            `${__dirname}/${filename}`,
-            `${__dirname}/golden/${filename}`,
+            `${__dirname}/browser_${filename}`,
+            `${__dirname}/golden/browser_${filename}`,
             { strict: true }
         );
         t.assert(lsRes.equal);
     } else if (type !== "pdf") {
         t.assert(
-            readFileSync(`${__dirname}/${filename}`).toString() ===
-                readFileSync(`${__dirname}/golden/${filename}`).toString(),
+            readFileSync(`${__dirname}/browser_${filename}`).toString() ===
+                readFileSync(`${__dirname}/golden/browser_${filename}`).toString(),
             `${filename} is not equal to golden`
         );
     } else {
