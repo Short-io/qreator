@@ -25,12 +25,12 @@
     "type": "module",
     "main": "lib/qr.js",
     "exports": {
-        "./lib/png": {
+        "./png": {
             "node": "./lib/png.js",
             "default": "./lib/png_browser.js"
         },
-        "./lib/svg": "./lib/svg.js",
-        "./lib/pdf": "./lib/pdf.js"
+        "./svg": "./lib/svg.js",
+        "./pdf": "./lib/pdf.js"
     },
     "scripts": {
         "test": "ava",
@@ -58,18 +58,10 @@
         "release-it": "^15.0.0",
         "size-limit": "^7.0.8",
         "@types/sharp": "^0.30.2",
-        "typescript": "^4.7.2",
-        "sharp": "^0.30.5"
+        "typescript": "^4.7.2"
     },
     "dependencies": {
+        "sharp": "^0.30.5",
         "pdf-lib": "^1.17.1"
-    },
-    "peerDependencies": {
-        "sharp": "^0.30.5"
-    },
-    "peerDependenciesMeta": {
-        "sharp": {
-            "optional": true
-        }
     }
 }

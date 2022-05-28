@@ -13,6 +13,8 @@ Overview
   * support UTF-8
   * supports color customization
   * supports logos
+  * tree shaking support
+  * browser / node.js
 
 [Releases](https://github.com/Short-io/qr-image/releases)
 
@@ -30,18 +32,9 @@ Usage
 
 Example:
 ```javascript
-const qr = require('@shortcm/qr-image');
-// or
-import qr from '@shortcm/qr-image';
-
-const svgString = await qr.image('I love QR!', { type: 'svg' });
-
-const svgWithLogoString = await qr.image('I love QR!', { type: 'svg', logo: fs.openFileSync('my logo') });
-
-// or
-
-import { getSVG } from '@shortcm/qr-image/lib/svg.js';
-const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg')})
+import { getSVG } from '@shortcm/qr-image/lib/svg';
+import { getSVG } from '@shortcm/qr-image/lib/png';
+const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
 ```
 
 [More examples](./examples)
