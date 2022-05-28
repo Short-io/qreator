@@ -27,10 +27,17 @@
     "exports": {
         "./png": {
             "node": "./lib/png.js",
+            "types": "./lib/png.d.ts",
             "default": "./lib/png_browser.js"
         },
-        "./svg": "./lib/svg.js",
-        "./pdf": "./lib/pdf.js"
+        "./svg": {
+            "types": "./lib/svg.d.ts",
+            "default": "./lib/svg.js"
+        },
+        "./pdf": {
+            "types": "./lib/pdf.d.ts",
+            "default": "./lib/pdf.js"
+        }
     },
     "scripts": {
         "test": "ava",
