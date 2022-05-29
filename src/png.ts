@@ -56,15 +56,8 @@ export async function generateImage({
     }
     if (logo) {
         layers.push({
-            input: await sharp(logo).resize(imageSize * logoWidth / 100, imageSize * logoHeight / 100).toBuffer(),
+            input: await sharp(logo).resize(imageSize * logoWidth / 100, imageSize * logoHeight / 100, {fit: 'contain'}).toBuffer(),
         })
-        // context.drawImage(
-        //     logoImage,
-        //     imageSize / 2 - (logoWidth / 2 / 100) * imageSize,
-        //     imageSize / 2 - (logoHeight / 2 / 100) * imageSize,
-        //     (logoWidth / 100) * imageSize,
-        //     (logoHeight / 100) * imageSize
-        // );
     }
     qrImage.composite(layers);
     return await qrImage.png().toBuffer();
