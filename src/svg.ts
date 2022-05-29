@@ -36,9 +36,8 @@ export async function createSVG({
     const actualSize = size || 9;
     const X = matrix.length + 2 * margin;
     const XY = X * (actualSize || 1);
-    console.log(XY);
-    const imageWidthStr = imageWidth ? ` width="${XY}"` : "";
-    const imageHeightStr = imageHeight ? `height="${XY}" ` : "";
+    const imageWidthStr = imageWidth ? ` width="${imageWidth}"` : "";
+    const imageHeightStr = imageHeight ? `height="${imageWidth}" ` : "";
     const xmlTag = `<?xml version="1.0" encoding="utf-8"?>`;
     const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"${imageWidthStr} ${imageHeightStr}viewBox="0 0 ${XY} ${XY}">`;
     const svgBody = getSVGBody(matrix, {

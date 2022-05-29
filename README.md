@@ -67,6 +67,18 @@ const pngBuffer = await getPNG('I love QR', { logo: fs.openFileSync('my-logo.svg
 | `color`      | module color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0x000000FF`<br />(black with 100% opacity) |
 | `bgColor`    | background color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0xFFFFFFFF`<br />(white with 100% opacity) |
 
+Benchmarks
+----------
+
+```
+getPNG x 98.36 ops/sec ±0.61% (69 runs sampled)
+getPDF x 118 ops/sec ±16.68% (87 runs sampled)
+getSVG x 2,902 ops/sec ±0.18% (89 runs sampled)
+getPNG with logo x 52.49 ops/sec ±0.45% (82 runs sampled)
+getPDF with logo x 39.29 ops/sec ±8.17% (68 runs sampled)
+getSVG with logo x 2,817 ops/sec ±0.17% (89 runs sampled)
+```
+
 TODO
 ----
 
