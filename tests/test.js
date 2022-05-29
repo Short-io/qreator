@@ -49,6 +49,14 @@ const defaultParams = {
         filename: "qr.png",
     },
     {
+        name: "PNG with size",
+        type: "png",
+        filename: "qr_with_size.png",
+        params: {
+            size: 9,
+        }
+    },
+    {
         name: "PNG with colors",
         type: "png",
         filename: "qr_with_colors.png",

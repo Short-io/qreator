@@ -17,7 +17,7 @@ function colorToHex(color: number): string {
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
 
-async function createSVG({
+export async function createSVG({
     matrix,
     margin,
     size,
@@ -26,15 +26,21 @@ async function createSVG({
     logoHeight,
     color,
     bgColor,
+    imageWidth,
+    imageHeight,
 }: ImageOptions & {
     matrix: Matrix;
+    imageWidth?: number;
+    imageHeight?: number;
 }): Promise<Buffer> {
     const actualSize = size || 9;
     const X = matrix.length + 2 * margin;
     const XY = X * (actualSize || 1);
-
+    console.log(XY);
+    const imageWidthStr = imageWidth ? ` width="${XY}"` : "";
+    const imageHeightStr = imageHeight ? `height="${XY}" ` : "";
     const xmlTag = `<?xml version="1.0" encoding="utf-8"?>`;
-    const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${XY} ${XY}">`;
+    const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"${imageWidthStr} ${imageHeightStr}viewBox="0 0 ${XY} ${XY}">`;
     const svgBody = getSVGBody(matrix, {
         color,
         bgColor,
@@ -58,9 +64,8 @@ function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
         for (let x = 0; x < matrix[y].length; x++) {
             if (matrix[y][x]) {
                 svgBody +=
-                    `<rect width="${options.blockSize}" height="${options.blockSize}" ` +
+                    `<rect shape-rendering="geometricPrecision" width="${options.blockSize}" height="${options.blockSize}" ` +
                     `fill="${colorToHex(options.color)}" ` +
-                    `stroke="${colorToHex(options.color)}" ` +
                     `x="${(x + 1) * options.blockSize}" ` +
                     `y="${(y + 1) * options.blockSize}">` +
                     `</rect>`;
