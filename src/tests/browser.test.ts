@@ -17,6 +17,7 @@ test.before(async () => {
     global.Event = dom.window.Event;
     global.FileReader = dom.window.FileReader;
     global.Blob = dom.window.Blob;
+    global.atob = dom.window.atob;
     global.navigator = dom.window.navigator;
 })
 
@@ -140,6 +141,6 @@ const functions = {
             ...testData.params,
         });
         await writeFile(`${generatedImageDir}/browser_${testData.filename}`, Buffer.from(image));
-        await assertEqual(t, testData.type, testData.filename);
+        await assertEqual(t, testData.filename);
     });
 });

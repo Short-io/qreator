@@ -1,8 +1,10 @@
 import test from "ava";
 import { readFile, writeFile } from "node:fs/promises";
 
-import { getQRImage, QRImageOptions } from "../qr.js";
-import type { ImageType } from "../typing/types.js";
+import { getPNG } from "../png.js";
+import { getSVG } from "../svg.js";
+import { getPDF } from "../pdf.js";
+import type { ImageOptions } from "../typing/types.js";
 import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
 
 const text = "I \u2764\uFE0F QR code!";
@@ -16,20 +18,26 @@ const defaultParams = {
 
 interface TestParams {
     name: string;
-    type: ImageType;
+    fn: typeof getPNG | typeof getPDF | typeof getSVG;
     filename: string;
-    params: QRImageOptions;
+    params: ImageOptions;
 }
 
 ([
     {
         name: "PNG",
-        type: "png",
+        fn: getPNG,
         filename: "qr.png",
     },
     {
+        name: "PNG with empty options",
+        fn: getPNG,
+        filename: "qr_with_empty_options.png",
+        options: {},
+    },
+    {
         name: "PNG with size",
-        type: "png",
+        fn: getPNG,
         filename: "qr_with_size.png",
         params: {
             size: 9,
@@ -37,7 +45,7 @@ interface TestParams {
     },
     {
         name: "PNG with colors",
-        type: "png",
+        fn: getPNG,
         filename: "qr_with_colors.png",
         params: {
             color: 0x0000a0ff,
@@ -46,18 +54,18 @@ interface TestParams {
     },
     {
         name: "PNG with logo",
-        type: "png",
+        fn: getPNG,
         filename: "qr_with_logo.png",
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
     {
         name: "SVG",
-        type: "svg",
+        fn: getSVG,
         filename: "qr.svg",
     },
     {
         name: "SVG with EC level",
-        type: "svg",
+        fn: getSVG,
         filename: "qr_with_ec_level.svg",
         params: {
             ec_level: "H",
@@ -65,7 +73,7 @@ interface TestParams {
     },
     {
         name: "SVG with size",
-        type: "svg",
+        fn: getSVG,
         filename: "qr_with_size.svg",
         params: {
             size: 6,
@@ -73,7 +81,7 @@ interface TestParams {
     },
     {
         name: "SVG with colors",
-        type: "svg",
+        fn: getSVG,
         filename: "qr_with_colors.svg",
         params: {
             color: 0xff0000ff,
@@ -82,13 +90,13 @@ interface TestParams {
     },
     {
         name: "SVG with logo as buffer",
-        type: "svg",
+        fn: getSVG,
         filename: "qr_with_logo.svg",
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
     {
         name: "SVG with logo as arraybuffer",
-        type: "svg",
+        fn: getSVG,
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
             logo: (await readFile(`${goldenDir}/logo.png`)).buffer,
@@ -96,18 +104,18 @@ interface TestParams {
     },
     {
         name: "PDF",
-        type: "pdf",
+        fn: getPDF,
         filename: "qr.pdf",
     },
     {
         name: "PDF with colors",
-        type: "pdf",
+        fn: getPDF,
         filename: "qr_with_colors.pdf",
         params: { color: 0xff0000ff, bgColor: 0x00ff00ff },
     },
     {
         name: "PDF with arraybuffer",
-        type: "pdf",
+        fn: getPDF,
         filename: "qr_logo_arraybuffer.pdf",
         params: {
             logo: (await readFile(`${goldenDir}/logo.png`)).buffer,
@@ -115,18 +123,17 @@ interface TestParams {
     },
     {
         name: "PDF with logo",
-        type: "pdf",
+        fn: getPDF,
         filename: "qr_with_logo.pdf",
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
 ] as TestParams[]).forEach((testData) => {
     test(testData.name, async (t) => {
-        const image = await getQRImage(text, {
-            type: testData.type,
+        const image = await testData.fn(text, {
             ...defaultParams,
             ...testData.params,
         });
         await writeFile(`${generatedImageDir}/${testData.filename}`, image);
-        await assertEqual(t, testData.type, testData.filename);
+        await assertEqual(t, testData.filename);
     });
 });

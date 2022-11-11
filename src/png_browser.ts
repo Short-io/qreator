@@ -76,7 +76,7 @@ export async function generateImage({
         }
     }
     if (logo) {
-        const logoImage = await new Promise<HTMLImageElement>(async (resolve, reject) => {
+        const logoImage = await new Promise<HTMLImageElement>(async (resolve) => {
             const image = new Image();
             image.onload = () => resolve(image);
             image.src = await blobToDataURL(new window.Blob([logo]));

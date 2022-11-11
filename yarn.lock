@@ -293,6 +293,11 @@
   "resolved" "https://registry.npmjs.org/@tootallnate/once/-/once-2.0.0.tgz"
   "version" "2.0.0"
 
+"@types/diff@^5.0.2":
+  "integrity" "sha512-uw8eYMIReOwstQ0QKF0sICefSy8cNO/v7gOTiIy9SbwuHyEecJUm7qlgueOO5S1udZ5I/irVydHVwMchgzbKTg=="
+  "resolved" "https://registry.npmjs.org/@types/diff/-/diff-5.0.2.tgz"
+  "version" "5.0.2"
+
 "@types/http-cache-semantics@^4.0.1":
   "integrity" "sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ=="
   "resolved" "https://registry.npmjs.org/@types/http-cache-semantics/-/http-cache-semantics-4.0.1.tgz"
@@ -782,7 +787,7 @@
     "ansi-styles" "^4.1.0"
     "supports-color" "^7.1.0"
 
-"chalk@^5.0.0", "chalk@^5.0.1":
+"chalk@^5.0.0", "chalk@^5.0.1", "chalk@^5.1.2":
   "integrity" "sha512-E5CkT4jWURs1Vy5qGJye+XwCkNj7Od3Af7CP6SujMetSMkLs8Do2RWJK5yx1wamHV/op8Rz+9rltjaTQWDnEFQ=="
   "resolved" "https://registry.npmjs.org/chalk/-/chalk-5.1.2.tgz"
   "version" "5.1.2"
@@ -1240,6 +1245,11 @@
   "integrity" "sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w=="
   "resolved" "https://registry.npmjs.org/detect-libc/-/detect-libc-2.0.1.tgz"
   "version" "2.0.1"
+
+"diff@^5.1.0":
+  "integrity" "sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw=="
+  "resolved" "https://registry.npmjs.org/diff/-/diff-5.1.0.tgz"
+  "version" "5.1.0"
 
 "dir-glob@^3.0.1":
   "integrity" "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA=="
@@ -4601,10 +4611,22 @@
   "resolved" "https://registry.npmjs.org/xdg-basedir/-/xdg-basedir-5.1.0.tgz"
   "version" "5.1.0"
 
+"xml-formatter@^2.6.1":
+  "integrity" "sha512-dOiGwoqm8y22QdTNI7A+N03tyVfBlQ0/oehAzxIZtwnFAHGeSlrfjF73YQvzSsa/Kt6+YZasKsrdu6OIpuBggw=="
+  "resolved" "https://registry.npmjs.org/xml-formatter/-/xml-formatter-2.6.1.tgz"
+  "version" "2.6.1"
+  dependencies:
+    "xml-parser-xo" "^3.2.0"
+
 "xml-name-validator@^4.0.0":
   "integrity" "sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw=="
   "resolved" "https://registry.npmjs.org/xml-name-validator/-/xml-name-validator-4.0.0.tgz"
   "version" "4.0.0"
+
+"xml-parser-xo@^3.2.0":
+  "integrity" "sha512-8LRU6cq+d7mVsoDaMhnkkt3CTtAs4153p49fRo+HIB3I1FD1o5CeXRjRH29sQevIfVJIcPjKSsPU/+Ujhq09Rg=="
+  "resolved" "https://registry.npmjs.org/xml-parser-xo/-/xml-parser-xo-3.2.0.tgz"
+  "version" "3.2.0"
 
 "xmlchars@^2.2.0":
   "integrity" "sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw=="

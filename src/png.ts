@@ -4,8 +4,8 @@ import { createSVG } from './svg.js';
 import { getOptions } from "./utils.js";
 import sharp from "sharp";
 
-export async function getPNG(text: string, inOptions: ImageOptions) {
-    const options = getOptions(inOptions);
+export async function getPNG(text: string, inOptions: ImageOptions = {}) {
+    const options = getOptions({...inOptions, type: 'png'});
     const matrix = QR(text, options.ec_level, options.parse_url);
     return generateImage({ matrix, ...options, type: 'png' });
 }
@@ -34,7 +34,7 @@ export async function generateImage({
         layers.push({
             input: data,
         })
+        qrImage.composite(layers);
     }
-    qrImage.composite(layers);
     return await qrImage.png().toBuffer();
 }

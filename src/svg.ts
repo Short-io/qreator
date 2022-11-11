@@ -7,8 +7,8 @@ interface FillSVGOptions
     blockSize?: number;
 }
 
-export async function getSVG(text: string, inOptions: ImageOptions) {
-    const options = getOptions(inOptions);
+export async function getSVG(text: string, inOptions: ImageOptions = {}) {
+    const options = getOptions({...inOptions, type: "svg"});
     const matrix = QR(text, options.ec_level, options.parse_url);
     return createSVG({ matrix, ...options });
 }
