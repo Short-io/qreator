@@ -44,6 +44,7 @@ export async function createSVG({
         color,
         bgColor,
         size: XY,
+        margin,
         blockSize: actualSize,
     });
     const svgEndTag = "</svg>";
@@ -65,8 +66,8 @@ function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
                 svgBody +=
                     `<rect shape-rendering="geometricPrecision" width="${options.blockSize}" height="${options.blockSize}" ` +
                     `fill="${colorToHex(options.color)}" ` +
-                    `x="${(x + 1) * options.blockSize}" ` +
-                    `y="${(y + 1) * options.blockSize}">` +
+                    `x="${(x + options.margin) * options.blockSize}" ` +
+                    `y="${(y + options.margin) * options.blockSize}">` +
                     `</rect>`;
             }
         }

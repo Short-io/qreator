@@ -52,6 +52,15 @@ interface TestParams {
         }
     },
     {
+        name: "PNG with margin",
+        fn: getPNG,
+        filename: "qr_with_margin.png",
+        params: {
+            size: 9,
+            margin: 3,
+        }
+    },
+    {
         name: "PNG with colors",
         fn: getPNG,
         filename: "qr_with_colors.png",

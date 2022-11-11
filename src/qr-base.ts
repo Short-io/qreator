@@ -10,7 +10,7 @@ interface LevelNumber {
 const EC_LEVELS: EcLevel[] = ["L", "M", "Q", "H"];
 
 // {{{1 Get version template
-export function getTemplate(message: NumberData, ec_level: EcLevel) {
+export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     let i = 1;
     let len;
 
@@ -20,7 +20,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel) {
         i = 10;
     }
     for (; /* i */ i < 10; i++) {
-        let version = (versions as LevelNumber[])[i][ec_level];
+        let version = mappedVersions[i][ec_level];
         if (version.data_len >= len) {
             return deepCopy(version);
         }
@@ -32,7 +32,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel) {
         i = 27;
     }
     for (; /* i */ i < 27; i++) {
-        let version = (versions as LevelNumber[])[i][ec_level];
+        let version = mappedVersions[i][ec_level];
         if (version.data_len >= len) {
             return deepCopy(version);
         }
@@ -40,7 +40,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel) {
 
     len = Math.ceil(message.data27.length / 8);
     for (; /* i */ i < 41; i++) {
-        let version = (versions as LevelNumber[])[i][ec_level];
+        let version = mappedVersions[i][ec_level];
         if (version.data_len >= len) {
             return deepCopy(version);
         }
@@ -51,7 +51,6 @@ export function getTemplate(message: NumberData, ec_level: EcLevel) {
 // {{{1 Fill template
 export function fillTemplate(message: NumberData, template: Data): Data {
     const blocks = Buffer.alloc(template.data_len);
-    blocks.fill(0);
     let messageUpdated: number[];
 
     if (template.version < 10) {
@@ -100,12 +99,10 @@ export function QR(text: string, ec_level: EcLevel, parse_url: boolean) {
     return getMatrix(data);
 }
 
-function deepCopy(obj: object) {
-    return JSON.parse(JSON.stringify(obj));
-}
+const deepCopy = structuredClone || ((obj: object) => JSON.parse(JSON.stringify(obj))) as typeof structuredClone;
 
 // {{{1 Versions
-let versions: (number[] | LevelNumber | {})[] = [
+const versions: (number[] | LevelNumber | {})[] = [
     [], // there is no version 0
     // total number of codewords, (number of ec codewords, number of blocks) * ( L, M, Q, H )
     [26, 7, 1, 10, 1, 13, 1, 17, 1],
@@ -150,12 +147,12 @@ let versions: (number[] | LevelNumber | {})[] = [
     [3706, 750, 25, 1372, 49, 2040, 68, 2430, 81], // 40
 ];
 
-versions = versions.map((el, index: number) => {
+const mappedVersions = versions.map((el, index: number) => {
     if (!index) {
-        return {};
+        return Object.create(null);
     }
 
-    const res = {} as {
+    const res = Object.create(null) as {
         [K in EcLevel]: Omit<Data, "blocks"> & { blocks: number[] };
     };
 
