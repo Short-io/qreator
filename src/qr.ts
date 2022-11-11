@@ -1,8 +1,4 @@
-import { getPDF } from "./pdf.js";
-import { getPNG } from "./png.js";
-import { getSVG } from "./svg.js";
 import { ImageOptions } from "./typing/types";
-
 export type QRImageOptions = Omit<ImageOptions, "type"> & Required<Pick<ImageOptions, "type">>;
 
 /**
@@ -16,14 +12,5 @@ export async function getQRImage(
     text: string,
     options: QRImageOptions
 ) {
-    switch (options.type) {
-        case "svg":
-            return getSVG(text, options);
-        case "pdf":
-            return getPDF(text, options);
-        case "png":
-            return getPNG(text, options);
-        default:
-            throw new Error("Unknown type");
-    }
+    throw new Error("getQRImage is deprecated. Use getPNG, getSVG or getPDF instead. If will save your memory and bundle size.");
 }
