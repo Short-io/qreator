@@ -99,7 +99,7 @@ export function QR(text: string, ec_level: EcLevel, parse_url: boolean) {
     return getMatrix(data);
 }
 
-const deepCopy = structuredClone || ((obj: object) => JSON.parse(JSON.stringify(obj))) as typeof structuredClone;
+const deepCopy = typeof structuredClone !== "undefined" ? structuredClone : ((obj: object) => JSON.parse(JSON.stringify(obj))) as typeof structuredClone;
 
 // {{{1 Versions
 const versions: (number[] | LevelNumber | {})[] = [
