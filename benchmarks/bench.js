@@ -4,7 +4,7 @@ import { getPNG } from "../lib/png.js";
 import { getSVG } from "../lib/svg.js";
 import { getPDF } from "../lib/pdf.js";
 const suite = new Benchmark.Suite("QR");
-const logo = readFileSync(`tests/golden/logo.png`);
+const logo = readFileSync(`test_data/golden/logo.png`);
 suite
     .add(
         "getPNG",
