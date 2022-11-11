@@ -36,6 +36,14 @@ interface TestParams {
         options: {},
     },
     {
+        name: "PNG with undefined size",
+        fn: getPNG,
+        filename: "qr_with_undefined_size.png",
+        options: {
+            size: undefined,
+        },
+    },
+    {
         name: "PNG with size",
         fn: getPNG,
         filename: "qr_with_size.png",

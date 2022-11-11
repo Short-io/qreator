@@ -2,13 +2,11 @@ import { Data, EcLevel, Matrix } from "./typing/types";
 
 // {{{1 Initialize matrix with zeros
 export function init(version: number): Matrix {
-    const N = version * 4 + 17;
+    const N = (version << 2) + 0b10001;
     const matrix: Matrix = [];
-    let zeros: number[] | Buffer = Buffer.alloc(N);
-    zeros.fill(0);
-    zeros = [].slice.call(zeros);
+    let zeros: number[] = Array(N).fill(0);
     for (let i = 0; i < N; i++) {
-        matrix[i] = zeros.slice() as number[];
+        matrix[i] = [...zeros];
     }
     return matrix;
 }
@@ -176,30 +174,14 @@ export const fillReserved = (function () {
 // {{{1 Fill data
 export const fillData = (function () {
     const MASK_FUNCTIONS = [
-        function (i: number, j: number) {
-            return (i + j) % 2 == 0;
-        },
-        function (i: number, j: number) {
-            return i % 2 == 0;
-        },
-        function (i: number, j: number) {
-            return j % 3 == 0;
-        },
-        function (i: number, j: number) {
-            return (i + j) % 3 == 0;
-        },
-        function (i: number, j: number) {
-            return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
-        },
-        function (i: number, j: number) {
-            return ((i * j) % 2) + ((i * j) % 3) == 0;
-        },
-        function (i: number, j: number) {
-            return (((i * j) % 2) + ((i * j) % 3)) % 2 == 0;
-        },
-        function (i: number, j: number) {
-            return (((i * j) % 3) + ((i + j) % 2)) % 2 == 0;
-        },
+        (i: number, j: number) => (i + j) % 2 == 0,
+        (i: number, j: number) => i % 2 == 0,
+        (i: number, j: number) => j % 3 == 0,
+        (i: number, j: number) => (i + j) % 3 == 0,
+        (i: number, j: number) => (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0,
+        (i: number, j: number) => ((i * j) % 2) + ((i * j) % 3) == 0,
+        (i: number, j: number) => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
+        (i: number, j: number) => (((i * j) % 3) + ((i + j) % 2)) % 2 == 0,
     ];
 
     return function fillData(matrix: Matrix, data: Data, mask: number) {
