@@ -8,8 +8,6 @@ import path from "path";
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const looksSamePromise = promisify(looksSame);
-
 import { readFileSync, writeFileSync } from "fs";
 
 import { getQRImage } from "../lib/qr.js";
@@ -19,7 +17,7 @@ const text = "I \u2764\uFE0F QR code!";
 
 const assertEqual = async (t, type, filename) => {
     if (type === "png") {
-        const lsRes = await looksSamePromise(
+        const lsRes = await looksSame(
             `${__dirname}/${filename}`,
             `${__dirname}/golden/${filename}`,
             { strict: true }

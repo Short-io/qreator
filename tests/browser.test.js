@@ -7,20 +7,18 @@ import looksSame from "looks-same";
 import { promisify } from "util";
 import { fileURLToPath } from "url"
 import path from "path";
+import { readFileSync, writeFileSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const looksSamePromise = promisify(looksSame);
-
-import { readFileSync, writeFileSync } from "fs";
 
 const text = "I \u2764\uFE0F QR code!";
 // const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
 
 const assertEqual = async (t, type, filename) => {
     if (type === "png") {
-        const lsRes = await looksSamePromise(
+        const lsRes = await looksSame(
             `${__dirname}/browser_${filename}`,
             `${__dirname}/golden/browser_${filename}`,
             { strict: true }
