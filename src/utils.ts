@@ -1,8 +1,7 @@
 import { ImageOptions, ImageType } from "./typing/types";
 
 export function getOptions(inOptions: ImageOptions) {
-    const type: ImageType =
-        !inOptions || !inOptions.type ? "png" : inOptions.type;
+    const type: ImageType = inOptions?.type ?? "png";
     const defaults = type === "png" ? BITMAP_OPTIONS : VECTOR_OPTIONS;
     return { ...defaults, ...inOptions };
 }
@@ -30,7 +29,7 @@ const commonOptions: Pick<
 
 const BITMAP_OPTIONS: ImageOptions = {
     ...commonOptions,
-    margin: 4,
+    margin: 1,
     size: 5,
 };
 
