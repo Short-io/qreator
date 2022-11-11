@@ -1,42 +1,36 @@
-import './_setup_browser_env.js';
-import { getPNG } from "../lib/png_browser.js";
-import { getPDF } from "../lib/pdf.js";
-import { getSVG } from "../lib/svg.js";
+import { getPNG } from "../png_browser.js";
+import { getPDF } from "../pdf.js";
+import { getSVG } from "../svg.js";
 import test from "ava";
-import looksSame from "looks-same";
-import { promisify } from "util";
-import { fileURLToPath } from "url"
-import path from "path";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
+import { writeFile } from "node:fs/promises";
+import { ImageType } from '../typing/types.js';
+import { QRImageOptions } from '../qr.js';
+import { JSDOM } from 'jsdom';
+import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
+test.before(async () => {
+    const dom = new JSDOM('<div id="my-element-id" />', { resources: "usable"});  // insert any html needed for the unit test suite here
+    global.document = dom.window.document;
+    global.window = dom.window as any;
+    global.Image = dom.window.Image;
+    global.Event = dom.window.Event;
+    global.FileReader = dom.window.FileReader;
+    global.Blob = dom.window.Blob;
+    global.navigator = dom.window.navigator;
+})
 
 const text = "I \u2764\uFE0F QR code!";
 // const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
-
-const assertEqual = async (t, type, filename) => {
-    if (type === "png") {
-        const lsRes = await looksSame(
-            `${__dirname}/browser_${filename}`,
-            `${__dirname}/golden/browser_${filename}`,
-            { strict: true }
-        );
-        t.assert(lsRes.equal);
-    } else if (type !== "pdf") {
-        t.assert(
-            readFileSync(`${__dirname}/browser_${filename}`).toString() ===
-                readFileSync(`${__dirname}/golden/browser_${filename}`).toString(),
-            `${filename} is not equal to golden`
-        );
-    } else {
-        t.pass();
-    }
-};
+interface TestParams {
+    name: string;
+    type: ImageType;
+    filename: string;
+    params: QRImageOptions;
+}
 
 const defaultParams = {
-    ec_level: "Q",
+    ec_level: "Q" as const,
     margin: 1,
     parse_url: true,
 };
@@ -47,7 +41,7 @@ const functions = {
     "svg": getSVG,
 };
 
-[
+([
     {
         name: "PNG",
         type: "png",
@@ -67,7 +61,7 @@ const functions = {
         name: "PNG with logo",
         type: "png",
         filename: "qr_with_logo.png",
-        params: { logo: readFileSync(`${__dirname}/golden/logo.png`) },
+        params: { logo: readFileSync(`${goldenDir}/logo.png`) },
     },
     {
         name: "SVG",
@@ -103,14 +97,14 @@ const functions = {
         name: "SVG with logo as buffer",
         type: "svg",
         filename: "qr_with_logo.svg",
-        params: { logo: readFileSync(`${__dirname}/golden/logo.png`) },
+        params: { logo: readFileSync(`${goldenDir}/logo.png`) },
     },
     {
         name: "SVG with logo as arraybuffer",
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
-            logo: readFileSync(`${__dirname}/golden/logo.png`).buffer,
+            logo: readFileSync(`${goldenDir}/logo.png`).buffer,
         },
     },
     {
@@ -129,23 +123,23 @@ const functions = {
         type: "pdf",
         filename: "qr_logo_arraybuffer.pdf",
         params: {
-            logo: readFileSync(`${__dirname}/golden/logo.png`).buffer,
+            logo: readFileSync(`${goldenDir}/logo.png`).buffer,
         },
     },
     {
         name: "PDF with logo",
         type: "pdf",
         filename: "qr_with_logo.pdf",
-        params: { logo: readFileSync(`${__dirname}/golden/logo.png`) },
+        params: { logo: readFileSync(`${goldenDir}/logo.png`) },
     },
-].forEach((testData) => {
+] as TestParams[]) .forEach((testData) => {
     test(`browser > ${testData.name}`, async (t) => {
         const image = await functions[testData.type](text, {
             type: testData.type,
             ...defaultParams,
             ...testData.params,
         });
-        writeFileSync(`${__dirname}/browser_${testData.filename}`, Buffer.from(image));
+        await writeFile(`${generatedImageDir}/browser_${testData.filename}`, Buffer.from(image));
         await assertEqual(t, testData.type, testData.filename);
     });
 });

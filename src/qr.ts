@@ -3,6 +3,8 @@ import { getPNG } from "./png.js";
 import { getSVG } from "./svg.js";
 import { ImageOptions } from "./typing/types";
 
+export type QRImageOptions = Omit<ImageOptions, "type"> & Required<Pick<ImageOptions, "type">>;
+
 /**
  * @deprecated
  * 
@@ -12,7 +14,7 @@ import { ImageOptions } from "./typing/types";
  */
 export async function getQRImage(
     text: string,
-    options: Omit<ImageOptions, "type"> & Required<Pick<ImageOptions, "type">>
+    options: QRImageOptions
 ) {
     switch (options.type) {
         case "svg":

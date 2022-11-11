@@ -10,6 +10,7 @@
         "preserveConstEnums": true,
         "noUnusedLocals": true,
         "lib": ["ES2020", "DOM"],
+        "skipLibCheck": true,
         "esModuleInterop": true,
         "declaration": true
     },
