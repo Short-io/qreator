@@ -3,7 +3,10 @@ qr-image
 
 [![npm version](https://badge.fury.io/js/%40shortcm%2Fqr-image.svg)](https://badge.fury.io/js/%40shortcm%2Fqr-image)
 
-This is yet another QR Code generator (based on [alexeyten/qr-image](https://github.com/alexeyten/qr-image)).
+QR Code generator for browser and node.js with tree shaking and logo support (based on [alexeyten/qr-image](https://github.com/alexeyten/qr-image)).
+
+![image](https://github.com/Short-io/qr-image/assets/75169/02b84738-56f2-44d8-8d11-f40e263302ed)
+
 
 Overview
 --------
