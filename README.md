@@ -86,3 +86,6 @@ TODO
 ----
 
   * Use lighter versions of PDF library
+  * Round corners
+  * Transparency
+  * Background
