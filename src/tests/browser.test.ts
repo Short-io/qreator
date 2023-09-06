@@ -63,7 +63,7 @@ const functions = {
         type: "png",
         filename: "qr_with_colors.png",
         params: {
-            color: '#0000e0',
+            color: '#0000a0',
             bgColor: '#ffa0ff',
         },
     },
