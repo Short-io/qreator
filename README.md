@@ -67,8 +67,8 @@ const pngBuffer = await getPNG('I love QR', { logo: fs.openFileSync('my-logo.svg
 | `logo`       | buffer with png image                              | Buffer  | -                   | `undefined`                 |
 | `logoWidth`  | height of logo in percent                          | number  | `0` - `100`         | `20`                        |
 | `logoHeight` | width of logo in percent                           | number  | `0` - `100`         | `20`                        |
-| `color`      | module color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0x000000FF`<br />(black with 100% opacity) |
-| `bgColor`    | background color in RGBA format<br />does not support CSS syntax | number | `0x00000000` - `0xFFFFFFFF` | `0xFFFFFFFF`<br />(white with 100% opacity) |
+| `color`      | module color in rgba or hex format                 | number  | `#000000` - `#000000` | `#000000`<br />(black with 100% opacity) |
+| `bgColor`    | background color in rgba or hex format             | number  | `#000000` - `#FFFFFF` | `#FFFFFF`<br />(white with 100% opacity) |
 
 Benchmarks
 ----------

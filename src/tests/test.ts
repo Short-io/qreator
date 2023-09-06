@@ -70,6 +70,15 @@ interface TestParams {
         },
     },
     {
+        name: "PNG with colors (hex)",
+        fn: getPNG,
+        filename: "qr_with_colors.png",
+        params: {
+            color: '#0000a0',
+            bgColor: '#ffa0ff',
+        },
+    },
+    {
         name: "PNG with logo",
         fn: getPNG,
         filename: "qr_with_logo.png",
@@ -94,6 +103,15 @@ interface TestParams {
         filename: "qr_with_size.svg",
         params: {
             size: 6,
+        },
+    },
+    {
+        name: "SVG with colors (hex)",
+        fn: getSVG,
+        filename: "qr_with_colors.svg",
+        params: {
+            color: '#ff0000',
+            bgColor: '#00ff00',
         },
     },
     {

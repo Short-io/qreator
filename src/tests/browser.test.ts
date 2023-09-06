@@ -59,6 +59,15 @@ const functions = {
         },
     },
     {
+        name: "PNG with colors (hex)",
+        type: "png",
+        filename: "qr_with_colors.png",
+        params: {
+            color: '#0000e0',
+            bgColor: '#ffa0ff',
+        },
+    },
+    {
         name: "PNG with logo",
         type: "png",
         filename: "qr_with_logo.png",
@@ -86,7 +95,16 @@ const functions = {
         },
     },
     {
-        name: "SVG with colors",
+        name: "SVG with colors (hex)",
+        type: "svg",
+        filename: "qr_with_colors.svg",
+        params: {
+            color: '#ff0000',
+            bgColor: '#00ff00',
+        },
+    },
+    {
+        name: "SVG with colors (number)",
         type: "svg",
         filename: "qr_with_colors.svg",
         params: {
@@ -141,6 +159,6 @@ const functions = {
             ...testData.params,
         });
         await writeFile(`${generatedImageDir}/browser_${testData.filename}`, Buffer.from(image));
-        await assertEqual(t, testData.filename);
+        await assertEqual(t, 'browser_' + testData.filename);
     });
 });

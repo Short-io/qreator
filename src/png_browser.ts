@@ -1,15 +1,11 @@
 import { QR } from "./qr-base.js";
-import { getOptions } from "./utils.js";
+import { getOptions, colorToHex } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 
 export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
     const matrix = QR(text, options.ec_level, options.parse_url);
     return generateImage({ matrix, ...options, type: 'png' });
-}
-
-function colorToHex(color: number): string {
-    return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
 
 function dataURItoArrayBuffer(dataURI: string) {

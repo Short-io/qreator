@@ -1,6 +1,6 @@
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions } from "./utils.js";
+import { getOptions, colorToHex } from "./utils.js";
 
 interface FillSVGOptions
     extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin"> {
@@ -13,9 +13,6 @@ export async function getSVG(text: string, inOptions: ImageOptions = {}) {
     return createSVG({ matrix, ...options });
 }
 
-function colorToHex(color: number): string {
-    return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
-}
 
 export async function createSVG({
     matrix,
