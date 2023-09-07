@@ -2,6 +2,7 @@ import { PDFDocument, rgb } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions } from "./utils.js";
+import colorString from "color-string";
 
 export async function getPDF(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
@@ -9,7 +10,11 @@ export async function getPDF(text: string, inOptions: ImageOptions) {
     return PDF({ matrix, ...options });
 }
 
-function colorToRGB(color: number): [number, number, number] {
+function colorToRGB(color: string | number): [number, number, number] {
+    if (typeof color === "string") {
+        const [red, green, blue] = colorString.get.rgb(color);
+        return [red / 255, green / 255, blue / 255];
+    }
     return [
         ((color >>> 24) % 256) / 255,
         ((color >>> 16) % 256) / 255,

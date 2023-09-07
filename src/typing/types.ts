@@ -84,11 +84,11 @@ export interface ImageOptions {
      * Foreground color in RGBA format.
      * @default 0x000000FF
      */
-    color?: number;
+    color?: number | string;
 
     /**
      * Background color in RGBA format.
      * @default 0xFFFFFFFF
      */
-    bgColor?: number;
+    bgColor?: number | string;
 }
