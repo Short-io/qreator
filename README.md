@@ -38,8 +38,8 @@ Example:
 import { getSVG } from '@shortcm/qr-image/lib/svg';
 import { getPNG } from '@shortcm/qr-image/lib/png'; // imports canvas implementation in browser and sharp module in node.js
 import { getPDF } from '@shortcm/qr-image/lib/pdf'; // this import is large, consider async import
-const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
-const pngBuffer = await getPNG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 0x000000, bgColor: 0xFFFFFF})
+const svgString = await getSVG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: '#000000', bgColor: '#FFFFFF'})
+const pngBuffer = await getPNG('I love QR', { logo: fs.openFileSync('my-logo.svg'), color: 'rgb(0, 0, 0)', bgColor: 'rgb(255, 255, 255)'})
 ```
 
 [More examples](./examples)
