@@ -1,12 +1,12 @@
 import { NumberData } from "./typing/types";
-
+const enc = new TextEncoder();
 // {{{1 Choose encode mode and generates struct with data for different version
-export function encode(data: string | number | Buffer, parse_url: boolean) {
+export function encode(data: string | number | ArrayBuffer, parse_url: boolean) {
     let str: string;
 
     if (typeof data === "string" || typeof data === "number") {
         str = `${data}`;
-        data = Buffer.from(str);
+        data = enc.encode(str);
     } else if (Buffer.isBuffer(data)) {
         str = data.toString();
     } else if (Array.isArray(data)) {
@@ -17,14 +17,14 @@ export function encode(data: string | number | Buffer, parse_url: boolean) {
     }
 
     if (/^[0-9]+$/.test(str)) {
-        if (data.length > 7089) {
+        if (data.byteLength > 7089) {
             throw new Error("Too much data");
         }
         return encode_numeric(str);
     }
 
     if (/^[0-9A-Z \$%\*\+\.\/\:\-]+$/.test(str)) {
-        if (data.length > 4296) {
+        if (data.byteLength > 4296) {
             throw new Error("Too much data");
         }
         return encode_alphanum(str);
@@ -33,10 +33,10 @@ export function encode(data: string | number | Buffer, parse_url: boolean) {
     if (parse_url && /^https?:/i.test(str)) {
         return encode_url(str);
     }
-    if (data.length > 2953) {
+    if (data.byteLength > 2953) {
         throw new Error("Too much data");
     }
-    return encode_8bit(data);
+    return encode_8bit(new Uint8Array(data));
 }
 
 /* eslint-disable no-bitwise */
@@ -47,8 +47,8 @@ function pushBits(arr: number[], n: number, value: number) {
 }
 
 // {{{1 8bit encode
-function encode_8bit(data: Buffer): NumberData {
-    const len = data.length;
+function encode_8bit(data: Uint8Array): NumberData {
+    const len = data.byteLength;
     const bits: number[] = [];
 
     for (let i = 0; i < len; i++) {

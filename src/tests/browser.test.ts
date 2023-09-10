@@ -156,12 +156,16 @@ const functions = {
     },
 ] as TestParams[]) .forEach((testData) => {
     test(`browser > ${testData.name}`, async (t) => {
+        // const { window } = new JSDOM(``, { runScripts: "outside-only" });
+        // const scriptEl = window.document.createElement('script')
+        // scriptEl.src = readFileSync('./dist/qr_browser.js').toString()
+        // window.document.body.appendChild(scriptEl);
         const image = await functions[testData.type](text, {
             type: testData.type,
             ...defaultParams,
             ...testData.params,
         });
-        await writeFile(`${generatedImageDir}/browser_${testData.filename}`, Buffer.from(image));
+        await writeFile(`${generatedImageDir}/browser_${testData.filename}`, new Uint8Array(image));
         await assertEqual(t, 'browser_' + testData.filename);
     });
 });

@@ -94,6 +94,12 @@ interface TestParams {
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
     {
+        name: "PNG with logo (arraybuffer)",
+        fn: getPNG,
+        filename: "qr_with_logo.png",
+        params: { logo: (await readFile(`${goldenDir}/logo.png`)).buffer },
+    },
+    {
         name: "SVG",
         fn: getSVG,
         filename: "qr.svg",

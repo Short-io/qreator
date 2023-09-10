@@ -66,7 +66,7 @@ export interface ImageOptions {
      * Buffer with PNG image to draw on top of QR code.
      * @default undefined
      */
-    logo?: Buffer;
+    logo?: ArrayBufferLike | Buffer;
 
     /**
      * Width of the overlay logo in percent.

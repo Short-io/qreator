@@ -1,5 +1,5 @@
 // {{{1 export functions
-export function calculateEC(msg: number[], ec_len: number): Buffer {
+export function calculateEC(msg: number[], ec_len: number): Uint8Array {
     // `msg` could be array or buffer
     // convert `msg` to array
     msg = [].slice.call(msg);
@@ -19,7 +19,7 @@ export function calculateEC(msg: number[], ec_len: number): Buffer {
         }
         msg.shift();
     }
-    return Buffer.from(msg);
+    return new Uint8Array(msg);
 }
 
 // {{{1 Galois Field Math

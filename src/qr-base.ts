@@ -50,7 +50,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
 
 // {{{1 Fill template
 export function fillTemplate(message: NumberData, template: Data): Data {
-    const blocks = Buffer.alloc(template.data_len);
+    const blocks = new Uint8Array(template.data_len);
     let messageUpdated: number[];
 
     if (template.version < 10) {
