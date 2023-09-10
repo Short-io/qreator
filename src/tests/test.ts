@@ -79,6 +79,15 @@ interface TestParams {
         },
     },
     {
+        name: "PNG with colors (rgba)",
+        fn: getPNG,
+        filename: "qr_with_colors_rgba.png",
+        params: {
+            color: 'rgba(255, 0, 0, 0.5)',
+            bgColor: 'rgba(255, 255, 255, 0.1)',
+        },
+    },
+    {
         name: "PNG with logo",
         fn: getPNG,
         filename: "qr_with_logo.png",
@@ -115,6 +124,15 @@ interface TestParams {
         },
     },
     {
+        name: "SVG with colors (rgba)",
+        fn: getSVG,
+        filename: "qr_with_colors_rgba.svg",
+        params: {
+            color: 'rgba(255, 0, 0, 0.5)',
+            bgColor: 'rgba(0, 255, 0, 0.2)',
+        },
+    },
+    {
         name: "SVG with colors",
         fn: getSVG,
         filename: "qr_with_colors.svg",
@@ -147,6 +165,12 @@ interface TestParams {
         fn: getPDF,
         filename: "qr_with_colors.pdf",
         params: { color: 0xff0000ff, bgColor: 0x00ff00ff },
+    },
+    {
+        name: "PDF with colors (hex)",
+        fn: getPDF,
+        filename: "qr_with_colors.pdf",
+        params: { color: '#ff0000', bgColor: '#00ff00' },
     },
     {
         name: "PDF with arraybuffer",

@@ -74,6 +74,15 @@ const functions = {
         params: { logo: readFileSync(`${goldenDir}/logo.png`) },
     },
     {
+        name: "PNG with colors (rgba)",
+        type: "png",
+        filename: "qr_with_colors_rgba.png",
+        params: {
+            color: 'rgba(255, 0, 0, 0.5)',
+            bgColor: 'rgba(255, 255, 255, 0.1)',
+        },
+    },
+    {
         name: "SVG",
         type: "svg",
         filename: "qr.svg",
@@ -113,17 +122,11 @@ const functions = {
         },
     },
     {
-        name: "SVG with logo as buffer",
-        type: "svg",
-        filename: "qr_with_logo.svg",
-        params: { logo: readFileSync(`${goldenDir}/logo.png`) },
-    },
-    {
-        name: "SVG with logo as arraybuffer",
+        name: "SVG with logo as blob",
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
-            logo: readFileSync(`${goldenDir}/logo.png`).buffer,
+            logo: readFileSync(`${goldenDir}/logo.png`),
         },
     },
     {

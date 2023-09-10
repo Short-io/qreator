@@ -9,7 +9,7 @@ export function getOptions(inOptions: ImageOptions) {
 
 export function colorToHex(color: number | string): string {
     if (typeof color === "string") {
-	return colorString.to.hex(colorString.get.rgb(color));
+        return colorString.to.hex(colorString.get.rgb(color));
     }
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
