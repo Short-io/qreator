@@ -94,6 +94,12 @@ interface TestParams {
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
     {
+        name: "PNG with logo (JPG)",
+        fn: getPNG,
+        filename: "qr_with_logo_jpg.png",
+        params: { logo: await readFile(`${goldenDir}/logo.jpg`) },
+    },
+    {
         name: "PNG with logo (arraybuffer)",
         fn: getPNG,
         filename: "qr_with_logo.png",
@@ -154,11 +160,19 @@ interface TestParams {
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
     {
-        name: "SVG with logo as arraybuffer",
+        name: "SVG with logo as arraybuffer (PNG)",
         fn: getSVG,
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
             logo: (await readFile(`${goldenDir}/logo.png`)).buffer,
+        },
+    },
+    {
+        name: "SVG with logo as arraybuffer (JPG)",
+        fn: getSVG,
+        filename: "qr_with_logo_as_arraybuffer_jpg.svg",
+        params: {
+            logo: (await readFile(`${goldenDir}/logo.jpg`)).buffer,
         },
     },
     {
@@ -184,6 +198,14 @@ interface TestParams {
         filename: "qr_logo_arraybuffer.pdf",
         params: {
             logo: (await readFile(`${goldenDir}/logo.png`)).buffer,
+        },
+    },
+    {
+        name: "PDF with arraybuffer (JPG)",
+        fn: getPDF,
+        filename: "qr_logo_arraybuffer_jpg.pdf",
+        params: {
+            logo: (await readFile(`${goldenDir}/logo.jpg`)).buffer,
         },
     },
     {

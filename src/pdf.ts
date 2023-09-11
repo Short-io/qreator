@@ -1,8 +1,10 @@
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument, PDFImage, rgb } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions } from "./utils.js";
 import colorString from "color-string";
+
+const textDec = new TextDecoder();
 
 export async function getPDF(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
@@ -59,7 +61,13 @@ async function PDF({
         page.moveRight(size);
     }
     if (logo) {
-        const logoData = await document.embedPng(logo);
+        let logoData: PDFImage;
+        const header = new Uint8Array(logo.slice(0, 4));
+        if (textDec.decode(header.slice(1, 4)) === "PNG" && header.at(0) === 0x89) {
+            logoData = await document.embedPng(logo);
+        } else {
+            logoData = await document.embedJpg(logo);
+        }
         page.drawImage(logoData, {
             x: page.getWidth() / 2 - (logoWidth / 100) * (page.getWidth() / 2),
             y:

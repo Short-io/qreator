@@ -66,10 +66,16 @@ const defaultParams = {
         },
     },
     {
-        name: "PNG with logo",
+        name: "PNG with logo (PNG)",
         type: "png",
         filename: "qr_with_logo.png",
         params: { logo: readFileSync(`${goldenDir}/logo.png`).buffer },
+    },
+    {
+        name: "PNG with logo (JPG)",
+        type: "png",
+        filename: "qr_with_logo_jpg.png",
+        params: { logo: readFileSync(`${goldenDir}/logo.jpg`).buffer },
     },
     {
         name: "PNG with colors (rgba)",
@@ -120,11 +126,19 @@ const defaultParams = {
         },
     },
     {
-        name: "SVG with logo as arraybuffer",
+        name: "SVG with logo as arraybuffer (PNG)",
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
             logo: readFileSync(`${goldenDir}/logo.png`).buffer,
+        },
+    },
+    {
+        name: "SVG with logo as arraybuffer (JPG)",
+        type: "svg",
+        filename: "qr_with_logo_as_arraybuffer_jpg.svg",
+        params: {
+            logo: readFileSync(`${goldenDir}/logo.jpg`).buffer,
         },
     },
     {
@@ -144,6 +158,14 @@ const defaultParams = {
         filename: "qr_logo_arraybuffer.pdf",
         params: {
             logo: new window.Uint8Array(readFileSync(`${goldenDir}/logo.png`).buffer),
+        },
+    },
+    {
+        name: "PDF with arraybuffer (JPG)",
+        type: "pdf",
+        filename: "qr_logo_arraybuffer.pdf",
+        params: {
+            logo: new window.Uint8Array(readFileSync(`${goldenDir}/logo.jpg`).buffer),
         },
     },
 ] as TestParams[]) .forEach((testData) => {
