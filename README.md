@@ -61,18 +61,19 @@ const pngBuffer = await getPNG("I love QR", {
 
 #### Additional Options
 
-|     Name     |                    Description                     |    Type     |    Possible Values    |                 Default                  |
-| :----------: | :------------------------------------------------: | :---------: | :-------------------: | :--------------------------------------: |
-|  `ec_level`  |               error correction level               |   string    |  `L`, `M`, `Q`, `H`   |                   `M`                    |
-|    `type`    |                     image type                     |   string    |  `png`, `svg`, `pdf`  |                  `png`                   |
-|    `size`    | png and svg only<br />size of one module in pixels |   number    |        `0` - n        |       `5` (png)<br />`0` (others)        |
-|   `margin`   |       white space around QR image in modules       |   number    |        `0` - n        |       `4` (png)<br />`1` (others)        |
-| `parse_url`  | EXPERIMENTAL<br />try to optimize QR-code for URLs |   boolean   |    `true`, `false`    |                 `false`                  |
-|    `logo`    |             buffer with png/jpeg image             | ArrayBuffer |           -           |               `undefined`                |
-| `logoWidth`  |             height of logo in percent              |   number    |      `0` - `100`      |                   `20`                   |
-| `logoHeight` |              width of logo in percent              |   number    |      `0` - `100`      |                   `20`                   |
-|   `color`    |         module color in rgba or hex format         |   number    | `#000000` - `#000000` | `#000000`<br />(black with 100% opacity) |
-|  `bgColor`   |       background color in rgba or hex format       |   number    | `#000000` - `#FFFFFF` | `#FFFFFF`<br />(white with 100% opacity) |
+|      Name      |                    Description                     |    Type     |    Possible Values    |                 Default                  |
+| :------------: | :------------------------------------------------: | :---------: | :-------------------: | :--------------------------------------: |
+|   `ec_level`   |               error correction level               |   string    |  `L`, `M`, `Q`, `H`   |                   `M`                    |
+|     `type`     |                     image type                     |   string    |  `png`, `svg`, `pdf`  |                  `png`                   |
+|     `size`     | png and svg only<br />size of one module in pixels |   number    |        `0` - n        |       `5` (png)<br />`0` (others)        |
+|    `margin`    |       white space around QR image in modules       |   number    |        `0` - n        |       `4` (png)<br />`1` (others)        |
+|  `parse_url`   | EXPERIMENTAL<br />try to optimize QR-code for URLs |   boolean   |    `true`, `false`    |                 `false`                  |
+|     `logo`     |             buffer with png/jpeg image             | ArrayBuffer |           -           |               `undefined`                |
+|  `logoWidth`   |             height of logo in percent              |   number    |      `0` - `100`      |                   `20`                   |
+|  `logoHeight`  |              width of logo in percent              |   number    |      `0` - `100`      |                   `20`                   |
+|    `color`     |         module color in rgba or hex format         |   number    | `#000000` - `#000000` | `#000000`<br />(black with 100% opacity) |
+|   `bgColor`    |       background color in rgba or hex format       |   number    | `#000000` - `#FFFFFF` | `#FFFFFF`<br />(white with 100% opacity) |
+| `borderRadius` |             border-radius (in pixels)              |   number    |    0 - `size / 2`     |                   `0`                    |
 
 ## Benchmarks
 
