@@ -1,5 +1,5 @@
 import { QR } from "./qr-base.js";
-import { getOptions, colorToHex } from "./utils.js";
+import { getOptions, colorToHex, getSVGPath } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { Base64 } from "js-base64";
 
@@ -36,8 +36,8 @@ export async function generateImage({
     logoHeight,
     color,
     bgColor,
+    borderRadius,
 }: ImageOptions & { matrix: Matrix }) {
-    const N = matrix.length;
     const marginPx = margin * size;
     const imageSize = matrix.length * size + marginPx * 2;
 
@@ -47,20 +47,15 @@ export async function generateImage({
     const context = canvas.getContext('2d');
     context.fillStyle = colorToHex(bgColor);
     context.fillRect(0, 0, imageSize, imageSize);
-    // TODO use Path2D when node-canvas supports it, currently it makes testing impossible
-    for (let y = 0; y < N; y += 1) {
-        for (let x = 0; x < matrix[y].length; x += 1) {
-            if (matrix[y][x]) {
-                context.fillStyle = colorToHex(color);
-                context.fillRect(
-                    x * size + marginPx,
-                    y * size + marginPx,
-                    size,
-                    size
-                );
-            }
-        }
+    const path = new Path2D(getSVGPath(matrix, size, marginPx, borderRadius));
+    context.fillStyle = colorToHex(color);
+    context.strokeStyle = colorToHex(color);
+    if ('draw' in path) {
+        // @ts-expect-error used in tests
+        path.draw(context);
     }
+    context.fill(path);
+    context.stroke(path);
     if (logo) {
         const logoImage = await new Promise<HTMLImageElement>(async (resolve, reject) => {
             try {

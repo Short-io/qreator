@@ -27,13 +27,21 @@ export function getSVGPath(matrix: Matrix, size: number, margin: number = 0, bor
                 const rectangle = [];
                 rectangle.push(`M ${leftX} ${topY + borderRadius}`)
                 rectangle.push(`L ${leftX} ${bottomY - borderRadius}`)
-                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX + borderRadius} ${bottomY} `)
+                if (borderRadius > 0) {
+                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX + borderRadius} ${bottomY} `)
+                }
                 rectangle.push(`L ${rightX - borderRadius} ${bottomY}`)
-                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX} ${bottomY - borderRadius}`)
+                if (borderRadius > 0) {
+                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX} ${bottomY - borderRadius}`)
+                }
                 rectangle.push(`L ${rightX} ${topY + borderRadius}`)
-                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX - borderRadius} ${topY}`)
+                if (borderRadius > 0) {
+                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX - borderRadius} ${topY}`)
+                }
                 rectangle.push(`L ${leftX + borderRadius} ${topY}`)
-                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX} ${topY + borderRadius}`)
+                if (borderRadius > 0) {
+                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX} ${topY + borderRadius}`)
+                }
                 rectangle.push(`z`)
                 rectangles.push(rectangle.join(" "));
             }
