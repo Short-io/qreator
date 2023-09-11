@@ -78,16 +78,15 @@ const pngBuffer = await getPNG("I love QR", {
 ## Benchmarks
 
 ```
-getPNG x 157 ops/sec ±0.33% (90 runs sampled)
-getPDF x 92.87 ops/sec ±14.65% (80 runs sampled)
-getSVG x 1,855 ops/sec ±0.22% (91 runs sampled)
-getPNG with logo x 59.83 ops/sec ±0.39% (72 runs sampled)
-getPDF with logo x 35.82 ops/sec ±6.65% (88 runs sampled)
-getSVG with logo x 1,823 ops/sec ±0.19% (90 runs sampled)
+getPNG x 229 ops/sec ±0.45% (84 runs sampled)
+getPDF x 186 ops/sec ±24.91% (86 runs sampled)
+getSVG x 2,482 ops/sec ±0.18% (90 runs sampled)
+getPNG with logo x 69.96 ops/sec ±0.72% (68 runs sampled)
+getPDF with logo x 44.83 ops/sec ±9.52% (77 runs sampled)
+getSVG with logo x 2,494 ops/sec ±0.19% (88 runs sampled)
 ```
 
 ## TODO
 
 -   Use lighter versions of PDF library
--   Round corners for PNG in browser
 -   Background
