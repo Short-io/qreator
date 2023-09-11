@@ -1,6 +1,3 @@
-import { getPNG } from "../png_browser.js";
-import { getPDF } from "../pdf.js";
-import { getSVG } from "../svg.js";
 import test from "ava";
 import { readFileSync } from "fs";
 import { writeFile } from "node:fs/promises";
@@ -9,17 +6,24 @@ import { QRImageOptions } from '../qr.js';
 import { JSDOM } from 'jsdom';
 import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
 
+let functions: Record<ImageType, (text: string, options: QRImageOptions) => Promise<ArrayBuffer>>;
+const { window } = new JSDOM(``, { runScripts: "dangerously", resources: "usable" });
 test.before(async () => {
-    const dom = new JSDOM('<div id="my-element-id" />', { resources: "usable"});  // insert any html needed for the unit test suite here
-    global.document = dom.window.document;
-    global.window = dom.window as any;
-    global.Image = dom.window.Image;
-    global.Event = dom.window.Event;
-    global.FileReader = dom.window.FileReader;
-    global.Blob = dom.window.Blob;
-    global.atob = dom.window.atob;
-    global.navigator = dom.window.navigator;
+    window.globalThis.TextEncoder = TextEncoder;
+    window.globalThis.TextDecoder = TextDecoder;
+    for (const scriptType of ['png', 'svg', 'pdf']) {
+        const scriptEl = window.document.createElement('script')
+        scriptEl.textContent = readFileSync(`./lib/browser/${scriptType}.umd.js`).toString()
+        scriptEl.type = 'text/javascript'
+        window.document.body.appendChild(scriptEl);
+    }
+    functions = {
+        "png": window.globalThis.pngQrCode.getPNG,
+        "svg": window.globalThis.svgQrCode.getSVG,
+        "pdf": window.globalThis.pdfQrCode.getPDF,
+    };
 })
+
 
 const text = "I \u2764\uFE0F QR code!";
 // const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
@@ -34,12 +38,6 @@ const defaultParams = {
     ec_level: "Q" as const,
     margin: 1,
     parse_url: true,
-};
-
-const functions = {
-    "png": getPNG,
-    "pdf": getPDF,
-    "svg": getSVG,
 };
 
 ([
@@ -71,7 +69,7 @@ const functions = {
         name: "PNG with logo",
         type: "png",
         filename: "qr_with_logo.png",
-        params: { logo: readFileSync(`${goldenDir}/logo.png`) },
+        params: { logo: readFileSync(`${goldenDir}/logo.png`).buffer },
     },
     {
         name: "PNG with colors (rgba)",
@@ -106,7 +104,7 @@ const functions = {
     {
         name: "SVG with colors (hex)",
         type: "svg",
-        filename: "qr_with_colors.svg",
+        filename: "qr_with_colors_hex.svg",
         params: {
             color: '#ff0000',
             bgColor: '#00ff00',
@@ -122,11 +120,11 @@ const functions = {
         },
     },
     {
-        name: "SVG with logo as blob",
+        name: "SVG with logo as arraybuffer",
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
-            logo: readFileSync(`${goldenDir}/logo.png`),
+            logo: readFileSync(`${goldenDir}/logo.png`).buffer,
         },
     },
     {
@@ -145,21 +143,11 @@ const functions = {
         type: "pdf",
         filename: "qr_logo_arraybuffer.pdf",
         params: {
-            logo: readFileSync(`${goldenDir}/logo.png`).buffer,
+            logo: new window.Uint8Array(readFileSync(`${goldenDir}/logo.png`).buffer),
         },
-    },
-    {
-        name: "PDF with logo",
-        type: "pdf",
-        filename: "qr_with_logo.pdf",
-        params: { logo: readFileSync(`${goldenDir}/logo.png`) },
     },
 ] as TestParams[]) .forEach((testData) => {
     test(`browser > ${testData.name}`, async (t) => {
-        // const { window } = new JSDOM(``, { runScripts: "outside-only" });
-        // const scriptEl = window.document.createElement('script')
-        // scriptEl.src = readFileSync('./dist/qr_browser.js').toString()
-        // window.document.body.appendChild(scriptEl);
         const image = await functions[testData.type](text, {
             type: testData.type,
             ...defaultParams,

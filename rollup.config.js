@@ -6,24 +6,27 @@ import typescript from '@rollup/plugin-typescript';
 export default [{
   input: 'src/png_browser.ts',
   output: {
-    file: "lib/browser/png.js",
-    format: 'cjs',
+    file: "lib/browser/png.umd.js",
+    format: 'umd',
+    name: 'pngQrCode',
     sourcemap: true
   },
   plugins: [typescript(), nodeResolve(), commonjs()]
 }, {
     input: 'src/svg.ts',
     output: {
-      file: "lib/browser/svg.js",
-      format: 'cjs',
+      file: "lib/browser/svg.umd.js",
+      format: 'umd',
+      name: 'svgQrCode',
       sourcemap: true
     },
     plugins: [typescript(), nodeResolve(), commonjs()]    
 }, {
     input: 'src/pdf.ts',
     output: {
-      file: "lib/browser/pdf.js",
-      format: 'cjs',
+      file: "lib/browser/pdf.umd.js",
+      format: 'umd',
+      name: 'pdfQrCode',
       sourcemap: true
     },
     plugins: [typescript(), nodeResolve(), commonjs(), json()]

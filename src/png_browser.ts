@@ -1,6 +1,7 @@
 import { QR } from "./qr-base.js";
 import { getOptions, colorToHex } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
+import { Base64 } from "js-base64";
 
 export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
@@ -9,30 +10,19 @@ export async function getPNG(text: string, inOptions: ImageOptions) {
 }
 
 function dataURItoArrayBuffer(dataURI: string) {
-  // convert base64 to raw binary data held in a string
-  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  var byteString = atob(dataURI.split(',')[1]);
-
-  // write the bytes of the string to an ArrayBuffer
-  var ab = new ArrayBuffer(byteString.length);
-
-  // create a view into the buffer
-  var ia = new Uint8Array(ab);
-
-  // set the bytes of the buffer to the correct values
-  for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-  }
-
-  // write the ArrayBuffer to a blob, and you're done
-  return ab
+  return Base64.toUint8Array(dataURI.split(',')[1]);
 }
 
 function blobToDataURL(blob: Blob) {
-    return new Promise<string>((resolve) => {
-        var a = new FileReader();
-        a.onload = function(e) {resolve(e.target.result as string);}
-        a.readAsDataURL(blob);
+    return new Promise<string>((resolve, reject) => {
+        try {
+            var a = new FileReader();
+            a.onload = function(e) {resolve(e.target.result as string);}
+            a.onerror = reject;
+            a.readAsDataURL(blob);
+        } catch (e) {
+            reject(e);
+        }
     });
 }
 
@@ -72,10 +62,15 @@ export async function generateImage({
         }
     }
     if (logo) {
-        const logoImage = await new Promise<HTMLImageElement>(async (resolve) => {
-            const image = new Image();
-            image.onload = () => resolve(image);
-            image.src = await blobToDataURL(new window.Blob([logo]));
+        const logoImage = await new Promise<HTMLImageElement>(async (resolve, reject) => {
+            try {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = reject;
+                image.src = await blobToDataURL(new window.Blob([logo]));
+            } catch (e) {
+                reject(e);
+            }
         });
         context.drawImage(
             logoImage,

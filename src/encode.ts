@@ -1,19 +1,20 @@
 import { NumberData } from "./typing/types";
 const enc = new TextEncoder();
+const dec = new TextDecoder();
 // {{{1 Choose encode mode and generates struct with data for different version
-export function encode(data: string | number | ArrayBuffer, parse_url: boolean) {
+export function encode(inData: string | number | ArrayBuffer, parse_url: boolean) {
     let str: string;
-
-    if (typeof data === "string" || typeof data === "number") {
-        str = `${data}`;
+    let data: ArrayBufferLike;
+    if (typeof inData === "string" || typeof inData === "number") {
+        str = `${inData}`;
         data = enc.encode(str);
-    } else if (Buffer.isBuffer(data)) {
-        str = data.toString();
-    } else if (Array.isArray(data)) {
-        data = Buffer.from(data);
-        str = data.toString();
+    } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(data)) {
+        str = inData.toString();
+    } else if (Array.isArray(inData)) {
+        data = new Uint8Array(inData);
+        str = dec.decode(inData);
     } else {
-        throw new Error("Bad data");
+        throw new Error("Bad data: " + typeof inData);
     }
 
     if (/^[0-9]+$/.test(str)) {

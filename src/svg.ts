@@ -1,6 +1,7 @@
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions, colorToHex } from "./utils.js";
+import { Base64 } from 'js-base64';
 
 interface FillSVGOptions
     extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin"> {
@@ -13,6 +14,7 @@ export async function getSVG(text: string, inOptions: ImageOptions = {}) {
     return createSVG({ matrix, ...options });
 }
 
+const te = new TextEncoder();
 
 export async function createSVG({
     matrix,
@@ -29,7 +31,7 @@ export async function createSVG({
     matrix: Matrix;
     imageWidth?: number;
     imageHeight?: number;
-}): Promise<Buffer> {
+}): Promise<Uint8Array> {
     const actualSize = size || 9;
     const X = matrix.length + 2 * margin;
     const XY = X * (actualSize || 1);
@@ -47,7 +49,7 @@ export async function createSVG({
     const svgEndTag = "</svg>";
     const logoImage = logo ? getLogoImage(logo, XY, logoWidth, logoHeight) : "";
 
-    return Buffer.from(
+    return te.encode(
         xmlTag + svgOpeningTag + svgBody + logoImage + svgEndTag
     );
 }
@@ -81,7 +83,7 @@ function getLogoImage(
     const imageBase64 = `data:image/png;base64,${
         typeof Buffer !== "undefined" && Buffer.isBuffer(logo)
             ? logo.toString("base64")
-            : Buffer.from(logo).toString("base64")
+            : Base64.fromUint8Array(new Uint8Array(logo))
     }`;
 
     return (
