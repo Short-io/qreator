@@ -1,7 +1,7 @@
 import { PDFDocument, PDFImage, rgb } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions } from "./utils.js";
+import { getOptions, getSVGPath } from "./utils.js";
 import colorString from "color-string";
 
 const textDec = new TextDecoder();
@@ -24,6 +24,13 @@ function colorToRGB(color: string | number): [number, number, number] {
     ];
 }
 
+function getOpacity(color: string | number): number {
+    if (typeof color === "string") {
+        return colorString.get.rgb(color)[3];
+    }
+    return ((color % 256) / 255);
+}
+
 async function PDF({
     matrix,
     margin,
@@ -32,6 +39,7 @@ async function PDF({
     logoHeight,
     color,
     bgColor,
+    borderRadius,
 }: ImageOptions & {
     matrix: Matrix;
 }) {
@@ -39,27 +47,18 @@ async function PDF({
     const document = await PDFDocument.create();
     const pageSize = (matrix.length + 2 * margin) * size;
     const page = document.addPage([pageSize, pageSize]);
-    page.drawRectangle({
-        width: pageSize,
-        height: pageSize,
+    page.drawSquare({
+        size: pageSize,
         color: rgb(...colorToRGB(bgColor)),
     });
-    page.moveTo(margin * size, page.getHeight() - margin * size - size);
-    for (const column of matrix) {
-        for (const y of column) {
-            if (y) {
-                page.drawRectangle({
-                    width: size,
-                    height: size,
-                    color: rgb(...colorToRGB(color)),
-                    borderColor: rgb(...colorToRGB(color)),
-                });
-            }
-            page.moveDown(size);
-        }
-        page.moveUp(size * column.length);
-        page.moveRight(size);
-    }
+    page.moveTo(0, page.getHeight());
+    const path = getSVGPath(matrix, size, margin * size, borderRadius);
+    page.drawSvgPath(path, {
+        color: rgb(...colorToRGB(color)),
+        opacity: getOpacity(color),
+        borderColor: rgb(...colorToRGB(color)),
+        borderOpacity: getOpacity(color),
+    });
     if (logo) {
         let logoData: PDFImage;
         const header = new Uint8Array(logo.slice(0, 4));

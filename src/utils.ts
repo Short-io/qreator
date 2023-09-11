@@ -1,5 +1,5 @@
 import colorString from "color-string";
-import { ImageOptions, ImageType } from "./typing/types";
+import { ImageOptions, ImageType, Matrix } from "./typing/types";
 
 export function getOptions(inOptions: ImageOptions) {
     const type: ImageType = inOptions?.type ?? "png";
@@ -13,6 +13,36 @@ export function colorToHex(color: number | string): string {
     }
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
+
+export function getSVGPath(matrix: Matrix, size: number, margin: number = 0, borderRadius: number = 0) {
+    let rectangles = [];
+    for (let x = 0; x < matrix.length; x++) {
+        const column = matrix[x];
+        for (let y = 0; y < column.length; y++) {
+            if (column[y]) {
+                const leftX = x * size + margin;
+                const rightX = (x + 1) * size + margin;
+                const topY = y * size + margin;
+                const bottomY = (y + 1) * size + margin;
+                const rectangle = [];
+                rectangle.push(`M ${leftX} ${topY + borderRadius}`)
+                rectangle.push(`L ${leftX} ${bottomY - borderRadius}`)
+                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX + borderRadius} ${bottomY} `)
+                rectangle.push(`L ${rightX - borderRadius} ${bottomY}`)
+                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX} ${bottomY - borderRadius}`)
+                rectangle.push(`L ${rightX} ${topY + borderRadius}`)
+                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX - borderRadius} ${topY}`)
+                rectangle.push(`L ${leftX + borderRadius} ${topY}`)
+                rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX} ${topY + borderRadius}`)
+                rectangle.push(`z`)
+                rectangles.push(rectangle.join(" "));
+            }
+        }
+    }
+    return rectangles.join(" ");
+}
+
+
 
 const commonOptions: Pick<
     ImageOptions,

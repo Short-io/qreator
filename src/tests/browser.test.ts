@@ -48,6 +48,14 @@ const defaultParams = {
 
     },
     {
+        name: "PNG with border radius",
+        type: "png",
+        filename: "qr_with_border_radius.png",
+        params: {
+            borderRadius: 2,
+        }
+    },
+    {
         name: "PNG with colors",
         type: "png",
         filename: "qr_with_colors.png",
@@ -90,6 +98,14 @@ const defaultParams = {
         name: "SVG",
         type: "svg",
         filename: "qr.svg",
+    },
+    {
+        name: "SVG with border radius",
+        type: "svg",
+        filename: "qr_with_border_radius.svg",
+        params: {
+            borderRadius: 2,
+        }
     },
     {
         name: "SVG with EC level",
@@ -145,6 +161,14 @@ const defaultParams = {
         name: "PDF",
         type: "pdf",
         filename: "qr.pdf",
+    },
+    {
+        name: "PDF with border radius",
+        type: "pdf",
+        filename: "qr_with_border_radius.pdf",
+        params: {
+            borderRadius: 2,
+        }
     },
     {
         name: "PDF with colors",

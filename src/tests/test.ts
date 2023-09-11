@@ -61,6 +61,14 @@ interface TestParams {
         }
     },
     {
+        name: "PNG with border radius",
+        fn: getPNG,
+        filename: "qr_with_border_radius.png",
+        params: {
+            borderRadius: 1,
+        },
+    },
+    {
         name: "PNG with colors",
         fn: getPNG,
         filename: "qr_with_colors.png",
@@ -109,6 +117,14 @@ interface TestParams {
         name: "SVG",
         fn: getSVG,
         filename: "qr.svg",
+    },
+    {
+        name: "SVG with border radius",
+        fn: getSVG,
+        filename: "qr_with_border_radius.svg",
+        params: {
+            borderRadius: 4,
+        },
     },
     {
         name: "SVG with EC level",
@@ -179,6 +195,14 @@ interface TestParams {
         name: "PDF",
         fn: getPDF,
         filename: "qr.pdf",
+    },
+    {
+        name: "PDF with border radius",
+        fn: getPDF,
+        filename: "qr_with_border_radius.pdf",
+        params: {
+            borderRadius: 4,
+        }
     },
     {
         name: "PDF with colors",

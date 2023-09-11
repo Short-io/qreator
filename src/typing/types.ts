@@ -91,4 +91,9 @@ export interface ImageOptions {
      * @default 0xFFFFFFFF
      */
     bgColor?: number | string;
+
+    /**
+     * border radius of the points
+     */
+    borderRadius?: number;
 }

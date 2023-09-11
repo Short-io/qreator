@@ -1,10 +1,10 @@
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions, colorToHex } from "./utils.js";
+import { getOptions, colorToHex, getSVGPath } from "./utils.js";
 import { Base64 } from 'js-base64';
 
 interface FillSVGOptions
-    extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin"> {
+    extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius"> {
     blockSize?: number;
 }
 
@@ -27,6 +27,7 @@ export async function createSVG({
     bgColor,
     imageWidth,
     imageHeight,
+    borderRadius,
 }: ImageOptions & {
     matrix: Matrix;
     imageWidth?: number;
@@ -45,6 +46,7 @@ export async function createSVG({
         size: XY,
         margin,
         blockSize: actualSize,
+        borderRadius,
     });
     const svgEndTag = "</svg>";
     const logoImage = logo ? getLogoImage(logo, XY, logoWidth, logoHeight) : "";
@@ -55,22 +57,11 @@ export async function createSVG({
 }
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
+    const path = getSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
     let svgBody =
-        `<rect width="${options.size}" height="${options.size}" ` +
-        `fill="${colorToHex(options.bgColor)}"></rect>`;
-
-    for (let y = 0; y < matrix.length; y++) {
-        for (let x = 0; x < matrix[y].length; x++) {
-            if (matrix[y][x]) {
-                svgBody +=
-                    `<rect shape-rendering="geometricPrecision" width="${options.blockSize}" height="${options.blockSize}" ` +
-                    `fill="${colorToHex(options.color)}" ` +
-                    `x="${(x + options.margin) * options.blockSize}" ` +
-                    `y="${(y + options.margin) * options.blockSize}">` +
-                    `</rect>`;
-            }
-        }
-    }
+    `<rect width="${options.size}" height="${options.size}" ` +
+    `fill="${colorToHex(options.bgColor)}"></rect>`;
+    svgBody += '<path shape-rendering="geometricPrecision" d="' + path + '" fill="' + colorToHex(options.color) + '"/>';
     return svgBody;
 }
 

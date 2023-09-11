@@ -47,7 +47,7 @@ export async function generateImage({
     const context = canvas.getContext('2d');
     context.fillStyle = colorToHex(bgColor);
     context.fillRect(0, 0, imageSize, imageSize);
-
+    // TODO use Path2D when node-canvas supports it, currently it makes testing impossible
     for (let y = 0; y < N; y += 1) {
         for (let x = 0; x < matrix[y].length; x += 1) {
             if (matrix[y][x]) {

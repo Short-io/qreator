@@ -89,5 +89,4 @@ getSVG with logo x 2,817 ops/sec ±0.17% (89 runs sampled)
 
 -   Use lighter versions of PDF library
 -   Round corners
--   Transparency
 -   Background

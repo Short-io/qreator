@@ -19,12 +19,14 @@ export async function generateImage({
     logoHeight,
     color,
     bgColor,
+    borderRadius,
 }: ImageOptions & { matrix: Matrix }) {
     const marginPx = margin * size;
     const imageSize = matrix.length * size + marginPx * 2;
     const svg = await createSVG({
         matrix, size, margin, color, bgColor,
         imageWidth: imageSize, imageHeight: imageSize,
+        borderRadius,
     });
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];
