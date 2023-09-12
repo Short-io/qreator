@@ -49,13 +49,11 @@ export async function generateImage({
     context.fillRect(0, 0, imageSize, imageSize);
     const path = new Path2D(getSVGPath(matrix, size, marginPx, borderRadius));
     context.fillStyle = colorToHex(color);
-    context.strokeStyle = colorToHex(color);
     if ('draw' in path) {
         // @ts-expect-error used in tests
         path.draw(context);
     }
     context.fill(path);
-    context.stroke(path);
     if (logo) {
         const logoImage = await new Promise<HTMLImageElement>(async (resolve, reject) => {
             try {
