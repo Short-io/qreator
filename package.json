@@ -51,6 +51,7 @@
     ],
     "files": [
         "lib",
+	"src",
         "LICENSE"
     ],
     "devDependencies": {
@@ -90,6 +91,6 @@
         "color-string": "^1.9.1",
         "js-base64": "^3.7.5",
         "pdf-lib": "^1.17.1",
-        "sharp": "^0.32.5"
+        "sharp": "^0.32.6"
     }
 }
