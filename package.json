@@ -76,7 +76,7 @@
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.28.1",
         "jsdom": "^22.1.0",
-        "looks-same": "^8.2.1",
+        "looks-same": "^9.0.0",
         "microtime": "^3.1.1",
         "path2d-polyfill": "^2.0.1",
         "release-it": "^16.1.5",
