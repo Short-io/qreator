@@ -84,10 +84,10 @@
         "size-limit": "^11.0.2",
         "svg-path-parser": "^1.1.0",
         "typescript": "^5.3.3",
-        "xml-formatter": "^3.6.2"
+        "xml-formatter": "^3.6.2",
+        "canvas": "npm:@napi-rs/canvas@^0.1.50"
     },
     "dependencies": {
-        "canvas": "npm:@napi-rs/canvas@^0.1.50",
         "color-string": "^1.9.1",
         "js-base64": "^3.7.6",
         "pdf-lib": "^1.17.1",

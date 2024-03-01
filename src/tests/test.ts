@@ -239,7 +239,7 @@ interface TestParams {
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
 ] as TestParams[]).forEach((testData) => {
-    test(testData.name, async (t) => {
+    test.serial(testData.name, async (t) => {
         const image = await testData.fn(text, {
             ...defaultParams,
             ...testData.params,
