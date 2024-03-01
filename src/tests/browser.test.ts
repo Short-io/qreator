@@ -5,39 +5,8 @@ import { ImageType } from '../typing/types.js';
 import { QRImageOptions } from '../qr.js';
 import { JSDOM } from 'jsdom';
 import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
-import svgParser from 'svg-path-parser';
-  
+import { Path2D } from "canvas";
 
-class Path2D {
-    path: string;
-    constructor(d: string | Path2D) {
-      this.path = d instanceof Path2D ? d.path : d
-    }
-    async draw(context: CanvasRenderingContext2D, type = 'fill') {
-      const commands = svgParser.parseSVG(this.path);
-      let lastX = 0;
-      let lastY = 0;
-      for (const command of commands) {
-        if (command.code === 'M') {
-            context.moveTo(command.x, command.y);
-            lastX = command.x;
-            lastY = command.y;
-        } else if (command.code === "L") {
-            context.lineTo(command.x, command.y);
-            lastX = command.x;
-            lastY = command.y;
-        } else if (command.code === "A") {
-            context.arcTo(lastX, lastY, command.x, command.y, Math.abs(lastX-command.x));
-            lastX = command.x;
-            lastY = command.y;
-        } else if (command.command === "closepath") {
-            context.closePath();
-        } else {
-            throw new Error(`Unknown command ${command.code}`);
-        }
-      }
-    }
-}
 let functions: Record<ImageType, (text: string, options: QRImageOptions) => Promise<ArrayBuffer>>;
 const { window } = new JSDOM(``, { runScripts: "dangerously", resources: "usable" });
 
