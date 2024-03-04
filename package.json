@@ -94,9 +94,10 @@
         "sharp": "^0.33.2"
     },
     "overrides": {
-	"jsdom": {
-	    "canvas": "^0.1.50"
-	}
+        "jsdom": {
+            "canvas": "^0.1.50"
+        },
+        "sharp": "$sharp"
     },
     "engines": {
         "node": ">=18"

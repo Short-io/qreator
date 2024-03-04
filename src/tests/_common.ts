@@ -21,7 +21,8 @@ export const assertEqual = async (t: ExecutionContext<unknown>, filename: string
             `${goldenDir}/${filename}`,
             { strict: true }
         );
-        t.assert(lsRes.equal);
+        t.assert(lsRes.equal, `Images are different: ${filename}`);
+
     } else if (!filename.endsWith("pdf")) {
         const f1 = (await readFile(`${generatedImageDir}/${filename}`)).toString();
         const f2 = (await readFile(`${goldenDir}/${filename}`)).toString();
@@ -29,7 +30,7 @@ export const assertEqual = async (t: ExecutionContext<unknown>, filename: string
             for (const el of diff.diffLines(XMLFormatter(f1), XMLFormatter(f2), { newlineIsToken: true })) {
                 console.log(el.added ? chalk.bold.green(el.value) : chalk.bold.red(el.value));
             };
-            t.fail();
+            t.fail(`Files are different: ${generatedImageDir}/${filename} and ${goldenDir}/${filename}`);
         } else {
             t.pass();
         }

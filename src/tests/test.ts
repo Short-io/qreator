@@ -145,7 +145,7 @@ interface TestParams {
     {
         name: "SVG with colors (hex)",
         fn: getSVG,
-        filename: "qr_with_colors.svg",
+        filename: "qr_with_colors_hex.svg",
         params: {
             color: '#ff0000',
             bgColor: '#00ff00',
