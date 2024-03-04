@@ -85,7 +85,7 @@
         "svg-path-parser": "^1.1.0",
         "typescript": "^5.3.3",
         "xml-formatter": "^3.6.2",
-        "canvas": "npm:@napi-rs/canvas@^0.1.50"
+        "canvas": "npm:@napi-rs/canvas@^0.1.51"
     },
     "dependencies": {
         "color-string": "^1.9.1",
