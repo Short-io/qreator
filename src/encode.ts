@@ -8,8 +8,6 @@ export function encode(inData: string | number | ArrayBuffer, parse_url: boolean
     if (typeof inData === "string" || typeof inData === "number") {
         str = `${inData}`;
         data = enc.encode(str);
-    } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(data)) {
-        str = inData.toString();
     } else if (Array.isArray(inData)) {
         data = new Uint8Array(inData);
         str = dec.decode(inData);
