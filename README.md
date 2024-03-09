@@ -1,10 +1,10 @@
-# Qreate
+# qreator
 
-[![npm version](https://badge.fury.io/js/qreate.svg)](https://badge.fury.io/js/qreate)
+[![npm version](https://badge.fury.io/js/qreator.svg)](https://badge.fury.io/js/qreator)
 
 QR Code generator for browser and node.js with tree shaking and logo support
 
-![image](https://github.com/Short-io/qreate/assets/75169/02b84738-56f2-44d8-8d11-f40e263302ed)
+![image](https://github.com/Short-io/qreator/assets/75169/02b84738-56f2-44d8-8d11-f40e263302ed)
 
 ## Overview
 
@@ -16,14 +16,14 @@ QR Code generator for browser and node.js with tree shaking and logo support
 -   tree shaking support
 -   browser / node.js
 
-[Releases](https://github.com/Short-io/qreate/releases)
+[Releases](https://github.com/Short-io/qreator/releases)
 
 ## Installing
 
 ```shell
-npm install qreate
+npm install qreator
 # or
-yarn add qreate
+yarn add qreator
 ```
 
 ## Usage
@@ -31,9 +31,9 @@ yarn add qreate
 Example:
 
 ```javascript
-import { getSVG } from "qreate/lib/svg";
-import { getPNG } from "qreate/lib/png"; // imports canvas implementation in browser and sharp module in node.js
-import { getPDF } from "qreate/lib/pdf"; // this import is large, consider async import
+import { getSVG } from "qreator/lib/svg";
+import { getPNG } from "qreator/lib/png"; // imports canvas implementation in browser and sharp module in node.js
+import { getPDF } from "qreator/lib/pdf"; // this import is large, consider async import
 const svgString = await getSVG("I love QR", {
     logo: fs.openFileSync("my-logo.svg"),
     color: "#000000",
