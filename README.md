@@ -1,10 +1,10 @@
 # Qreate
 
-[![npm version](https://badge.fury.io/js/%40shortcm%2Fqr-image.svg)](https://badge.fury.io/js/%40shortcm%2Fqr-image)
+[![npm version](https://badge.fury.io/js/qreate.svg)](https://badge.fury.io/js/qreate)
 
-QR Code generator for browser and node.js with tree shaking and logo support (based on [alexeyten/qr-image](https://github.com/alexeyten/qr-image)).
+QR Code generator for browser and node.js with tree shaking and logo support
 
-![image](https://github.com/Short-io/qr-image/assets/75169/02b84738-56f2-44d8-8d11-f40e263302ed)
+![image](https://github.com/Short-io/qreate/assets/75169/02b84738-56f2-44d8-8d11-f40e263302ed)
 
 ## Overview
 
@@ -16,14 +16,14 @@ QR Code generator for browser and node.js with tree shaking and logo support (ba
 -   tree shaking support
 -   browser / node.js
 
-[Releases](https://github.com/Short-io/qr-image/releases)
+[Releases](https://github.com/Short-io/qreate/releases)
 
 ## Installing
 
 ```shell
-npm install @shortcm/qr-image
+npm install qreate
 # or
-yarn add @shortcm/qr-image
+yarn add qreate
 ```
 
 ## Usage
@@ -31,9 +31,9 @@ yarn add @shortcm/qr-image
 Example:
 
 ```javascript
-import { getSVG } from "@shortcm/qr-image/lib/svg";
-import { getPNG } from "@shortcm/qr-image/lib/png"; // imports canvas implementation in browser and sharp module in node.js
-import { getPDF } from "@shortcm/qr-image/lib/pdf"; // this import is large, consider async import
+import { getSVG } from "qreate/lib/svg";
+import { getPNG } from "qreate/lib/png"; // imports canvas implementation in browser and sharp module in node.js
+import { getPDF } from "qreate/lib/pdf"; // this import is large, consider async import
 const svgString = await getSVG("I love QR", {
     logo: fs.openFileSync("my-logo.svg"),
     color: "#000000",
