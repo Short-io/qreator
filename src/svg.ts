@@ -71,11 +71,7 @@ function getLogoImage(
     logoWidth: ImageOptions["logoWidth"],
     logoHeight: ImageOptions["logoHeight"]
 ): string {
-    const imageBase64 = `data:image/png;base64,${
-        typeof Buffer !== "undefined" && Buffer.isBuffer(logo)
-            ? logo.toString("base64")
-            : Base64.fromUint8Array(new Uint8Array(logo))
-    }`;
+    const imageBase64 = `data:image/png;base64,${Base64.fromUint8Array(new Uint8Array(logo))}`;
 
     return (
         `<image ` +
