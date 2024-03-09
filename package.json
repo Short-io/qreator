@@ -1,6 +1,6 @@
 {
     "name": "qreate",
-    "version": "9.0.5",
+    "version": "9.0.6",
     "description": "QR Code generator for browser and node.js with tree shaking and logo support",
     "homepage": "https://github.com/Short-io/qr-image",
     "keywords": [
@@ -19,9 +19,9 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Short-io/qr-image.git"
+        "url": "https://github.com/Short-io/qreate.git"
     },
-    "bugs": "https://github.com/Short-io/qr-image/issues",
+    "bugs": "https://github.com/Short-io/qreate/issues",
     "type": "module",
     "main": "lib/qr.js",
     "exports": {
