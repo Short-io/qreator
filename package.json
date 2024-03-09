@@ -2,7 +2,7 @@
     "name": "qreator",
     "version": "9.0.6",
     "description": "QR Code generator for browser and node.js with tree shaking and logo support",
-    "homepage": "https://github.com/Short-io/qr-image",
+    "homepage": "https://github.com/Short-io/qreator",
     "keywords": [
         "qrcode",
         "qr code",
