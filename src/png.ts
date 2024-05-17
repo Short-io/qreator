@@ -31,7 +31,7 @@ export async function generateImage({
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];
     if (logo) {
-        const sharpLogo = sharp(logo).resize(imageSize * logoWidth / 100, imageSize * logoHeight / 100, {fit: 'contain'});
+        const sharpLogo = sharp(logo).resize(Math.round(imageSize * logoWidth / 100), Math.round(imageSize * logoHeight / 100), {fit: 'contain'});
         const data = await sharpLogo.toBuffer()
         layers.push({
             input: data,
