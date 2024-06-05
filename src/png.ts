@@ -38,6 +38,8 @@ export async function generateImage({
         })
         qrImage.composite(layers);
     }
-    const { data } = await qrImage.png().toBuffer({ resolveWithObject: true});
+    const { data } = await qrImage.png({
+        palette: !logo, // no logo results in much less colors
+    }).toBuffer({ resolveWithObject: true});
     return new Uint8ClampedArray(data.buffer);
 }
