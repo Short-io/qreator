@@ -238,6 +238,12 @@ interface TestParams {
         filename: "qr_with_logo.pdf",
         params: { logo: await readFile(`${goldenDir}/logo.png`) },
     },
+    {
+        name: "PNG memory usage",
+        fn: getPNG,
+        filename: "qr_large.png",
+        params: { size: 300, margin: 10 },
+    }
 ] as TestParams[]).forEach((testData) => {
     test.serial(testData.name, async (t) => {
         const image = await testData.fn(text, {

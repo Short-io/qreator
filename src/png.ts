@@ -38,5 +38,6 @@ export async function generateImage({
         })
         qrImage.composite(layers);
     }
-    return await qrImage.png().toBuffer();
+    const { data } = await qrImage.png().toBuffer({ resolveWithObject: true});
+    return new Uint8ClampedArray(data.buffer);
 }
