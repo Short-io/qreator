@@ -242,7 +242,7 @@ interface TestParams {
         name: "PNG memory usage",
         fn: getPNG,
         filename: "qr_large.png",
-        params: { size: 300, margin: 10 },
+        params: { size: 199, margin: 10 },
     }
 ] as TestParams[]).forEach((testData) => {
     test.serial(testData.name, async (t) => {

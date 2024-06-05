@@ -23,6 +23,9 @@ export async function generateImage({
 }: ImageOptions & { matrix: Matrix }) {
     const marginPx = margin * size;
     const imageSize = matrix.length * size + marginPx * 2;
+    if (size > 200) {
+        throw new Error('Module size is too big, resulting image is too large: ' + imageSize);
+    }
     const svg = await createSVG({
         matrix, size, margin, color, bgColor,
         imageWidth: imageSize, imageHeight: imageSize,
