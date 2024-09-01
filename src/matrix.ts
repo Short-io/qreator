@@ -391,3 +391,24 @@ export function getMatrix(data: Data) {
 
     return matrix.map((row) => row.map((cell) => cell & 1));
 }
+
+export function clearMatrixCenter(matrix: Matrix, widthPct: number, heightPct: number): Matrix {
+    matrix = matrix.map((x) => x.slice()); // avoid mutating input arg
+
+    // TODO: Here's a homegrown formula, perhaps could be simplified
+    const mW = matrix.length;
+    const cW = Math.ceil(((mW * widthPct) / 100 + (mW % 2)) / 2) * 2 - (mW % 2);
+    const mH = matrix[0]?.length ?? 0;
+    const cH = Math.ceil(((mH * heightPct) / 100 + (mH % 2)) / 2) * 2 - (mH % 2);
+
+    // Given the formula, these must be whole numbers, but round anyway to account for js EPSILON
+    const clearStartX = Math.round((mW - cW) / 2);
+    const clearStartY = Math.round((mH - cH) / 2);
+
+    for (let x = clearStartX; x < clearStartX + cW; x += 1) {
+        for (let y = clearStartY; y < clearStartY + cH; y += 1) {
+            matrix[x][y] = 0;
+        }
+    }
+    return matrix;
+}

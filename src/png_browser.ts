@@ -1,23 +1,31 @@
 import { QR } from "./qr-base.js";
-import { getOptions, colorToHex, getSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getSVGPath } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { Base64 } from "js-base64";
+import { clearMatrixCenter } from "./matrix.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
-    const matrix = QR(text, options.ec_level, options.parse_url);
-    return generateImage({ matrix, ...options, type: 'png' });
+
+    let matrix = QR(text, options.ec_level, options.parse_url);
+    if (options.logo && options.logoWidth && options.logoHeight) {
+        matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
+    }
+
+    return generateImage({ matrix, ...options, type: "png" });
 }
 
 function dataURItoArrayBuffer(dataURI: string) {
-  return Base64.toUint8Array(dataURI.split(',')[1]);
+    return Base64.toUint8Array(dataURI.split(",")[1]);
 }
 
 function blobToDataURL(blob: Blob) {
     return new Promise<string>((resolve, reject) => {
         try {
             var a = new FileReader();
-            a.onload = function(e) {resolve(e.target.result as string);}
+            a.onload = function (e) {
+                resolve(e.target.result as string);
+            };
             a.onerror = reject;
             a.readAsDataURL(blob);
         } catch (e) {
@@ -25,7 +33,6 @@ function blobToDataURL(blob: Blob) {
         }
     });
 }
-
 
 export async function generateImage({
     matrix,
@@ -39,14 +46,16 @@ export async function generateImage({
     borderRadius,
 }: ImageOptions & { matrix: Matrix }) {
     const marginPx = margin * size;
-    const imageSize = matrix.length * size + marginPx * 2;
+    const matrixSizePx = matrix.length * size;
+    const imageSizePx = matrixSizePx + marginPx * 2;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = imageSize;
-    canvas.height = imageSize;
-    const context = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    canvas.width = imageSizePx;
+    canvas.height = imageSizePx;
+    const context = canvas.getContext("2d");
     context.fillStyle = colorToHex(bgColor);
-    context.fillRect(0, 0, imageSize, imageSize);
+    context.fillRect(0, 0, imageSizePx, imageSizePx);
+
     const path = new Path2D(getSVGPath(matrix, size, marginPx, borderRadius));
     context.fillStyle = colorToHex(color);
     context.fill(path);
@@ -61,13 +70,15 @@ export async function generateImage({
                 reject(e);
             }
         });
+        const logoWidthPx = (logoWidth / 100) * matrixSizePx;
+        const logoHeightPx = (logoHeight / 100) * matrixSizePx;
         context.drawImage(
             logoImage,
-            imageSize / 2 - (logoWidth / 2 / 100) * imageSize,
-            imageSize / 2 - (logoHeight / 2 / 100) * imageSize,
-            (logoWidth / 100) * imageSize,
-            (logoHeight / 100) * imageSize
+            (imageSizePx - logoWidthPx) / 2,
+            (imageSizePx - logoHeightPx) / 2,
+            logoWidthPx,
+            logoHeightPx
         );
     }
-    return dataURItoArrayBuffer(canvas.toDataURL('image/png'));
+    return dataURItoArrayBuffer(canvas.toDataURL("image/png"));
 }
