@@ -1,13 +1,13 @@
 import { ImageOptions, Matrix } from "./typing/types";
 import { QR } from "./qr-base.js";
-import { createSVG } from './svg.js';
+import { createSVG } from "./svg.js";
 import { getOptions } from "./utils.js";
 import sharp from "sharp";
 
 export async function getPNG(text: string, inOptions: ImageOptions = {}) {
-    const options = getOptions({...inOptions, type: 'png'});
+    const options = getOptions({ ...inOptions, type: "png" });
     const matrix = QR(text, options.ec_level, options.parse_url);
-    return generateImage({ matrix, ...options, type: 'png' });
+    return generateImage({ matrix, ...options, type: "png" });
 }
 
 export async function generateImage({
@@ -24,25 +24,34 @@ export async function generateImage({
     const marginPx = margin * size;
     const imageSize = matrix.length * size + marginPx * 2;
     if (size > 200) {
-        throw new Error('Module size is too big, resulting image is too large: ' + imageSize);
+        throw new Error("Module size is too big, resulting image is too large: " + imageSize);
     }
     const svg = await createSVG({
-        matrix, size, margin, color, bgColor,
-        imageWidth: imageSize, imageHeight: imageSize,
+        matrix,
+        size,
+        margin,
+        color,
+        bgColor,
+        imageWidth: imageSize,
+        imageHeight: imageSize,
         borderRadius,
     });
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];
     if (logo) {
-        const sharpLogo = sharp(logo).resize(Math.round(imageSize * logoWidth / 100), Math.round(imageSize * logoHeight / 100), {fit: 'contain'});
-        const data = await sharpLogo.toBuffer()
+        const sharpLogo = sharp(logo).resize(
+            Math.round((imageSize * logoWidth) / 100),
+            Math.round((imageSize * logoHeight) / 100),
+            { fit: "contain" }
+        );
+        const data = await sharpLogo.toBuffer();
         layers.push({
             input: data,
-        })
+        });
         qrImage.composite(layers);
     }
-    const { data } = await qrImage.png({
-        palette: !logo, // no logo results in much less colors
-    }).toBuffer({ resolveWithObject: true});
+    const { data } = await qrImage
+        .png({ palette: !logo }) // no logo results in much less colors
+        .toBuffer({ resolveWithObject: true });
     return new Uint8ClampedArray(data.buffer);
 }

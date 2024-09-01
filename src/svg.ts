@@ -1,15 +1,18 @@
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions, colorToHex, getSVGPath } from "./utils.js";
-import { Base64 } from 'js-base64';
+import { Base64 } from "js-base64";
 
 interface FillSVGOptions
-    extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius"> {
+    extends Pick<
+        ImageOptions,
+        "color" | "bgColor" | "size" | "margin" | "borderRadius"
+    > {
     blockSize?: number;
 }
 
 export async function getSVG(text: string, inOptions: ImageOptions = {}) {
-    const options = getOptions({...inOptions, type: "svg"});
+    const options = getOptions({ ...inOptions, type: "svg" });
     const matrix = QR(text, options.ec_level, options.parse_url);
     return createSVG({ matrix, ...options });
 }
