@@ -3,10 +3,16 @@ import { QR } from "./qr-base.js";
 import { createSVG } from "./svg.js";
 import { getOptions } from "./utils.js";
 import sharp from "sharp";
+import { clearMatrixCenter } from "./matrix.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions = {}) {
     const options = getOptions({ ...inOptions, type: "png" });
-    const matrix = QR(text, options.ec_level, options.parse_url);
+
+    let matrix = QR(text, options.ec_level, options.parse_url);
+    if (options.logo && options.logoWidth && options.logoHeight) {
+        matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
+    }
+
     return generateImage({ matrix, ...options, type: "png" });
 }
 
@@ -22,26 +28,31 @@ export async function generateImage({
     borderRadius,
 }: ImageOptions & { matrix: Matrix }) {
     const marginPx = margin * size;
-    const imageSize = matrix.length * size + marginPx * 2;
+    const matrixSizePx = matrix.length * size;
+    const imageSizePx = matrixSizePx + marginPx * 2;
+
     if (size > 200) {
-        throw new Error("Module size is too big, resulting image is too large: " + imageSize);
+        throw new Error("Module size is too big, resulting image is too large: " + imageSizePx);
     }
+
     const svg = await createSVG({
         matrix,
         size,
         margin,
         color,
         bgColor,
-        imageWidth: imageSize,
-        imageHeight: imageSize,
+        imageWidth: imageSizePx,
+        imageHeight: imageSizePx,
+        logoWidth: logo && logoWidth,
+        logoHeight: logo && logoHeight,
         borderRadius,
     });
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];
     if (logo) {
         const sharpLogo = sharp(logo).resize(
-            Math.round((imageSize * logoWidth) / 100),
-            Math.round((imageSize * logoHeight) / 100),
+            Math.round((matrixSizePx * logoWidth) / 100),
+            Math.round((matrixSizePx * logoHeight) / 100),
             { fit: "contain" }
         );
         const data = await sharpLogo.toBuffer();

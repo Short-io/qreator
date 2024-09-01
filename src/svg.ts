@@ -1,19 +1,21 @@
+import { clearMatrixCenter } from "./matrix.js";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions, colorToHex, getSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getSVGPath } from "./utils.js";
 import { Base64 } from "js-base64";
 
-interface FillSVGOptions
-    extends Pick<
-        ImageOptions,
-        "color" | "bgColor" | "size" | "margin" | "borderRadius"
-    > {
+interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius"> {
     blockSize?: number;
 }
 
 export async function getSVG(text: string, inOptions: ImageOptions = {}) {
     const options = getOptions({ ...inOptions, type: "svg" });
-    const matrix = QR(text, options.ec_level, options.parse_url);
+
+    let matrix = QR(text, options.ec_level, options.parse_url);
+    if (options.logo && options.logoWidth && options.logoHeight) {
+        matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
+    }
+
     return createSVG({ matrix, ...options });
 }
 
@@ -36,53 +38,56 @@ export async function createSVG({
     imageWidth?: number;
     imageHeight?: number;
 }): Promise<Uint8Array> {
-    const actualSize = size || 9;
-    const X = matrix.length + 2 * margin;
-    const XY = X * (actualSize || 1);
+    const actualBlockSize = size || 9;
+    const matrixSizePx = matrix.length * actualBlockSize;
+    const marginPx = margin * actualBlockSize;
+    const imageSizePx = matrixSizePx + 2 * marginPx;
     const imageWidthStr = imageWidth ? ` width="${imageWidth}"` : "";
-    const imageHeightStr = imageHeight ? `height="${imageWidth}" ` : "";
+    const imageHeightStr = imageHeight ? ` height="${imageWidth}"` : "";
     const xmlTag = `<?xml version="1.0" encoding="utf-8"?>`;
-    const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"${imageWidthStr} ${imageHeightStr}viewBox="0 0 ${XY} ${XY}">`;
+    const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"${imageWidthStr}${imageHeightStr} viewBox="0 0 ${imageSizePx} ${imageSizePx}">`;
+
     const svgBody = getSVGBody(matrix, {
         color,
         bgColor,
-        size: XY,
+        size: imageSizePx,
         margin,
-        blockSize: actualSize,
+        blockSize: actualBlockSize,
         borderRadius,
     });
     const svgEndTag = "</svg>";
-    const logoImage = logo ? getLogoImage(logo, XY, logoWidth, logoHeight) : "";
+    const logoImage = logo ? getLogoImage(logo, marginPx, matrixSizePx, logoWidth, logoHeight) : "";
 
-    return te.encode(
-        xmlTag + svgOpeningTag + svgBody + logoImage + svgEndTag
-    );
+    return te.encode(xmlTag + svgOpeningTag + svgBody + logoImage + svgEndTag);
 }
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
     const path = getSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
-    let svgBody =
-    `<rect width="${options.size}" height="${options.size}" ` +
-    `fill="${colorToHex(options.bgColor)}"></rect>`;
-    svgBody += '<path shape-rendering="geometricPrecision" d="' + path + '" fill="' + colorToHex(options.color) + '"/>';
+    let svgBody = `<rect width="${options.size}" height="${options.size}" fill="${colorToHex(
+        options.bgColor
+    )}"></rect>`;
+    svgBody += `<path shape-rendering="geometricPrecision" d="${path}" fill="${colorToHex(options.color)}"/>`;
     return svgBody;
 }
 
 function getLogoImage(
     logo: ImageOptions["logo"],
-    XY: number,
+    marginPx: number,
+    matrixSizePx: number,
     logoWidth: ImageOptions["logoWidth"],
     logoHeight: ImageOptions["logoHeight"]
 ): string {
     const imageBase64 = `data:image/png;base64,${Base64.fromUint8Array(new Uint8Array(logo))}`;
+    const logoWidthPx = (logoWidth / 100) * matrixSizePx;
+    const logoHeightPx = (logoHeight / 100) * matrixSizePx;
 
     return (
         `<image ` +
-        `width="${(logoWidth / 100) * XY}" ` +
-        `height="${(logoHeight / 100) * XY}" ` +
+        `width="${logoWidthPx}" ` +
+        `height="${logoHeightPx}" ` +
         `xlink:href="${imageBase64}" ` +
-        `x="${XY / 2 - ((logoWidth / 100) * XY) / 2}" ` +
-        `y="${XY / 2 - ((logoHeight / 100) * XY) / 2}">` +
+        `x="${marginPx + (matrixSizePx - logoWidthPx) / 2}" ` +
+        `y="${marginPx + (matrixSizePx - logoHeightPx) / 2}">` +
         `</image>`
     );
 }

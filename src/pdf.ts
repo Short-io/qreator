@@ -3,12 +3,18 @@ import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { getOptions, getSVGPath } from "./utils.js";
 import colorString from "color-string";
+import { clearMatrixCenter } from "./matrix.js";
 
 const textDec = new TextDecoder();
 
 export async function getPDF(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
-    const matrix = QR(text, options.ec_level, options.parse_url);
+
+    let matrix = QR(text, options.ec_level, options.parse_url);
+    if (options.logo && options.logoWidth && options.logoHeight) {
+        matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
+    }
+
     return PDF({ matrix, ...options });
 }
 
@@ -17,18 +23,14 @@ function colorToRGB(color: string | number): [number, number, number] {
         const [red, green, blue] = colorString.get.rgb(color);
         return [red / 255, green / 255, blue / 255];
     }
-    return [
-        ((color >>> 24) % 256) / 255,
-        ((color >>> 16) % 256) / 255,
-        ((color >>> 8) % 256) / 255,
-    ];
+    return [((color >>> 24) % 256) / 255, ((color >>> 16) % 256) / 255, ((color >>> 8) % 256) / 255];
 }
 
 function getOpacity(color: string | number): number {
     if (typeof color === "string") {
         return colorString.get.rgb(color)[3];
     }
-    return ((color % 256) / 255);
+    return (color % 256) / 255;
 }
 
 async function PDF({
@@ -44,15 +46,19 @@ async function PDF({
     matrix: Matrix;
 }) {
     const size = 9;
+    const marginPx = margin * size;
+    const matrixSizePx = matrix.length * size;
+    const imageSizePx = matrixSizePx + 2 * marginPx;
+
     const document = await PDFDocument.create();
-    const pageSize = (matrix.length + 2 * margin) * size;
-    const page = document.addPage([pageSize, pageSize]);
+    const page = document.addPage([imageSizePx, imageSizePx]);
     page.drawSquare({
-        size: pageSize,
+        size: imageSizePx,
         color: rgb(...colorToRGB(bgColor)),
     });
     page.moveTo(0, page.getHeight());
-    const path = getSVGPath(matrix, size, margin * size, borderRadius);
+
+    const path = getSVGPath(matrix, size, marginPx, borderRadius);
     page.drawSvgPath(path, {
         color: rgb(...colorToRGB(color)),
         opacity: getOpacity(color),
@@ -67,13 +73,13 @@ async function PDF({
         } else {
             logoData = await document.embedJpg(logo);
         }
+        const logoWidthPx = (logoWidth / 100) * matrixSizePx;
+        const logoHeightPx = (logoHeight / 100) * matrixSizePx;
         page.drawImage(logoData, {
-            x: page.getWidth() / 2 - (logoWidth / 100) * (page.getWidth() / 2),
-            y:
-                page.getHeight() / 2 -
-                (logoHeight / 100) * (page.getWidth() / 2),
-            width: (logoWidth / 100) * page.getWidth(),
-            height: (logoHeight / 100) * page.getHeight(),
+            x: (imageSizePx - logoWidthPx) / 2,
+            y: (imageSizePx - logoHeightPx) / 2,
+            width: logoWidthPx,
+            height: logoHeightPx,
         });
     }
     return document.save();
