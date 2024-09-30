@@ -1,4 +1,6 @@
-export type Matrix = number[][];
+export type MatrixValue = 0 | 1 | 128 | 129;
+export type Matrix = MatrixValue[][];
+export type BitMatrix = (0 | 1)[][];
 
 export interface Data {
     blocks: number[][];

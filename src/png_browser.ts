@@ -1,13 +1,14 @@
 import { QR } from "./qr-base.js";
-import { colorToHex, getOptions, getSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getDotsSVGPath } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { Base64 } from "js-base64";
-import { clearMatrixCenter } from "./matrix.js";
+import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
 
     let matrix = QR(text, options.ec_level, options.parse_url);
+    zeroFillFinders(matrix)
     if (options.logo && options.logoWidth && options.logoHeight) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
@@ -56,7 +57,7 @@ export async function generateImage({
     context.fillStyle = colorToHex(bgColor);
     context.fillRect(0, 0, imageSizePx, imageSizePx);
 
-    const path = new Path2D(getSVGPath(matrix, size, marginPx, borderRadius));
+    const path = new Path2D(getDotsSVGPath(matrix, size, marginPx, borderRadius));
     context.fillStyle = colorToHex(color);
     context.fill(path);
     if (logo) {

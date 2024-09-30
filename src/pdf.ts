@@ -1,9 +1,9 @@
 import { PDFDocument, PDFImage, rgb } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions, getSVGPath } from "./utils.js";
+import { getOptions, getDotsSVGPath } from "./utils.js";
 import colorString from "color-string";
-import { clearMatrixCenter } from "./matrix.js";
+import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
 
 const textDec = new TextDecoder();
 
@@ -11,6 +11,7 @@ export async function getPDF(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
 
     let matrix = QR(text, options.ec_level, options.parse_url);
+    zeroFillFinders(matrix)
     if (options.logo && options.logoWidth && options.logoHeight) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
@@ -58,7 +59,7 @@ async function PDF({
     });
     page.moveTo(0, page.getHeight());
 
-    const path = getSVGPath(matrix, size, marginPx, borderRadius);
+    const path = getDotsSVGPath(matrix, size, marginPx, borderRadius);
     page.drawSvgPath(path, {
         color: rgb(...colorToRGB(color)),
         opacity: getOpacity(color),

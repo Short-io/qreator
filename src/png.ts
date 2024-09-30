@@ -3,12 +3,13 @@ import { QR } from "./qr-base.js";
 import { createSVG } from "./svg.js";
 import { getOptions } from "./utils.js";
 import sharp from "sharp";
-import { clearMatrixCenter } from "./matrix.js";
+import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions = {}) {
     const options = getOptions({ ...inOptions, type: "png" });
 
     let matrix = QR(text, options.ec_level, options.parse_url);
+    zeroFillFinders(matrix)
     if (options.logo && options.logoWidth && options.logoHeight) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }

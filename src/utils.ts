@@ -14,7 +14,35 @@ export function colorToHex(color: number | string): string {
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
 
-export function getSVGPath(matrix: Matrix, size: number, margin: number = 0, borderRadius: number = 0) {
+
+export function getFindersSVGPath(matrix: Matrix, size: number = 0, margin: number = 0, borderRadius: number = 0) {
+    const matrixSize = matrix.length * size + margin * 2;
+    let finderSize = 8;
+    let finderEnd = finderSize - 1;
+    const sides = [[0, 0], [1, 0], [0, 1]]
+    const rectangles = [];
+    for (const side of sides) {
+        const signs = side.map(sidePoint => sidePoint == 0 ? 1 : -1);
+        for (const offset of [0, 1, 2]) {
+            let corners = [
+                [matrixSize * side[0] + signs[0] * (margin + size * offset),               matrixSize * side[1] + signs[1] * (margin + size * offset)],
+                [matrixSize * side[0] + signs[0] * (margin + size * (finderEnd - offset)), matrixSize * side[1] + signs[1] * (margin + size * (finderEnd - offset))],
+            ]
+            let rectangle = [
+                'M', corners[0][0], corners[0][1],
+                'L', corners[0][0], corners[1][1],
+                'L', corners[1][0], corners[1][1],
+                'L', corners[1][0], corners[0][1],
+                'z',
+            ]
+            rectangles.push(...rectangle)
+        }
+    }
+
+    return rectangles.join(" ")
+}
+
+export function getDotsSVGPath(matrix: Matrix, size: number, margin: number = 0, borderRadius: number = 0) {
     let rectangles = [];
     for (let x = 0; x < matrix.length; x++) {
         const column = matrix[x];

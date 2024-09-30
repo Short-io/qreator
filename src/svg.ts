@@ -1,7 +1,7 @@
-import { clearMatrixCenter } from "./matrix.js";
+import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { colorToHex, getOptions, getSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
 import { Base64 } from "js-base64";
 
 interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius"> {
@@ -12,6 +12,7 @@ export async function getSVG(text: string, inOptions: ImageOptions = {}) {
     const options = getOptions({ ...inOptions, type: "svg" });
 
     let matrix = QR(text, options.ec_level, options.parse_url);
+    zeroFillFinders(matrix)
     if (options.logo && options.logoWidth && options.logoHeight) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
@@ -62,11 +63,13 @@ export async function createSVG({
 }
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
-    const path = getSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
+    const dotsPath = getDotsSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
+    const outerFindersPath = getFindersSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
     let svgBody = `<rect width="${options.size}" height="${options.size}" fill="${colorToHex(
         options.bgColor
     )}"></rect>`;
-    svgBody += `<path shape-rendering="geometricPrecision" d="${path}" fill="${colorToHex(options.color)}"/>`;
+    svgBody += `<path shape-rendering="geometricPrecision" d="${outerFindersPath}" fill-rule="evenodd" fill="${colorToHex(options.color)}"/>`;
+    svgBody += `<path shape-rendering="geometricPrecision" d="${dotsPath}" fill="${colorToHex(options.color)}"/>`;
     return svgBody;
 }
 

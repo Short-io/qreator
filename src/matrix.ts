@@ -1,42 +1,64 @@
-import { Data, EcLevel, Matrix } from "./typing/types";
+import { BitMatrix, Data, EcLevel, Matrix } from "./typing/types";
 
 // {{{1 Initialize matrix with zeros
 export function init(version: number): Matrix {
     const N = (version << 2) + 0b10001;
-    const matrix: Matrix = [];
-    let zeros: number[] = Array(N).fill(0);
-    for (let i = 0; i < N; i++) {
-        matrix[i] = [...zeros];
-    }
-    return matrix;
+    return Array(N).fill(null).map(() => Array(N).fill(0))
 }
 
-// {{{1 Put finders into matrix
+// Not used
 export function fillFinders(matrix: Matrix) {
     const N = matrix.length;
-    for (var i = -3; i <= 3; i++) {
+    for (let i = -3; i <= 3; i++) {
         for (let j = -3; j <= 3; j++) {
             const max = Math.max(i, j);
             const min = Math.min(i, j);
             const pixel =
                 (max == 2 && min >= -2) || (min == -2 && max <= 2)
-                    ? 0x80
-                    : 0x81;
+                    ? 0b010_000_000
+                    : 0b010_000_001;
             matrix[3 + i][3 + j] = pixel;
             matrix[3 + i][N - 4 + j] = pixel;
             matrix[N - 4 + i][3 + j] = pixel;
         }
     }
-    for (var i = 0; i < 8; i++) {
+    for (let i = 0; i < 8; i++) {
         matrix[7][i] =
             matrix[i][7] =
             matrix[7][N - i - 1] =
             matrix[i][N - 8] =
             matrix[N - 8][i] =
             matrix[N - 1 - i][7] =
-                0x80;
+                0b010_000_000;
     }
 }
+
+/**
+ * Finders require different UI representation, so we zero-fill finders and draw them later
+ */
+export function zeroFillFinders(matrix: BitMatrix) {
+    const N = matrix.length;
+    const zeroPixel = 0;
+    // squares
+    for (let i = -3; i <= 3; i++) {
+        for (let j = -3; j <= 3; j++) {
+            matrix[3 + i][3 + j] = zeroPixel;
+            matrix[3 + i][N - 4 + j] = zeroPixel;
+            matrix[N - 4 + i][3 + j] = zeroPixel;
+        }
+    }
+    // border
+    for (let i = 0; i < 8; i++) {
+        matrix[7][i] =
+            matrix[i][7] =
+            matrix[7][N - i - 1] =
+            matrix[i][N - 8] =
+            matrix[N - 8][i] =
+            matrix[N - 1 - i][7] =
+            zeroPixel;
+    }
+}
+
 
 // {{{1 Put align and timinig
 export function fillAlignAndTiming(matrix: Matrix) {
@@ -368,7 +390,7 @@ export function calculatePenalty(matrix: Matrix) {
 }
 
 // {{{1 All-in-one function
-export function getMatrix(data: Data) {
+export function getMatrix(data: Data): BitMatrix {
     const matrix = init(data.version);
     fillFinders(matrix);
     fillAlignAndTiming(matrix);
@@ -389,10 +411,13 @@ export function getMatrix(data: Data) {
     fillData(matrix, data, bestMask);
     fillReserved(matrix, data.ec_level, bestMask);
 
-    return matrix.map((row) => row.map((cell) => cell & 1));
+    return matrix.map((row) => row.map((cell) => (cell & 1) as 0 | 1));
 }
 
-export function clearMatrixCenter(matrix: Matrix, widthPct: number, heightPct: number): Matrix {
+/**
+ * Before we insert logo in the QR we need to clear pixels under the logo. This function clears pixels
+ */
+export function clearMatrixCenter(matrix: BitMatrix, widthPct: number, heightPct: number): BitMatrix {
     matrix = matrix.map((x) => x.slice()); // avoid mutating input arg
 
     // TODO: Here's a homegrown formula, perhaps could be simplified
