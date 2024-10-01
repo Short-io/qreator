@@ -1,5 +1,5 @@
 import { QR } from "./qr-base.js";
-import { colorToHex, getOptions, getDotsSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { Base64 } from "js-base64";
 import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
@@ -57,6 +57,9 @@ export async function generateImage({
     context.fillStyle = colorToHex(bgColor);
     context.fillRect(0, 0, imageSizePx, imageSizePx);
 
+    const findersPath = new Path2D(getFindersSVGPath(matrix, size, marginPx, borderRadius));
+    context.fillStyle = colorToHex(color);
+    context.fill(findersPath, "evenodd");
     const path = new Path2D(getDotsSVGPath(matrix, size, marginPx, borderRadius));
     context.fillStyle = colorToHex(color);
     context.fill(path);

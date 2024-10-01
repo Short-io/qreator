@@ -1,18 +1,19 @@
-module.exports = {
-  env: {
-    browser: true,
-    commonjs: true,
-    es2020: true,
-    node: true,
+import importPlugin from 'eslint-plugin-import';
+import js from '@eslint/js';
+
+export default [
+  js.configs.recommended,
+  importPlugin.flatConfigs.recommended,
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'import/no-dynamic-require': 'warn',
+      'import/no-nodejs-modules': 'warn',
+    },
   },
-  extends: [
-    'airbnb-base',
-  ],
-  parserOptions: {
-    ecmaVersion: 11,
-  },
-  rules: {
-    'no-restricted-syntax': 0,
-    'no-continue': 0,
-  },
-};
+];
