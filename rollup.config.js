@@ -11,7 +11,9 @@ export default [{
     name: 'pngQrCode',
     sourcemap: true
   },
-  plugins: [typescript(), nodeResolve(), commonjs()]
+  plugins: [typescript({
+    outDir: 'lib/browser'
+  }), nodeResolve(), commonjs()]
 }, {
     input: 'src/svg.ts',
     output: {
@@ -20,7 +22,9 @@ export default [{
       name: 'svgQrCode',
       sourcemap: true
     },
-    plugins: [typescript(), nodeResolve(), commonjs()]    
+    plugins: [typescript({
+      outDir: 'lib/browser'
+    }), nodeResolve(), commonjs()]    
 }, {
     input: 'src/pdf.ts',
     output: {
@@ -29,5 +33,7 @@ export default [{
       name: 'pdfQrCode',
       sourcemap: true
     },
-    plugins: [typescript(), nodeResolve(), commonjs(), json()]
+    plugins: [typescript({
+      outDir: 'lib/browser'
+    }), nodeResolve(), commonjs(), json()]
 }];
