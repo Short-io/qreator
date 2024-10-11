@@ -13,6 +13,7 @@ QR Code generator for browser and node.js with tree shaking and logo support
 -   support UTF-8
 -   supports color customization
 -   supports logos
+-   supports border-radius
 -   tree shaking support
 -   browser / node.js
 
