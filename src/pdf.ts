@@ -1,7 +1,7 @@
-import { PDFDocument, PDFImage, rgb } from "pdf-lib";
+import { PDFDocument, PDFImage, PDFOperator, PDFOperatorNames, PDFPage, rgb } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions, getDotsSVGPath } from "./utils.js";
+import { getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
 import colorString from "color-string";
 import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
 
@@ -32,6 +32,43 @@ function getOpacity(color: string | number): number {
         return colorString.get.rgb(color)[3];
     }
     return (color % 256) / 255;
+}
+
+/**
+ * This code is a piece of monkey patching to change the fill rule of the QR code. As pdf-lib does not support the even-odd fill rule, we need to patch the content stream of the page to change the fill rule from non-zero to even-odd.
+ * @param page 
+ */
+function patchContentStream(page: PDFPage) {
+    // @ts-expect-error patching private method
+    page.prevGetContentStream = page.getContentStream;
+    // @ts-expect-error patching private method
+    page.getContentStream = (...args) => {
+        // @ts-expect-error patching private method
+        const contentStream = page.prevGetContentStream(...args);
+        contentStream.prevPush = contentStream.push;
+        contentStream.push = (...operators: PDFOperator[]) => {
+            contentStream.prevPush(...operators.map((op: any) => {
+                if (op.name == PDFOperatorNames.FillNonZeroAndStroke) {
+                    return PDFOperator.of(PDFOperatorNames.FillEvenOddAndStroke, op.args);
+                }
+                if (op.name == PDFOperatorNames.FillNonZero) {
+                    return PDFOperator.of(PDFOperatorNames.FillEvenOdd, op.args);
+                }
+                if (op.name == PDFOperatorNames.FillNonZeroAndStroke) {
+                    return PDFOperator.of(PDFOperatorNames.FillEvenOddAndStroke, op.args);
+                }
+                return op;
+            }));
+        }
+        return contentStream;
+    }
+}
+
+function revertContentStream(page: PDFPage) {
+    // @ts-expect-error patching private method
+    page.getContentStream = page.prevGetContentStream;
+    // @ts-expect-error patching private method
+    page.contentStream.push = page.contentStream.prevPush;
 }
 
 async function PDF({
@@ -66,6 +103,15 @@ async function PDF({
         borderColor: rgb(...colorToRGB(color)),
         borderOpacity: getOpacity(color),
     });
+    const findersPath = getFindersSVGPath(matrix, size, marginPx, borderRadius);
+    patchContentStream(page);
+    page.drawSvgPath(findersPath, {
+        color: rgb(...colorToRGB(color)),
+        opacity: getOpacity(color),
+        borderColor: rgb(...colorToRGB(color)),
+        borderOpacity: getOpacity(color),
+    });
+    revertContentStream(page);
     if (logo) {
         let logoData: PDFImage;
         const header = new Uint8Array(logo.slice(0, 4));
