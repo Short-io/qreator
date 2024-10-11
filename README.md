@@ -89,4 +89,3 @@ getSVG with logo x 2,494 ops/sec ±0.19% (88 runs sampled)
 ## TODO
 
 -   Use lighter versions of PDF library
--   Background
