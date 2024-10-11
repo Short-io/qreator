@@ -64,11 +64,11 @@ export async function createSVG({
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
     const dotsPath = getDotsSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
-    const outerFindersPath = getFindersSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
+    const findersPath = getFindersSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
     let svgBody = `<rect width="${options.size}" height="${options.size}" fill="${colorToHex(
         options.bgColor
     )}"></rect>`;
-    svgBody += `<path shape-rendering="geometricPrecision" d="${outerFindersPath}" fill-rule="evenodd" fill="${colorToHex(options.color)}"/>`;
+    svgBody += `<path shape-rendering="geometricPrecision" d="${findersPath}" fill-rule="evenodd" fill="${colorToHex(options.color)}"/>`;
     svgBody += `<path shape-rendering="geometricPrecision" d="${dotsPath}" fill="${colorToHex(options.color)}"/>`;
     return svgBody;
 }
