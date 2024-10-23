@@ -1,4 +1,4 @@
-import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
+import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
@@ -8,12 +8,12 @@ interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size"
     blockSize?: number;
 }
 
-export async function getSVG(text: string, inOptions: ImageOptions = {}) {
+export function getSVG(text: string, inOptions: ImageOptions = {}) {
     const options = getOptions({ ...inOptions, type: "svg" });
 
     let matrix = QR(text, options.ec_level, options.parse_url);
-    zeroFillFinders(matrix)
-    if (options.logo && options.logoWidth && options.logoHeight) {
+    matrix = zeroFillFinders(matrix)
+    if (options.logo && options.logoWidth && options.logoHeight && !options.noExcavate) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
 
@@ -22,7 +22,7 @@ export async function getSVG(text: string, inOptions: ImageOptions = {}) {
 
 const te = new TextEncoder();
 
-export async function createSVG({
+export function createSVG({
     matrix,
     margin,
     size,
@@ -38,7 +38,7 @@ export async function createSVG({
     matrix: Matrix;
     imageWidth?: number;
     imageHeight?: number;
-}): Promise<Uint8Array> {
+}): Uint8Array {
     const actualBlockSize = size || 9;
     const matrixSizePx = matrix.length * actualBlockSize;
     const marginPx = margin * actualBlockSize;

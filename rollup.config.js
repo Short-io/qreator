@@ -36,4 +36,17 @@ export default [{
     plugins: [typescript({
       outDir: 'lib/browser'
     }), nodeResolve(), commonjs(), json()]
+}, {
+  input: 'src/react.tsx',
+  output: {
+    file: "lib/browser/react.umd.js",
+    format: 'umd',
+    name: 'svgQrCode',
+    sourcemap: true
+  },
+  jsx: "react-jsx",
+  extensions: [".tsx", ".ts"],
+  plugins: [typescript({
+    outDir: 'lib/browser'
+  }), nodeResolve(), commonjs()]    
 }];

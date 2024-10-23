@@ -6,6 +6,7 @@ import { getSVG } from "../svg.js";
 import { getPDF } from "../pdf.js";
 import type { ImageOptions } from "../typing/types.js";
 import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
+import { readFileSync } from "node:fs";
 
 const text = "I \u2764\uFE0F QR code!";
 // const text = 'https://yadi.sk/d/FuzPeEg-QyaZN?qr';
@@ -15,6 +16,15 @@ const defaultParams = {
     margin: 1,
     parse_url: true,
 };
+
+const logoJPEG = readFileSync(`${goldenDir}/logo.jpg`).buffer;
+const turnedLogo = readFileSync(`${goldenDir}/logo_45deg.png`).buffer;
+
+const generatorByType = {
+    pdf: getPDF,
+    png: getPNG,
+    svg: getSVG,
+}
 
 interface TestParams {
     name: string;
@@ -188,7 +198,7 @@ interface TestParams {
         fn: getSVG,
         filename: "qr_with_logo_as_arraybuffer_jpg.svg",
         params: {
-            logo: (await readFile(`${goldenDir}/logo.jpg`)).buffer,
+            logo: logoJPEG,
         },
     },
     {
@@ -229,7 +239,7 @@ interface TestParams {
         fn: getPDF,
         filename: "qr_logo_arraybuffer_jpg.pdf",
         params: {
-            logo: (await readFile(`${goldenDir}/logo.jpg`)).buffer,
+            logo: logoJPEG,
         },
     },
     {
@@ -243,8 +253,25 @@ interface TestParams {
         fn: getPNG,
         filename: "qr_large.png",
         params: { size: 199, margin: 10 },
-    }
-] as TestParams[]).forEach((testData) => {
+    },
+    (["pdf", "png", "svg"] as const).map(fileType => [{
+        name: `${fileType} noExcavate`,
+        fn: generatorByType[fileType],
+        filename: `qr_noexcavate.${fileType}`,
+        params: {
+            logo: turnedLogo,
+            noExcavate: true,
+        }
+    }, {
+        name: `${fileType} excavate`,
+        fn: generatorByType[fileType],
+        filename: `qr_excavate.${fileType}`,
+        params: {
+            logo: turnedLogo,
+            noExcavate: false,
+        }
+    }]) as TestParams[][]
+] as TestParams[]).flat(2).forEach((testData) => {
     test.serial(testData.name, async (t) => {
         const image = await testData.fn(text, {
             ...defaultParams,

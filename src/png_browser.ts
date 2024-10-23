@@ -2,14 +2,14 @@ import { QR } from "./qr-base.js";
 import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { Base64 } from "js-base64";
-import { clearMatrixCenter, zeroFillFinders } from "./matrix.js";
+import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions) {
     const options = getOptions(inOptions);
 
     let matrix = QR(text, options.ec_level, options.parse_url);
-    zeroFillFinders(matrix)
-    if (options.logo && options.logoWidth && options.logoHeight) {
+    matrix = zeroFillFinders(matrix)
+    if (options.logo && options.logoWidth && options.logoHeight && !options.noExcavate) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
 

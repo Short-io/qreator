@@ -13,6 +13,7 @@ const { window } = new JSDOM(``, { runScripts: "dangerously", resources: "usable
 test.before(async () => {
     window.globalThis.TextEncoder = TextEncoder;
     window.globalThis.TextDecoder = TextDecoder;
+    window.globalThis.structuredClone = structuredClone;
     window.globalThis.Path2D = Path2D;
 
     for (const scriptType of ['png', 'svg', 'pdf']) {

@@ -75,6 +75,8 @@ const pngBuffer = await getPNG("I love QR", {
 |    `color`     |         module color in rgba or hex format         |   number    | `#000000` - `#000000` | `#000000`<br />(black with 100% opacity) |
 |   `bgColor`    |       background color in rgba or hex format       |   number    | `#000000` - `#FFFFFF` | `#FFFFFF`<br />(white with 100% opacity) |
 | `borderRadius` |             border-radius (in pixels)              |   number    |    0 - `size / 2`     |                   `0`                    |
+| `noExcavate`   |        don't remove partially covered modules      |   boolean   |    `true`, `false`    |                 `false`                  |
+
 
 ## Benchmarks
 

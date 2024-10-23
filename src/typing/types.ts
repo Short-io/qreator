@@ -83,6 +83,10 @@ export interface ImageOptions {
     logoHeight?: number;
 
     /**
+     * by default we remove partially covered modules under the logo, this option disables such behaviour
+     */
+    noExcavate?: boolean;
+    /**
      * Foreground color in RGBA format.
      * @default 0x000000FF
      */
