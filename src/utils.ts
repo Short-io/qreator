@@ -14,28 +14,40 @@ export function colorToHex(color: number | string): string {
     return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
 }
 
+const svgMove = (left: number, top: number) => ['M', left, top]
+const svgReturn = () => ['z']
+const svgDeltaArc = (borderRadius: number, dx: number, dy: number, sweep: number = 0) => borderRadius > 0 ? ['a', borderRadius, borderRadius, 0, 0, sweep, dx, dy] : [];
+const svgVerticalDeltaLite = (dy: number) => ['v', dy];
+const svgHorizontalDeltaLine = (dx: number) => ['h', dx];
+
 
 export function getFindersSVGPath(matrix: Matrix, size: number = 0, margin: number = 0, borderRadius: number = 0) {
     const matrixSize = matrix.length * size + margin * 2;
     let finderSize = 8;
     let finderEnd = finderSize - 1;
-    const sides = [[0, 0], [1, 0], [0, 1]]
+    const sides = [[0, 0], [1, 0], [0, 1]] as const;
     const rectangles = [];
     for (const side of sides) {
-        const signs = side.map(sidePoint => sidePoint == 0 ? 1 : -1);
+        const [ xSign, ySign ] = side.map(sidePoint => sidePoint == 0 ? 1 : -1);
         for (const offset of [0, 1, 2]) {
-            let corners = [
-                [matrixSize * side[0] + signs[0] * (margin + size * offset),               matrixSize * side[1] + signs[1] * (margin + size * offset)],
-                [matrixSize * side[0] + signs[0] * (margin + size * (finderEnd - offset)), matrixSize * side[1] + signs[1] * (margin + size * (finderEnd - offset))],
-            ]
+            let xCorner = matrixSize * side[0] + xSign * (margin + size * offset);
+            let yCorner = matrixSize * side[1] + ySign * (margin + size * offset);
+
+            const xDelta = xSign * (size * (finderEnd - 2 * offset) - 2 * borderRadius);
+            const yDelta = ySign * (size * (finderEnd - 2 * offset) - 2 * borderRadius);
             let rectangle = [
-                'M', corners[0][0], corners[0][1],
-                'L', corners[0][0], corners[1][1],
-                'L', corners[1][0], corners[1][1],
-                'L', corners[1][0], corners[0][1],
-                'z',
+                svgMove(xCorner, yCorner + borderRadius * ySign),
+                svgVerticalDeltaLite(yDelta),
+                svgDeltaArc(borderRadius, borderRadius * xSign, borderRadius * ySign, side[1] | side[0]),
+                svgHorizontalDeltaLine(xDelta),
+                svgDeltaArc(borderRadius, borderRadius * xSign, - borderRadius * ySign, (side[1] | side[0])),
+                svgVerticalDeltaLite(-yDelta),
+                svgDeltaArc(borderRadius, - borderRadius * xSign, - borderRadius * ySign, (side[1] | side[0])),
+                svgHorizontalDeltaLine(-xDelta),
+                svgDeltaArc(borderRadius, - borderRadius * xSign, borderRadius * ySign, (side[1] | side[0])),
+                svgReturn(),
             ]
-            rectangles.push(...rectangle)
+            rectangles.push(...rectangle.flat())
         }
     }
 
@@ -49,29 +61,21 @@ export function getDotsSVGPath(matrix: Matrix, size: number, margin: number = 0,
         for (let y = 0; y < column.length; y++) {
             if (column[y]) {
                 const leftX = x * size + margin;
-                const rightX = (x + 1) * size + margin;
                 const topY = y * size + margin;
-                const bottomY = (y + 1) * size + margin;
-                const rectangle = [];
-                rectangle.push(`M ${leftX} ${topY + borderRadius}`);
-                rectangle.push(`L ${leftX} ${bottomY - borderRadius}`);
-                if (borderRadius > 0) {
-                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX + borderRadius} ${bottomY}`);
-                }
-                rectangle.push(`L ${rightX - borderRadius} ${bottomY}`);
-                if (borderRadius > 0) {
-                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX} ${bottomY - borderRadius}`);
-                }
-                rectangle.push(`L ${rightX} ${topY + borderRadius}`);
-                if (borderRadius > 0) {
-                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${rightX - borderRadius} ${topY}`);
-                }
-                rectangle.push(`L ${leftX + borderRadius} ${topY}`);
-                if (borderRadius > 0) {
-                    rectangle.push(`A ${borderRadius} ${borderRadius} 0 0 0 ${leftX} ${topY + borderRadius}`);
-                }
-                rectangle.push(`z`); 
-                rectangles.push(rectangle.join(" "));
+                const delta = size - 2 * borderRadius;
+                const rectangle = [
+                    svgMove(leftX, topY + borderRadius),
+                    svgVerticalDeltaLite(delta),
+                    svgDeltaArc(borderRadius, borderRadius, borderRadius),
+                    svgHorizontalDeltaLine(delta),
+                    svgDeltaArc(borderRadius, borderRadius, -borderRadius),
+                    svgVerticalDeltaLite(-delta),
+                    svgDeltaArc(borderRadius, -borderRadius, -borderRadius),
+                    svgHorizontalDeltaLine(-delta),
+                    svgDeltaArc(borderRadius, -borderRadius, borderRadius),
+                    svgReturn(),
+                ];
+                rectangles.push(...rectangle.flat());
             }
         }
     }
