@@ -1,25 +1,20 @@
 // {{{1 export functions
 export function calculateEC(msg: number[], ec_len: number): Uint8Array {
-    // `msg` could be array or buffer
-    // convert `msg` to array
-    msg = [].slice.call(msg);
+    const len = msg.length;
+    const buf = new Array(len + ec_len);
+    for (let i = 0; i < len; i++) buf[i] = msg[i];
+    for (let i = len; i < len + ec_len; i++) buf[i] = 0;
 
-    // Generator Polynomial
     const poly = generatorPolynomial(ec_len);
 
-    for (let i = 0; i < ec_len; i++) msg.push(0);
-    while (msg.length > ec_len) {
-        if (!msg[0]) {
-            msg.shift();
-            continue;
-        }
-        const log_k = log(msg[0]);
+    for (let offset = 0; offset < len; offset++) {
+        if (!buf[offset]) continue;
+        const log_k = log(buf[offset]);
         for (let i = 0; i <= ec_len; i++) {
-            msg[i] = msg[i] ^ exp(poly[i] + log_k);
+            buf[offset + i] = buf[offset + i] ^ exp(poly[i] + log_k);
         }
-        msg.shift();
     }
-    return new Uint8Array(msg);
+    return new Uint8Array(buf.slice(len));
 }
 
 // {{{1 Galois Field Math
@@ -39,9 +34,7 @@ for (let i = 0; i < 255; i++) {
 }
 
 function exp(k: number) {
-    while (k < 0) k += 255;
-    while (k > 255) k -= 255;
-    return EXP_TABLE[k];
+    return EXP_TABLE[((k % 255) + 255) % 255];
 }
 
 function log(k: number) {

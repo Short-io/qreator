@@ -27,6 +27,9 @@ export async function generateImage({
     color,
     bgColor,
     borderRadius,
+    finderOuterShape,
+    finderInnerShape,
+    finderColor,
 }: ImageOptions & { matrix: Matrix }) {
     const marginPx = margin * size;
     const matrixSizePx = matrix.length * size;
@@ -47,6 +50,9 @@ export async function generateImage({
         logoWidth: logo && logoWidth,
         logoHeight: logo && logoHeight,
         borderRadius,
+        finderOuterShape,
+        finderInnerShape,
+        finderColor,
     });
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];

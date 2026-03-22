@@ -1,5 +1,5 @@
 import { QR } from "./qr-base.js";
-import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath } from "./utils.js";
 import { ImageOptions, Matrix } from "./typing/types";
 import { Base64 } from "js-base64";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
@@ -45,6 +45,9 @@ export async function generateImage({
     color,
     bgColor,
     borderRadius,
+    finderOuterShape,
+    finderInnerShape,
+    finderColor,
 }: ImageOptions & { matrix: Matrix }) {
     const marginPx = margin * size;
     const matrixSizePx = matrix.length * size;
@@ -57,9 +60,19 @@ export async function generateImage({
     context.fillStyle = colorToHex(bgColor);
     context.fillRect(0, 0, imageSizePx, imageSizePx);
 
-    const findersPath = new Path2D(getFindersSVGPath(matrix, size, marginPx, borderRadius));
-    context.fillStyle = colorToHex(color);
-    context.fill(findersPath, "evenodd");
+    const hasFinderOptions = finderOuterShape || finderInnerShape || finderColor;
+    if (hasFinderOptions) {
+        const finderColorHex = colorToHex(finderColor ?? color);
+        const outerPath = new Path2D(getFinderOuterSVGPath(matrix, size, marginPx, borderRadius, finderOuterShape ?? 'rounded'));
+        const innerPath = new Path2D(getFinderInnerSVGPath(matrix, size, marginPx, borderRadius, finderInnerShape ?? 'rounded'));
+        context.fillStyle = finderColorHex;
+        context.fill(outerPath, "evenodd");
+        context.fill(innerPath);
+    } else {
+        const findersPath = new Path2D(getFindersSVGPath(matrix, size, marginPx, borderRadius));
+        context.fillStyle = colorToHex(color);
+        context.fill(findersPath, "evenodd");
+    }
     const path = new Path2D(getDotsSVGPath(matrix, size, marginPx, borderRadius));
     context.fillStyle = colorToHex(color);
     context.fill(path);

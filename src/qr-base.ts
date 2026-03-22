@@ -22,7 +22,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     for (; /* i */ i < 10; i++) {
         let version = mappedVersions[i][ec_level];
         if (version.data_len >= len) {
-            return deepCopy(version);
+            return copyTemplate(version);
         }
     }
 
@@ -34,7 +34,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     for (; /* i */ i < 27; i++) {
         let version = mappedVersions[i][ec_level];
         if (version.data_len >= len) {
-            return deepCopy(version);
+            return copyTemplate(version);
         }
     }
 
@@ -42,7 +42,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     for (; /* i */ i < 41; i++) {
         let version = mappedVersions[i][ec_level];
         if (version.data_len >= len) {
-            return deepCopy(version);
+            return copyTemplate(version);
         }
     }
     throw new Error("Too much data");
@@ -99,7 +99,9 @@ export function QR(text: string, ec_level: EcLevel, parse_url: boolean) {
     return getMatrix(data);
 }
 
-const deepCopy = typeof structuredClone !== "undefined" ? structuredClone : ((obj: object) => JSON.parse(JSON.stringify(obj))) as typeof structuredClone;
+function copyTemplate(t: Omit<Data, "blocks"> & { blocks: number[] }): Data {
+    return { ...t, blocks: [...t.blocks] as unknown as number[][], ec: [] };
+}
 
 // {{{1 Versions
 const versions: (number[] | LevelNumber | {})[] = [

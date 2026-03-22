@@ -1,10 +1,10 @@
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
+import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath } from "./utils.js";
 import { Base64 } from "js-base64";
 
-interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius"> {
+interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius" | "finderOuterShape" | "finderInnerShape" | "finderColor"> {
     blockSize?: number;
 }
 
@@ -34,6 +34,9 @@ export function createSVG({
     imageWidth,
     imageHeight,
     borderRadius,
+    finderOuterShape,
+    finderInnerShape,
+    finderColor,
 }: ImageOptions & {
     matrix: Matrix;
     imageWidth?: number;
@@ -44,7 +47,7 @@ export function createSVG({
     const marginPx = margin * actualBlockSize;
     const imageSizePx = matrixSizePx + 2 * marginPx;
     const imageWidthStr = imageWidth ? ` width="${imageWidth}"` : "";
-    const imageHeightStr = imageHeight ? ` height="${imageWidth}"` : "";
+    const imageHeightStr = imageHeight ? ` height="${imageHeight}"` : "";
     const xmlTag = `<?xml version="1.0" encoding="utf-8"?>`;
     const svgOpeningTag = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"${imageWidthStr}${imageHeightStr} viewBox="0 0 ${imageSizePx} ${imageSizePx}">`;
 
@@ -55,6 +58,9 @@ export function createSVG({
         margin,
         blockSize: actualBlockSize,
         borderRadius,
+        finderOuterShape,
+        finderInnerShape,
+        finderColor,
     });
     const svgEndTag = "</svg>";
     const logoImage = logo ? getLogoImage(logo, marginPx, matrixSizePx, logoWidth, logoHeight) : "";
@@ -63,12 +69,26 @@ export function createSVG({
 }
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
-    const dotsPath = getDotsSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
-    const outerFindersPath = getFindersSVGPath(matrix, options.blockSize, options.margin * options.blockSize, options.borderRadius);
+    const marginPx = options.margin * options.blockSize;
+    const dotsPath = getDotsSVGPath(matrix, options.blockSize, marginPx, options.borderRadius);
     let svgBody = `<rect width="${options.size}" height="${options.size}" fill="${colorToHex(
         options.bgColor
     )}"></rect>`;
-    svgBody += `<path shape-rendering="geometricPrecision" d="${outerFindersPath}" fill-rule="evenodd" fill="${colorToHex(options.color)}"/>`;
+
+    const hasFinderOptions = options.finderOuterShape || options.finderInnerShape || options.finderColor;
+    if (hasFinderOptions) {
+        const finderColorHex = colorToHex(options.finderColor ?? options.color);
+        const outerShape = options.finderOuterShape ?? 'rounded';
+        const innerShape = options.finderInnerShape ?? 'rounded';
+        const outerPath = getFinderOuterSVGPath(matrix, options.blockSize, marginPx, options.borderRadius, outerShape);
+        const innerPath = getFinderInnerSVGPath(matrix, options.blockSize, marginPx, options.borderRadius, innerShape);
+        svgBody += `<path shape-rendering="geometricPrecision" d="${outerPath}" fill-rule="evenodd" fill="${finderColorHex}"/>`;
+        svgBody += `<path shape-rendering="geometricPrecision" d="${innerPath}" fill="${finderColorHex}"/>`;
+    } else {
+        const outerFindersPath = getFindersSVGPath(matrix, options.blockSize, marginPx, options.borderRadius);
+        svgBody += `<path shape-rendering="geometricPrecision" d="${outerFindersPath}" fill-rule="evenodd" fill="${colorToHex(options.color)}"/>`;
+    }
+
     svgBody += `<path shape-rendering="geometricPrecision" d="${dotsPath}" fill="${colorToHex(options.color)}"/>`;
     return svgBody;
 }

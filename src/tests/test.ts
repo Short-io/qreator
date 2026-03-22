@@ -270,7 +270,70 @@ interface TestParams {
             logo: turnedLogo,
             noExcavate: false,
         }
-    }]) as TestParams[][]
+    }]) as TestParams[][],
+    (["pdf", "png", "svg"] as const).map(fileType => [{
+        name: `${fileType} finder rounded+circle`,
+        fn: generatorByType[fileType],
+        filename: `qr_finder_rounded_circle.${fileType}`,
+        params: {
+            finderOuterShape: "rounded" as const,
+            finderInnerShape: "circle" as const,
+            borderRadius: 2,
+        }
+    }, {
+        name: `${fileType} finder circle+circle`,
+        fn: generatorByType[fileType],
+        filename: `qr_finder_circle_circle.${fileType}`,
+        params: {
+            finderOuterShape: "circle" as const,
+            finderInnerShape: "circle" as const,
+        }
+    }, {
+        name: `${fileType} finder drop+drop`,
+        fn: generatorByType[fileType],
+        filename: `qr_finder_drop_drop.${fileType}`,
+        params: {
+            finderOuterShape: "drop" as const,
+            finderInnerShape: "drop" as const,
+        }
+    }, {
+        name: `${fileType} finder drop+circle`,
+        fn: generatorByType[fileType],
+        filename: `qr_finder_drop_circle.${fileType}`,
+        params: {
+            finderOuterShape: "drop" as const,
+            finderInnerShape: "circle" as const,
+        }
+    }, {
+        name: `${fileType} finder square+square`,
+        fn: generatorByType[fileType],
+        filename: `qr_finder_square_square.${fileType}`,
+        params: {
+            finderOuterShape: "square" as const,
+            finderInnerShape: "square" as const,
+            borderRadius: 2,
+        }
+    }]) as TestParams[][],
+    {
+        name: "SVG with finder color",
+        fn: getSVG,
+        filename: "qr_finder_color.svg",
+        params: {
+            finderColor: '#ff0000',
+            finderOuterShape: "circle" as const,
+            finderInnerShape: "circle" as const,
+        },
+    },
+    {
+        name: "PNG with finder color",
+        fn: getPNG,
+        filename: "qr_finder_color.png",
+        params: {
+            finderColor: '#ff0000',
+            finderOuterShape: "drop" as const,
+            finderInnerShape: "circle" as const,
+        },
+    },
 ] as TestParams[]).flat(2).forEach((testData) => {
     test.serial(testData.name, async (t) => {
         const image = await testData.fn(text, {

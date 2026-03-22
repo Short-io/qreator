@@ -382,8 +382,18 @@ export function getMatrix(data: Data): BitMatrix {
         }
     }
 
-    fillData(matrix, data, bestMask);
-    fillReserved(matrix, data.ec_level, bestMask);
+    // Last evaluated mask is 7; only re-fill if best mask differs
+    if (bestMask !== 7) {
+        fillData(matrix, data, bestMask);
+        fillReserved(matrix, data.ec_level, bestMask);
+    }
 
-    return matrix.map((row) => row.map((cell) => (cell & 1) as 0 | 1));
+    // Strip high bits in-place
+    for (let i = 0; i < matrix.length; i++) {
+        const row = matrix[i];
+        for (let j = 0; j < row.length; j++) {
+            row[j] = (row[j] & 1) as 0 | 1;
+        }
+    }
+    return matrix as BitMatrix;
 }

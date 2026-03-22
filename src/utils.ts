@@ -1,5 +1,5 @@
 import colorString from "color-string";
-import { ImageOptions, ImageType, Matrix } from "./typing/types";
+import { FinderShape, ImageOptions, ImageType, Matrix } from "./typing/types";
 
 export function getOptions(inOptions: ImageOptions) {
     const type: ImageType = inOptions?.type ?? "png";
@@ -83,6 +83,82 @@ export function getDotsSVGPath(matrix: Matrix, size: number, margin: number = 0,
 }
 
 
+
+// Per-corner border radius support for finder shapes
+const FINDER_SIDES = [[0, 0], [1, 0], [0, 1]] as const;
+const FINDER_END = 7; // finderSize(8) - 1
+
+// Corner radii for the 4 arcs in drawing order.
+// Index 1 is always the center-facing corner (toward QR center).
+function getCornerRadii(shape: FinderShape, sideLength: number, borderRadius: number): [number, number, number, number] {
+    const maxR = sideLength / 2;
+    switch (shape) {
+        case 'square': return [0, 0, 0, 0];
+        case 'rounded': return [borderRadius, borderRadius, borderRadius, borderRadius];
+        case 'circle': return [maxR, maxR, maxR, maxR];
+        case 'drop': return [maxR, 0, maxR, maxR];
+    }
+}
+
+function drawFinderRect(
+    xCorner: number, yCorner: number,
+    sideLength: number,
+    xSign: number, ySign: number,
+    sweep: number,
+    cornerRadii: [number, number, number, number]
+): (string | number)[] {
+    const [r0, r1, r2, r3] = cornerRadii;
+    return [
+        svgMove(xCorner, yCorner + r3 * ySign),
+        svgVerticalDeltaLite(ySign * (sideLength - r3 - r0)),
+        svgDeltaArc(r0, r0 * xSign, r0 * ySign, sweep),
+        svgHorizontalDeltaLine(xSign * (sideLength - r0 - r1)),
+        svgDeltaArc(r1, r1 * xSign, -r1 * ySign, sweep),
+        svgVerticalDeltaLite(-ySign * (sideLength - r1 - r2)),
+        svgDeltaArc(r2, -r2 * xSign, -r2 * ySign, sweep),
+        svgHorizontalDeltaLine(-xSign * (sideLength - r2 - r3)),
+        svgDeltaArc(r3, -r3 * xSign, r3 * ySign, sweep),
+        svgReturn(),
+    ].flat();
+}
+
+export function getFinderOuterSVGPath(
+    matrix: Matrix, size: number, margin: number,
+    borderRadius: number, shape: FinderShape
+): string {
+    const matrixSize = matrix.length * size + margin * 2;
+    const rectangles: (string | number)[] = [];
+    for (const side of FINDER_SIDES) {
+        const [xSign, ySign] = side.map(s => s === 0 ? 1 : -1);
+        const sweep = side[1] | side[0];
+        for (const offset of [0, 1]) {
+            const sideLength = size * (FINDER_END - 2 * offset);
+            const xCorner = matrixSize * side[0] + xSign * (margin + size * offset);
+            const yCorner = matrixSize * side[1] + ySign * (margin + size * offset);
+            const radii = getCornerRadii(shape, sideLength, borderRadius);
+            rectangles.push(...drawFinderRect(xCorner, yCorner, sideLength, xSign, ySign, sweep, radii));
+        }
+    }
+    return rectangles.join(" ");
+}
+
+export function getFinderInnerSVGPath(
+    matrix: Matrix, size: number, margin: number,
+    borderRadius: number, shape: FinderShape
+): string {
+    const matrixSize = matrix.length * size + margin * 2;
+    const rectangles: (string | number)[] = [];
+    for (const side of FINDER_SIDES) {
+        const [xSign, ySign] = side.map(s => s === 0 ? 1 : -1);
+        const sweep = side[1] | side[0];
+        const sideLength = size * (FINDER_END - 2 * 2); // offset=2, inner dot = 3 modules
+        const xCorner = matrixSize * side[0] + xSign * (margin + size * 2);
+        const yCorner = matrixSize * side[1] + ySign * (margin + size * 2);
+        const radii = getCornerRadii(shape, sideLength, borderRadius);
+        rectangles.push(...drawFinderRect(xCorner, yCorner, sideLength, xSign, ySign, sweep, radii));
+    }
+    return rectangles.join(" ");
+}
 
 const commonOptions: Pick<
     ImageOptions,

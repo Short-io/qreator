@@ -28,6 +28,15 @@ export type EcLevel = "L" | "M" | "Q" | "H";
 export type ImageType = "png" | "svg" | "pdf";
 
 /**
+ * Shape of the finder pattern (corner) elements.
+ * - 'square': sharp corners
+ * - 'rounded': rounded corners using the borderRadius value
+ * - 'circle': fully rounded (maximum border radius)
+ * - 'drop': 3 rounded corners + 1 sharp corner pointing toward the QR center
+ */
+export type FinderShape = "square" | "rounded" | "circle" | "drop";
+
+/**
  * Image options.
  */
 export interface ImageOptions {
@@ -102,4 +111,25 @@ export interface ImageOptions {
      * border radius of the points
      */
     borderRadius?: number;
+
+    /**
+     * Shape of the outer ring of finder patterns (corners).
+     * When set, overrides borderRadius for the finder outer ring.
+     * @default undefined (uses borderRadius)
+     */
+    finderOuterShape?: FinderShape;
+
+    /**
+     * Shape of the inner dot of finder patterns (corners).
+     * When set, overrides borderRadius for the finder inner dot.
+     * @default undefined (uses borderRadius)
+     */
+    finderInnerShape?: FinderShape;
+
+    /**
+     * Color of the finder patterns (corners). Overrides `color` for finders only.
+     * Accepts same formats as `color` (number 0xRRGGBBAA or CSS string).
+     * @default undefined (uses color)
+     */
+    finderColor?: number | string;
 }

@@ -1,7 +1,7 @@
 import { PDFDocument, PDFImage, PDFOperator, PDFOperatorNames, PDFPage, rgb } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions, getDotsSVGPath, getFindersSVGPath } from "./utils.js";
+import { getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath } from "./utils.js";
 import colorString from "color-string";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
@@ -80,6 +80,9 @@ async function PDF({
     color,
     bgColor,
     borderRadius,
+    finderOuterShape,
+    finderInnerShape,
+    finderColor,
 }: ImageOptions & {
     matrix: Matrix;
 }) {
@@ -96,22 +99,31 @@ async function PDF({
     });
     page.moveTo(0, page.getHeight());
 
+    const fgRGB = rgb(...colorToRGB(color));
+    const fgOpacity = getOpacity(color);
+    const fgStyle = { color: fgRGB, opacity: fgOpacity, borderColor: fgRGB, borderOpacity: fgOpacity };
+
     const path = getDotsSVGPath(matrix, size, marginPx, borderRadius);
-    page.drawSvgPath(path, {
-        color: rgb(...colorToRGB(color)),
-        opacity: getOpacity(color),
-        borderColor: rgb(...colorToRGB(color)),
-        borderOpacity: getOpacity(color),
-    });
-    const findersPath = getFindersSVGPath(matrix, size, marginPx, borderRadius);
-    patchContentStream(page);
-    page.drawSvgPath(findersPath, {
-        color: rgb(...colorToRGB(color)),
-        opacity: getOpacity(color),
-        borderColor: rgb(...colorToRGB(color)),
-        borderOpacity: getOpacity(color),
-    });
-    revertContentStream(page);
+    page.drawSvgPath(path, fgStyle);
+
+    const hasFinderOptions = finderOuterShape || finderInnerShape || finderColor;
+    if (hasFinderOptions) {
+        const fc = finderColor ?? color;
+        const fcRGB = rgb(...colorToRGB(fc));
+        const fcOpacity = getOpacity(fc);
+        const fcStyle = { color: fcRGB, opacity: fcOpacity, borderColor: fcRGB, borderOpacity: fcOpacity };
+        const outerPath = getFinderOuterSVGPath(matrix, size, marginPx, borderRadius, finderOuterShape ?? 'rounded');
+        patchContentStream(page);
+        page.drawSvgPath(outerPath, fcStyle);
+        revertContentStream(page);
+        const innerPath = getFinderInnerSVGPath(matrix, size, marginPx, borderRadius, finderInnerShape ?? 'rounded');
+        page.drawSvgPath(innerPath, fcStyle);
+    } else {
+        const findersPath = getFindersSVGPath(matrix, size, marginPx, borderRadius);
+        patchContentStream(page);
+        page.drawSvgPath(findersPath, fgStyle);
+        revertContentStream(page);
+    }
     if (logo) {
         let logoData: PDFImage;
         const header = new Uint8Array(logo.slice(0, 4));
