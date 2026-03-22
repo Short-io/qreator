@@ -14,6 +14,8 @@ QR Code generator for browser and node.js with tree shaking and logo support
 -   supports color customization
 -   supports logos
 -   supports border-radius
+-   supports corner mode (merged rounded corners)
+-   supports finder pattern customization (shape + color)
 -   tree shaking support
 -   browser / node.js
 
@@ -47,6 +49,18 @@ const pngBuffer = await getPNG("I love QR", {
 });
 ```
 
+### Finder pattern customization
+
+```javascript
+const svgString = await getSVG("I love QR", {
+    finderOuterShape: "drop",
+    finderInnerShape: "circle",
+    finderColor: "#ff0000",
+    borderRadius: 2,
+    cornerMode: "merge",
+});
+```
+
 [More examples](./examples)
 
 ### Syntax
@@ -75,6 +89,10 @@ const pngBuffer = await getPNG("I love QR", {
 |    `color`     |         module color in rgba or hex format         |   number    | `#000000` - `#000000` | `#000000`<br />(black with 100% opacity) |
 |   `bgColor`    |       background color in rgba or hex format       |   number    | `#000000` - `#FFFFFF` | `#FFFFFF`<br />(white with 100% opacity) |
 | `borderRadius` |             border-radius (in pixels)              |   number    |    0 - `size / 2`     |                   `0`                    |
+| `cornerMode`   | how corners are rendered when borderRadius > 0     |   string    | `individual`, `merge` |              `individual`                |
+| `finderOuterShape` | shape of the outer ring of finder patterns     |   string    | `square`, `rounded`, `circle`, `drop` |          `undefined`           |
+| `finderInnerShape` | shape of the inner dot of finder patterns      |   string    | `square`, `rounded`, `circle`, `drop` |          `undefined`           |
+| `finderColor`  | color of finder patterns (overrides `color`)       |   number/string   | same as `color` |              `undefined`                |
 | `noExcavate`   |        don't remove partially covered modules      |   boolean   |    `true`, `false`    |                 `false`                  |
 
 
