@@ -314,6 +314,15 @@ interface TestParams {
             borderRadius: 2,
         }
     }]) as TestParams[][],
+    (["pdf", "png", "svg"] as const).map(fileType => [{
+        name: `${fileType} merge corners`,
+        fn: generatorByType[fileType],
+        filename: `qr_merge_corners.${fileType}`,
+        params: {
+            borderRadius: 2,
+            cornerMode: "merge" as const,
+        }
+    }]) as TestParams[][],
     {
         name: "SVG with finder color",
         fn: getSVG,

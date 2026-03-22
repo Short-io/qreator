@@ -45,6 +45,7 @@ export async function generateImage({
     color,
     bgColor,
     borderRadius,
+    cornerMode,
     finderOuterShape,
     finderInnerShape,
     finderColor,
@@ -73,7 +74,7 @@ export async function generateImage({
         context.fillStyle = colorToHex(color);
         context.fill(findersPath, "evenodd");
     }
-    const path = new Path2D(getDotsSVGPath(matrix, size, marginPx, borderRadius));
+    const path = new Path2D(getDotsSVGPath(matrix, size, marginPx, borderRadius, cornerMode));
     context.fillStyle = colorToHex(color);
     context.fill(path);
     if (logo) {

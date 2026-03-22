@@ -4,7 +4,7 @@ import { ImageOptions, Matrix } from "./typing/types";
 import { colorToHex, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath } from "./utils.js";
 import { Base64 } from "js-base64";
 
-interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius" | "finderOuterShape" | "finderInnerShape" | "finderColor"> {
+interface FillSVGOptions extends Pick<ImageOptions, "color" | "bgColor" | "size" | "margin" | "borderRadius" | "cornerMode" | "finderOuterShape" | "finderInnerShape" | "finderColor"> {
     blockSize?: number;
 }
 
@@ -34,6 +34,7 @@ export function createSVG({
     imageWidth,
     imageHeight,
     borderRadius,
+    cornerMode,
     finderOuterShape,
     finderInnerShape,
     finderColor,
@@ -58,6 +59,7 @@ export function createSVG({
         margin,
         blockSize: actualBlockSize,
         borderRadius,
+        cornerMode,
         finderOuterShape,
         finderInnerShape,
         finderColor,
@@ -70,7 +72,7 @@ export function createSVG({
 
 function getSVGBody(matrix: Matrix, options: FillSVGOptions): string {
     const marginPx = options.margin * options.blockSize;
-    const dotsPath = getDotsSVGPath(matrix, options.blockSize, marginPx, options.borderRadius);
+    const dotsPath = getDotsSVGPath(matrix, options.blockSize, marginPx, options.borderRadius, options.cornerMode);
     let svgBody = `<rect width="${options.size}" height="${options.size}" fill="${colorToHex(
         options.bgColor
     )}"></rect>`;

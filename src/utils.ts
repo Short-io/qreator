@@ -1,5 +1,5 @@
 import colorString from "color-string";
-import { FinderShape, ImageOptions, ImageType, Matrix } from "./typing/types";
+import { CornerMode, FinderShape, ImageOptions, ImageType, Matrix } from "./typing/types";
 
 export function getOptions(inOptions: ImageOptions) {
     const type: ImageType = inOptions?.type ?? "png";
@@ -54,7 +54,24 @@ export function getFindersSVGPath(matrix: Matrix, size: number = 0, margin: numb
     return rectangles.join(" ")
 }
 
-export function getDotsSVGPath(matrix: Matrix, size: number, margin: number = 0, borderRadius: number = 0) {
+function isActive(matrix: Matrix, x: number, y: number): boolean {
+    return x >= 0 && x < matrix.length && y >= 0 && y < (matrix[0]?.length ?? 0) && !!matrix[x][y];
+}
+
+function getExposedCorners(matrix: Matrix, x: number, y: number): [boolean, boolean, boolean, boolean] {
+    const left = isActive(matrix, x - 1, y);
+    const right = isActive(matrix, x + 1, y);
+    const top = isActive(matrix, x, y - 1);
+    const bottom = isActive(matrix, x, y + 1);
+    return [
+        !left && !top,      // top-left: exposed only if both left and top are absent
+        !right && !top,     // top-right
+        !right && !bottom,  // bottom-right
+        !left && !bottom,   // bottom-left
+    ];
+}
+
+export function getDotsSVGPath(matrix: Matrix, size: number, margin: number = 0, borderRadius: number = 0, cornerMode: CornerMode = 'individual') {
     let rectangles = [];
     for (let x = 0; x < matrix.length; x++) {
         const column = matrix[x];
@@ -62,17 +79,26 @@ export function getDotsSVGPath(matrix: Matrix, size: number, margin: number = 0,
             if (column[y]) {
                 const leftX = x * size + margin;
                 const topY = y * size + margin;
-                const delta = size - 2 * borderRadius;
+                let rTL: number, rTR: number, rBR: number, rBL: number;
+                if (cornerMode === 'merge') {
+                    const [eTL, eTR, eBR, eBL] = getExposedCorners(matrix, x, y);
+                    rTL = eTL ? borderRadius : 0;
+                    rTR = eTR ? borderRadius : 0;
+                    rBR = eBR ? borderRadius : 0;
+                    rBL = eBL ? borderRadius : 0;
+                } else {
+                    rTL = rTR = rBR = rBL = borderRadius;
+                }
                 const rectangle = [
-                    svgMove(leftX, topY + borderRadius),
-                    svgVerticalDeltaLite(delta),
-                    svgDeltaArc(borderRadius, borderRadius, borderRadius),
-                    svgHorizontalDeltaLine(delta),
-                    svgDeltaArc(borderRadius, borderRadius, -borderRadius),
-                    svgVerticalDeltaLite(-delta),
-                    svgDeltaArc(borderRadius, -borderRadius, -borderRadius),
-                    svgHorizontalDeltaLine(-delta),
-                    svgDeltaArc(borderRadius, -borderRadius, borderRadius),
+                    svgMove(leftX, topY + rTL),
+                    svgVerticalDeltaLite(size - rTL - rBL),
+                    svgDeltaArc(rBL, rBL, rBL),
+                    svgHorizontalDeltaLine(size - rBL - rBR),
+                    svgDeltaArc(rBR, rBR, -rBR),
+                    svgVerticalDeltaLite(-(size - rBR - rTR)),
+                    svgDeltaArc(rTR, -rTR, -rTR),
+                    svgHorizontalDeltaLine(-(size - rTR - rTL)),
+                    svgDeltaArc(rTL, -rTL, rTL),
                     svgReturn(),
                 ];
                 rectangles.push(...rectangle.flat());

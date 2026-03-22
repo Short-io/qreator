@@ -37,6 +37,13 @@ export type ImageType = "png" | "svg" | "pdf";
 export type FinderShape = "square" | "rounded" | "circle" | "drop";
 
 /**
+ * How corners of data modules are rendered when borderRadius > 0.
+ * - 'individual': each module has independently rounded corners (default)
+ * - 'merge': adjacent modules share edges; only outer corners are rounded
+ */
+export type CornerMode = "individual" | "merge";
+
+/**
  * Image options.
  */
 export interface ImageOptions {
@@ -111,6 +118,14 @@ export interface ImageOptions {
      * border radius of the points
      */
     borderRadius?: number;
+
+    /**
+     * How corners of data modules are rendered when borderRadius > 0.
+     * - 'individual': each module has independently rounded corners (default)
+     * - 'merge': adjacent modules share edges; only outer corners are rounded
+     * @default 'individual'
+     */
+    cornerMode?: CornerMode;
 
     /**
      * Shape of the outer ring of finder patterns (corners).

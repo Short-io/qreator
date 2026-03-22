@@ -80,6 +80,7 @@ async function PDF({
     color,
     bgColor,
     borderRadius,
+    cornerMode,
     finderOuterShape,
     finderInnerShape,
     finderColor,
@@ -103,7 +104,7 @@ async function PDF({
     const fgOpacity = getOpacity(color);
     const fgStyle = { color: fgRGB, opacity: fgOpacity, borderColor: fgRGB, borderOpacity: fgOpacity };
 
-    const path = getDotsSVGPath(matrix, size, marginPx, borderRadius);
+    const path = getDotsSVGPath(matrix, size, marginPx, borderRadius, cornerMode);
     page.drawSvgPath(path, fgStyle);
 
     const hasFinderOptions = finderOuterShape || finderInnerShape || finderColor;
