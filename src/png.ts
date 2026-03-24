@@ -73,9 +73,13 @@ export async function generateImage({
             Math.round((matrixSizePx * logoHeight) / 100),
             { fit: "contain" }
         );
+        const logoWidthPx = Math.round((matrixSizePx * logoWidth) / 100);
+        const logoHeightPx = Math.round((matrixSizePx * logoHeight) / 100);
         const data = await sharpLogo.toBuffer();
         layers.push({
             input: data,
+            left: Math.round((imageSizePx - logoWidthPx) / 2),
+            top: Math.round((imageSizePx - logoHeightPx) / 2),
         });
         qrImage.composite(layers);
     }

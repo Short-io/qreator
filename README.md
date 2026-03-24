@@ -30,6 +30,7 @@ QR Code generator for browser and node.js with tree shaking and logo support
 -   supports corner mode (merged rounded corners)
 -   supports finder pattern customization (shape + color)
 -   supports text labels (below, pill, box styles)
+-   optional React component
 -   tree shaking support
 -   browser / node.js
 
@@ -82,6 +83,16 @@ const svgString = await getSVG("I love QR", {
     borderRadius: 2,
     cornerMode: "merge",
 });
+```
+
+### React
+
+```jsx
+import { QR } from "qreator/lib/react";
+
+function App() {
+    return <QR text="https://example.com" labelText="SCAN ME" labelStyle="pill" />;
+}
 ```
 
 [More examples](./examples)
