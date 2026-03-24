@@ -44,8 +44,7 @@ export default [{
     sourcemap: true
   },
   jsx: "react-jsx",
-  extensions: [".tsx", ".ts"],
   plugins: [typescript({
     outDir: 'lib/browser'
-  }), nodeResolve(), commonjs()]    
+  }), nodeResolve({ extensions: [".tsx", ".ts", ".js"] }), commonjs()]
 }];

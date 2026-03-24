@@ -91,6 +91,7 @@
         "rollup": "^4.46.1",
         "size-limit": "^11.1.4",
         "svg-path-parser": "^1.1.0",
+        "tslib": "^2.8.1",
         "typescript": "^5.4.5",
         "xml-formatter": "^3.6.2"
     },
