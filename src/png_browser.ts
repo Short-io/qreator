@@ -1,6 +1,6 @@
 import { QR } from "./qr-base.js";
 import { colorToHex, computeLabelLayout, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath, LabelLayout } from "./utils.js";
-import { ImageOptions, Matrix } from "./typing/types";
+import { ImageOptions, Matrix } from "./typing/types.js";
 import { Base64 } from "js-base64";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
@@ -29,7 +29,7 @@ function blobToDataURL(blob: Blob) {
         try {
             var a = new FileReader();
             a.onload = function (e) {
-                resolve(e.target.result as string);
+                resolve(e.target!.result as string);
             };
             a.onerror = reject;
             a.readAsDataURL(blob);
@@ -55,8 +55,14 @@ export async function generateImage({
     finderColor,
     labelLayout,
 }: ImageOptions & { matrix: Matrix; labelLayout?: LabelLayout | null }) {
-    const marginPx = margin * size;
-    const matrixSizePx = matrix.length * size;
+    const actualSize = size ?? 5;
+    const actualMargin = margin ?? 1;
+    const actualLogoWidth = logoWidth ?? 20;
+    const actualLogoHeight = logoHeight ?? 20;
+    const actualColor = color ?? 0x000000ff;
+    const actualBgColor = bgColor ?? 0xffffffff;
+    const marginPx = actualMargin * actualSize;
+    const matrixSizePx = matrix.length * actualSize;
     const imageSizePx = matrixSizePx + marginPx * 2;
 
     const totalWidth = labelLayout?.totalWidth ?? imageSizePx;
@@ -65,25 +71,25 @@ export async function generateImage({
     const canvas = document.createElement("canvas");
     canvas.width = totalWidth;
     canvas.height = totalHeight;
-    const context = canvas.getContext("2d");
-    context.fillStyle = colorToHex(bgColor);
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = colorToHex(actualBgColor);
     context.fillRect(0, 0, totalWidth, totalHeight);
 
     const hasFinderOptions = finderOuterShape || finderInnerShape || finderColor;
     if (hasFinderOptions) {
-        const finderColorHex = colorToHex(finderColor ?? color);
-        const outerPath = new Path2D(getFinderOuterSVGPath(matrix, size, marginPx, borderRadius, finderOuterShape ?? 'rounded'));
-        const innerPath = new Path2D(getFinderInnerSVGPath(matrix, size, marginPx, borderRadius, finderInnerShape ?? 'rounded'));
+        const finderColorHex = colorToHex(finderColor ?? actualColor);
+        const outerPath = new Path2D(getFinderOuterSVGPath(matrix, actualSize, marginPx, borderRadius ?? 0, finderOuterShape ?? 'rounded'));
+        const innerPath = new Path2D(getFinderInnerSVGPath(matrix, actualSize, marginPx, borderRadius ?? 0, finderInnerShape ?? 'rounded'));
         context.fillStyle = finderColorHex;
         context.fill(outerPath, "evenodd");
         context.fill(innerPath);
     } else {
-        const findersPath = new Path2D(getFindersSVGPath(matrix, size, marginPx, borderRadius));
-        context.fillStyle = colorToHex(color);
+        const findersPath = new Path2D(getFindersSVGPath(matrix, actualSize, marginPx, borderRadius));
+        context.fillStyle = colorToHex(actualColor);
         context.fill(findersPath, "evenodd");
     }
-    const path = new Path2D(getDotsSVGPath(matrix, size, marginPx, borderRadius, cornerMode));
-    context.fillStyle = colorToHex(color);
+    const path = new Path2D(getDotsSVGPath(matrix, actualSize, marginPx, borderRadius, cornerMode));
+    context.fillStyle = colorToHex(actualColor);
     context.fill(path);
 
     if (labelLayout) {
@@ -96,13 +102,13 @@ export async function generateImage({
                 const image = new Image();
                 image.onload = () => resolve(image);
                 image.onerror = reject;
-                image.src = await blobToDataURL(new window.Blob([logo]));
+                image.src = await blobToDataURL(new window.Blob([logo as BlobPart]));
             } catch (e) {
                 reject(e);
             }
         });
-        const logoWidthPx = (logoWidth / 100) * matrixSizePx;
-        const logoHeightPx = (logoHeight / 100) * matrixSizePx;
+        const logoWidthPx = (actualLogoWidth / 100) * matrixSizePx;
+        const logoHeightPx = (actualLogoHeight / 100) * matrixSizePx;
         context.drawImage(
             logoImage,
             (imageSizePx - logoWidthPx) / 2,

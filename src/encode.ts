@@ -1,10 +1,10 @@
-import { NumberData } from "./typing/types";
+import { NumberData } from "./typing/types.js";
 const enc = new TextEncoder();
 const dec = new TextDecoder();
 // {{{1 Choose encode mode and generates struct with data for different version
 export function encode(inData: string | number | ArrayBuffer, parse_url: boolean) {
     let str: string;
-    let data: ArrayBufferLike;
+    let data: { byteLength: number };
     if (typeof inData === "string" || typeof inData === "number") {
         str = `${inData}`;
         data = enc.encode(str);
@@ -35,7 +35,7 @@ export function encode(inData: string | number | ArrayBuffer, parse_url: boolean
     if (data.byteLength > 2953) {
         throw new Error("Too much data");
     }
-    return encode_8bit(new Uint8Array(data));
+    return encode_8bit(new Uint8Array(data as ArrayBuffer));
 }
 
 /* eslint-disable no-bitwise */

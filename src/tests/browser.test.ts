@@ -199,12 +199,12 @@ const defaultParams = {
             logo: new window.Uint8Array(readFileSync(`${goldenDir}/logo.jpg`).buffer),
         },
     },
-] as TestParams[]) .forEach((testData) => {
+] as unknown as TestParams[]) .forEach((testData) => {
     test(`browser > ${testData.name}`, async (t) => {
         const image = await functions[testData.type](text, {
-            type: testData.type,
             ...defaultParams,
             ...testData.params,
+            type: testData.type,
         });
         await writeFile(`${generatedImageDir}/browser_${testData.filename}`, new Uint8Array(image));
         await assertEqual(t, 'browser_' + testData.filename);

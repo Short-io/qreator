@@ -4,7 +4,8 @@ import { readFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as diff from "diff";
-import XMLFormatter from "xml-formatter";
+import _XMLFormatter from "xml-formatter";
+const XMLFormatter = (_XMLFormatter as any).default ?? _XMLFormatter;
 import chalk from "chalk";
 chalk.level = 3;
 

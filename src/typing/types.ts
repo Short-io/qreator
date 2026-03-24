@@ -196,3 +196,19 @@ export interface ImageOptions {
      */
     labelFontFamily?: string;
 }
+
+/**
+ * ImageOptions with all default-populated fields marked as required.
+ * Returned by getOptions() after merging user input with defaults.
+ */
+export type ResolvedImageOptions = ImageOptions & Required<Pick<ImageOptions,
+    | "type"
+    | "ec_level"
+    | "parse_url"
+    | "size"
+    | "margin"
+    | "logoWidth"
+    | "logoHeight"
+    | "color"
+    | "bgColor"
+>>;

@@ -1,6 +1,6 @@
 import { PDFWriter } from "./pdf-writer/index.js";
 import { QR } from "./qr-base.js";
-import { ImageOptions, Matrix } from "./typing/types";
+import { ImageOptions, Matrix, ResolvedImageOptions } from "./typing/types.js";
 import { computeLabelLayout, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath, LabelLayout } from "./utils.js";
 import colorString from "color-string";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
@@ -51,7 +51,7 @@ async function PDF({
     finderInnerShape,
     finderColor,
     labelLayout,
-}: ImageOptions & {
+}: ResolvedImageOptions & {
     matrix: Matrix;
     labelLayout?: LabelLayout | null;
 }) {
@@ -82,9 +82,9 @@ async function PDF({
         const fc = finderColor ?? color;
         const [fcR, fcG, fcB] = colorToRGB(fc);
         const fcOpacity = getOpacity(fc);
-        const outerPath = getFinderOuterSVGPath(matrix, size, marginPx, borderRadius, finderOuterShape ?? 'rounded');
+        const outerPath = getFinderOuterSVGPath(matrix, size, marginPx, borderRadius ?? 0, finderOuterShape ?? 'rounded');
         writer.drawSvgPath(outerPath, 0, writer.getHeight(), fcR, fcG, fcB, fcOpacity, true); // even-odd
-        const innerPath = getFinderInnerSVGPath(matrix, size, marginPx, borderRadius, finderInnerShape ?? 'rounded');
+        const innerPath = getFinderInnerSVGPath(matrix, size, marginPx, borderRadius ?? 0, finderInnerShape ?? 'rounded');
         writer.drawSvgPath(innerPath, 0, writer.getHeight(), fcR, fcG, fcB, fcOpacity, false);
     } else {
         const findersPath = getFindersSVGPath(matrix, size, marginPx, borderRadius);

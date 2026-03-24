@@ -1,4 +1,4 @@
-import { BitMatrix, Data, EcLevel, Matrix } from "./typing/types";
+import { BitMatrix, Data, EcLevel, Matrix } from "./typing/types.js";
 
 // {{{1 Initialize matrix with zeros
 export function init(version: number): Matrix {

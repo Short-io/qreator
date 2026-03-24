@@ -1,4 +1,4 @@
-import { ImageOptions, Matrix } from "./typing/types";
+import { ImageOptions, Matrix } from "./typing/types.js";
 import { QR } from "./qr-base.js";
 import { createSVG } from "./svg.js";
 import { computeLabelLayout, getOptions } from "./utils.js";
@@ -28,53 +28,43 @@ export async function generateImage({
     logo,
     logoWidth,
     logoHeight,
-    color,
-    bgColor,
-    borderRadius,
-    cornerMode,
-    finderOuterShape,
-    finderInnerShape,
-    finderColor,
     labelLayout,
+    ...rest
 }: ImageOptions & { matrix: Matrix; labelLayout?: ReturnType<typeof computeLabelLayout> }) {
-    const marginPx = margin * size;
-    const matrixSizePx = matrix.length * size;
-    const imageSizePx = matrixSizePx + marginPx * 2;
-
+    const actualSize = size ?? 5;
+    const actualMargin = margin ?? 1;
+    const actualLogoWidth = logoWidth ?? 20;
+    const actualLogoHeight = logoHeight ?? 20;
+    const matrixSizePx = matrix.length * actualSize;
+    const imageSizePx = matrixSizePx + actualMargin * actualSize * 2;
     const totalWidth = labelLayout?.totalWidth ?? imageSizePx;
     const totalHeight = labelLayout?.totalHeight ?? imageSizePx;
 
-    if (size > 200) {
+    if (actualSize > 200) {
         throw new Error("Module size is too big, resulting image is too large: " + imageSizePx);
     }
 
     const svg = createSVG({
         matrix,
-        size,
-        margin,
-        color,
-        bgColor,
+        size: actualSize,
+        margin: actualMargin,
+        logoWidth: actualLogoWidth,
+        logoHeight: actualLogoHeight,
+        ...rest,
         imageWidth: totalWidth,
         imageHeight: totalHeight,
-        logoWidth: logo && logoWidth,
-        logoHeight: logo && logoHeight,
-        borderRadius,
-        cornerMode,
-        finderOuterShape,
-        finderInnerShape,
-        finderColor,
         labelLayout,
     });
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];
     if (logo) {
-        const sharpLogo = sharp(logo).resize(
-            Math.round((matrixSizePx * logoWidth) / 100),
-            Math.round((matrixSizePx * logoHeight) / 100),
+        const sharpLogo = sharp(logo as ArrayBuffer).resize(
+            Math.round((matrixSizePx * actualLogoWidth) / 100),
+            Math.round((matrixSizePx * actualLogoHeight) / 100),
             { fit: "contain" }
         );
-        const logoWidthPx = Math.round((matrixSizePx * logoWidth) / 100);
-        const logoHeightPx = Math.round((matrixSizePx * logoHeight) / 100);
+        const logoWidthPx = Math.round((matrixSizePx * actualLogoWidth) / 100);
+        const logoHeightPx = Math.round((matrixSizePx * actualLogoHeight) / 100);
         const data = await sharpLogo.toBuffer();
         layers.push({
             input: data,

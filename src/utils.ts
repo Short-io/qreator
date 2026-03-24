@@ -1,10 +1,10 @@
 import colorString from "color-string";
-import { CornerMode, FinderShape, ImageOptions, ImageType, LabelStyle, Matrix } from "./typing/types";
+import { CornerMode, FinderShape, ImageOptions, ImageType, LabelStyle, Matrix, ResolvedImageOptions } from "./typing/types.js";
 
-export function getOptions(inOptions: ImageOptions) {
+export function getOptions(inOptions: ImageOptions): ResolvedImageOptions {
     const type: ImageType = inOptions?.type ?? "png";
     const defaults = type === "png" ? BITMAP_OPTIONS : VECTOR_OPTIONS;
-    return { ...defaults, ...inOptions };
+    return { ...defaults, ...inOptions } as ResolvedImageOptions;
 }
 
 export function colorToHex(color: number | string): string {
@@ -123,6 +123,7 @@ function getCornerRadii(shape: FinderShape, sideLength: number, borderRadius: nu
         case 'rounded': return [borderRadius, borderRadius, borderRadius, borderRadius];
         case 'circle': return [maxR, maxR, maxR, maxR];
         case 'drop': return [maxR, 0, maxR, maxR];
+        default: return [borderRadius, borderRadius, borderRadius, borderRadius];
     }
 }
 

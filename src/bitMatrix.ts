@@ -1,4 +1,4 @@
-import { BitMatrix } from "./typing/types";
+import { BitMatrix } from "./typing/types.js";
 
 /**
  * Finders require different UI representation, so we zero-fill finders and draw them later

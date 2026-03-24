@@ -1,7 +1,7 @@
 export async function deflate(data: Uint8Array): Promise<Uint8Array> {
     const cs = new CompressionStream("deflate");
     const writer = cs.writable.getWriter();
-    writer.write(data);
+    writer.write(data as Uint8Array<ArrayBuffer>);
     writer.close();
     return collect(cs.readable);
 }
@@ -9,7 +9,7 @@ export async function deflate(data: Uint8Array): Promise<Uint8Array> {
 export async function inflate(data: Uint8Array): Promise<Uint8Array> {
     const ds = new DecompressionStream("deflate");
     const writer = ds.writable.getWriter();
-    writer.write(data);
+    writer.write(data as Uint8Array<ArrayBuffer>);
     writer.close();
     return collect(ds.readable);
 }

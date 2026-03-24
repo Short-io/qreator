@@ -1,7 +1,7 @@
 import { encode } from "./encode.js";
 import { calculateEC } from "./errorcode.js";
 import { getMatrix } from "./matrix.js";
-import { Data, EcLevel, NumberData } from "./typing/types";
+import { Data, EcLevel, NumberData } from "./typing/types.js";
 
 interface LevelNumber {
     [key: string]: Pick<Data, "data_len" | "ec_level">;
@@ -12,7 +12,7 @@ const EC_LEVELS: EcLevel[] = ["L", "M", "Q", "H"];
 // {{{1 Get version template
 export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     let i = 1;
-    let len;
+    let len: number | undefined;
 
     if (message.data1) {
         len = Math.ceil(message.data1.length / 8);
@@ -21,7 +21,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     }
     for (; /* i */ i < 10; i++) {
         let version = mappedVersions[i][ec_level];
-        if (version.data_len >= len) {
+        if (version.data_len >= len!) {
             return copyTemplate(version);
         }
     }
@@ -33,7 +33,7 @@ export function getTemplate(message: NumberData, ec_level: EcLevel): Data {
     }
     for (; /* i */ i < 27; i++) {
         let version = mappedVersions[i][ec_level];
-        if (version.data_len >= len) {
+        if (version.data_len >= len!) {
             return copyTemplate(version);
         }
     }
