@@ -343,6 +343,34 @@ interface TestParams {
             finderInnerShape: "circle" as const,
         },
     },
+    (["pdf", "png", "svg"] as const).map(fileType => [{
+        name: `${fileType} label below`,
+        fn: generatorByType[fileType],
+        filename: `qr_label_below.${fileType}`,
+        params: {
+            labelText: "SCAN ME",
+            labelStyle: "below" as const,
+            size: 20,
+        }
+    }, {
+        name: `${fileType} label pill`,
+        fn: generatorByType[fileType],
+        filename: `qr_label_pill.${fileType}`,
+        params: {
+            labelText: "SCAN ME",
+            labelStyle: "pill" as const,
+            size: 20,
+        }
+    }, {
+        name: `${fileType} label box`,
+        fn: generatorByType[fileType],
+        filename: `qr_label_box.${fileType}`,
+        params: {
+            labelText: "SCAN ME",
+            labelStyle: "box" as const,
+            size: 20,
+        }
+    }]) as TestParams[][],
 ] as TestParams[]).flat(2).forEach((testData) => {
     test.serial(testData.name, async (t) => {
         const image = await testData.fn(text, {

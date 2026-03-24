@@ -51,3 +51,4 @@ export function clearMatrixCenter(matrix: BitMatrix, widthPct: number, heightPct
     }
     return matrix;
 }
+

@@ -1,7 +1,7 @@
 import { ImageOptions, Matrix } from "./typing/types";
 import { QR } from "./qr-base.js";
 import { createSVG } from "./svg.js";
-import { getOptions } from "./utils.js";
+import { computeLabelLayout, getOptions } from "./utils.js";
 import sharp from "sharp";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
@@ -14,7 +14,11 @@ export async function getPNG(text: string, inOptions: ImageOptions = {}) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
 
-    return generateImage({ matrix, ...options, type: "png" });
+    const marginPx = options.margin * options.size;
+    const imageSizePx = matrix.length * options.size + marginPx * 2;
+    const layout = computeLabelLayout(options, imageSizePx, marginPx, options.size);
+
+    return generateImage({ matrix, ...options, type: "png", labelLayout: layout });
 }
 
 export async function generateImage({
@@ -31,10 +35,14 @@ export async function generateImage({
     finderOuterShape,
     finderInnerShape,
     finderColor,
-}: ImageOptions & { matrix: Matrix }) {
+    labelLayout,
+}: ImageOptions & { matrix: Matrix; labelLayout?: ReturnType<typeof computeLabelLayout> }) {
     const marginPx = margin * size;
     const matrixSizePx = matrix.length * size;
     const imageSizePx = matrixSizePx + marginPx * 2;
+
+    const totalWidth = labelLayout?.totalWidth ?? imageSizePx;
+    const totalHeight = labelLayout?.totalHeight ?? imageSizePx;
 
     if (size > 200) {
         throw new Error("Module size is too big, resulting image is too large: " + imageSizePx);
@@ -46,8 +54,8 @@ export async function generateImage({
         margin,
         color,
         bgColor,
-        imageWidth: imageSizePx,
-        imageHeight: imageSizePx,
+        imageWidth: totalWidth,
+        imageHeight: totalHeight,
         logoWidth: logo && logoWidth,
         logoHeight: logo && logoHeight,
         borderRadius,
@@ -55,6 +63,7 @@ export async function generateImage({
         finderOuterShape,
         finderInnerShape,
         finderColor,
+        labelLayout,
     });
     const qrImage = sharp(svg);
     const layers: sharp.OverlayOptions[] = [];

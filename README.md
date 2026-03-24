@@ -4,7 +4,20 @@
 
 QR Code generator for browser and node.js with tree shaking and logo support
 
-![image](https://github.com/Short-io/qreator/assets/75169/02b84738-56f2-44d8-8d11-f40e263302ed)
+<table>
+<tr>
+<td align="center"><img src="showcase/classic.png" width="180" /><br /><b>Classic</b></td>
+<td align="center"><img src="showcase/rounded.png" width="180" /><br /><b>Rounded</b></td>
+<td align="center"><img src="showcase/drops.png" width="180" /><br /><b>Custom finders</b></td>
+<td align="center"><img src="showcase/logo.png" width="180" /><br /><b>Logo overlay</b></td>
+</tr>
+<tr>
+<td align="center"><img src="showcase/label-below.png" width="180" /><br /><b>Label: below</b></td>
+<td align="center"><img src="showcase/label-pill.png" width="180" /><br /><b>Label: pill</b></td>
+<td align="center"><img src="showcase/label-box.png" width="180" /><br /><b>Label: box</b></td>
+<td align="center"><img src="showcase/branded.png" width="180" /><br /><b>Branded</b></td>
+</tr>
+</table>
 
 ## Overview
 
@@ -16,6 +29,7 @@ QR Code generator for browser and node.js with tree shaking and logo support
 -   supports border-radius
 -   supports corner mode (merged rounded corners)
 -   supports finder pattern customization (shape + color)
+-   supports text labels (below, pill, box styles)
 -   tree shaking support
 -   browser / node.js
 
@@ -46,6 +60,15 @@ const pngBuffer = await getPNG("I love QR", {
     logo: fs.openFileSync("my-logo.svg"),
     color: "rgb(0, 0, 0)",
     bgColor: "rgb(255, 255, 255)",
+});
+```
+
+### Label
+
+```javascript
+const png = await getPNG("https://example.com", {
+    labelText: "SCAN ME",
+    labelStyle: "pill", // "below", "pill", or "box"
 });
 ```
 
@@ -94,6 +117,12 @@ const svgString = await getSVG("I love QR", {
 | `finderInnerShape` | shape of the inner dot of finder patterns      |   string    | `square`, `rounded`, `circle`, `drop` |          `undefined`           |
 | `finderColor`  | color of finder patterns (overrides `color`)       |   number/string   | same as `color` |              `undefined`                |
 | `noExcavate`   |        don't remove partially covered modules      |   boolean   |    `true`, `false`    |                 `false`                  |
+| `labelText`    |              text label to display below QR        |   string    |           -           |               `undefined`                |
+| `labelStyle`   |              label presentation style              |   string    | `below`, `pill`, `box` |                `below`                  |
+| `labelColor`   |              label text color                      |   number/string   | same as `color` |  `color` (below) / `bgColor` (pill/box)  |
+| `labelBgColor` |       label background color (pill/box only)       |   number/string   | same as `color` |              same as `color`              |
+| `labelFontSize`|       font size as multiple of module size         |   number    |        `1` - n        |                   `5`                    |
+| `labelFontFamily`|              font family                         |   string    |           -           |              `sans-serif`                |
 
 
 ## Benchmarks

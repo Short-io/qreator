@@ -1,7 +1,7 @@
-import { PDFDocument, PDFImage, PDFOperator, PDFOperatorNames, PDFPage, rgb } from "pdf-lib";
+import { PDFDocument, PDFImage, PDFOperator, PDFOperatorNames, PDFPage, rgb, StandardFonts } from "pdf-lib";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix } from "./typing/types";
-import { getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath } from "./utils.js";
+import { computeLabelLayout, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath, LabelLayout } from "./utils.js";
 import colorString from "color-string";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
@@ -16,7 +16,12 @@ export async function getPDF(text: string, inOptions: ImageOptions) {
         matrix = clearMatrixCenter(matrix, options.logoWidth, options.logoHeight);
     }
 
-    return PDF({ matrix, ...options });
+    const pdfSize = 9;
+    const marginPx = options.margin * pdfSize;
+    const imageSizePx = matrix.length * pdfSize + 2 * marginPx;
+    const layout = computeLabelLayout(options, imageSizePx, marginPx, pdfSize);
+
+    return PDF({ matrix, ...options, labelLayout: layout });
 }
 
 function colorToRGB(color: string | number): [number, number, number] {
@@ -36,7 +41,7 @@ function getOpacity(color: string | number): number {
 
 /**
  * This code is a piece of monkey patching to change the fill rule of the QR code. As pdf-lib does not support the even-odd fill rule, we need to patch the content stream of the page to change the fill rule from non-zero to even-odd.
- * @param page 
+ * @param page
  */
 function patchContentStream(page: PDFPage) {
     // @ts-expect-error patching private method
@@ -84,18 +89,26 @@ async function PDF({
     finderOuterShape,
     finderInnerShape,
     finderColor,
+    labelLayout,
 }: ImageOptions & {
     matrix: Matrix;
+    labelLayout?: LabelLayout | null;
 }) {
     const size = 9;
     const marginPx = margin * size;
     const matrixSizePx = matrix.length * size;
     const imageSizePx = matrixSizePx + 2 * marginPx;
 
+    const totalWidth = labelLayout?.totalWidth ?? imageSizePx;
+    const totalHeight = labelLayout?.totalHeight ?? imageSizePx;
+
     const document = await PDFDocument.create();
-    const page = document.addPage([imageSizePx, imageSizePx]);
-    page.drawSquare({
-        size: imageSizePx,
+    const page = document.addPage([totalWidth, totalHeight]);
+    page.drawRectangle({
+        x: 0,
+        y: 0,
+        width: totalWidth,
+        height: totalHeight,
         color: rgb(...colorToRGB(bgColor)),
     });
     page.moveTo(0, page.getHeight());
@@ -142,5 +155,61 @@ async function PDF({
             height: logoHeightPx,
         });
     }
+
+    if (labelLayout) {
+        await drawPDFLabel(document, page, labelLayout, totalHeight);
+    }
+
     return document.save();
+}
+
+async function drawPDFLabel(
+    document: PDFDocument,
+    page: PDFPage,
+    layout: LabelLayout,
+    totalHeight: number,
+): Promise<void> {
+    const { label } = layout;
+    const font = await document.embedFont(StandardFonts.Helvetica);
+
+    // pdf-lib Y-axis is bottom-up, so convert from SVG top-down coordinates
+    const pdfLabelCenterY = totalHeight - label.y;
+
+    if (label.bgColor) {
+        const [r, g, b] = colorToRGB(label.bgColor);
+        const rectX = label.x - label.width / 2;
+        const rectY = pdfLabelCenterY - label.height / 2;
+
+        if (label.borderRadius > 0) {
+            // Draw rounded rect as SVG path
+            const w = label.width;
+            const h = label.height;
+            const rad = Math.min(label.borderRadius, w / 2, h / 2);
+            // SVG path for rounded rect, drawn relative to page moveTo
+            const pillPath = `M ${rectX + rad} 0 h ${w - 2 * rad} a ${rad} ${rad} 0 0 1 ${rad} ${-rad} v ${-(h - 2 * rad)} a ${rad} ${rad} 0 0 1 ${-rad} ${-rad} h ${-(w - 2 * rad)} a ${rad} ${rad} 0 0 1 ${-rad} ${rad} v ${h - 2 * rad} a ${rad} ${rad} 0 0 1 ${rad} ${rad} z`;
+            page.moveTo(0, rectY + label.height);
+            page.drawSvgPath(pillPath, {
+                color: rgb(r, g, b),
+            });
+            page.moveTo(0, page.getHeight());
+        } else {
+            page.drawRectangle({
+                x: rectX,
+                y: rectY,
+                width: label.width,
+                height: label.height,
+                color: rgb(r, g, b),
+            });
+        }
+    }
+
+    const textWidth = font.widthOfTextAtSize(label.text, label.fontSize);
+    const [tr, tg, tb] = colorToRGB(label.textColor);
+    page.drawText(label.text, {
+        x: label.x - textWidth / 2,
+        y: pdfLabelCenterY - label.fontSize * 0.35,
+        size: label.fontSize,
+        font,
+        color: rgb(tr, tg, tb),
+    });
 }

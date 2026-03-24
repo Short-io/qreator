@@ -44,6 +44,14 @@ export type FinderShape = "square" | "rounded" | "circle" | "drop";
 export type CornerMode = "individual" | "merge";
 
 /**
+ * Label presentation style.
+ * - 'below': plain text beneath the QR code
+ * - 'pill': rounded pill/badge with colored background beneath the QR code
+ * - 'box': full-width colored strip beneath the QR code
+ */
+export type LabelStyle = "below" | "pill" | "box";
+
+/**
  * Image options.
  */
 export interface ImageOptions {
@@ -147,4 +155,44 @@ export interface ImageOptions {
      * @default undefined (uses color)
      */
     finderColor?: number | string;
+
+    /**
+     * Text to display as a label on the QR code.
+     * @default undefined
+     */
+    labelText?: string;
+
+    /**
+     * Label presentation style.
+     * - 'below': plain text beneath the QR code
+     * - 'pill': rounded pill/badge with colored background beneath the QR code
+     * - 'box': full-width colored strip beneath the QR code
+     * @default 'below'
+     */
+    labelStyle?: LabelStyle;
+
+    /**
+     * Label text color. Accepts same formats as `color`.
+     * @default For 'below': same as `color`. For 'banner'/'tab': same as `bgColor`.
+     */
+    labelColor?: number | string;
+
+    /**
+     * Label background color (used by 'banner' and 'tab' styles).
+     * Accepts same formats as `color`.
+     * @default same as `color` (foreground)
+     */
+    labelBgColor?: number | string;
+
+    /**
+     * Label font size as a multiple of the module size.
+     * @default 5
+     */
+    labelFontSize?: number;
+
+    /**
+     * Label font family.
+     * @default 'sans-serif'
+     */
+    labelFontFamily?: string;
 }

@@ -1,5 +1,5 @@
 import colorString from "color-string";
-import { CornerMode, FinderShape, ImageOptions, ImageType, Matrix } from "./typing/types";
+import { CornerMode, FinderShape, ImageOptions, ImageType, LabelStyle, Matrix } from "./typing/types";
 
 export function getOptions(inOptions: ImageOptions) {
     const type: ImageType = inOptions?.type ?? "png";
@@ -218,3 +218,109 @@ const VECTOR_OPTIONS: ImageOptions = {
     margin: 1,
     size: 0,
 };
+
+export interface LabelLayout {
+    totalWidth: number;
+    totalHeight: number;
+    qrSize: number;
+    label: {
+        text: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        fontSize: number;
+        fontFamily: string;
+        textColor: string;
+        bgColor: string | null;
+        borderRadius: number;
+    };
+}
+
+export function computeLabelLayout(
+    options: ImageOptions,
+    qrSizePx: number,
+    marginPx: number,
+    moduleSize: number,
+): LabelLayout | null {
+    if (!options.labelText) return null;
+
+    const style: LabelStyle = options.labelStyle ?? "below";
+    const fontSize = (options.labelFontSize ?? 5) * moduleSize;
+    const fontFamily = options.labelFontFamily ?? "sans-serif";
+    const fgColor = colorToHex(options.color ?? 0x000000ff);
+    const bgColorHex = colorToHex(options.bgColor ?? 0xffffffff);
+
+    const textColor = options.labelColor
+        ? colorToHex(options.labelColor)
+        : style === "below" ? fgColor : bgColorHex;
+    const labelBgColor = options.labelBgColor
+        ? colorToHex(options.labelBgColor)
+        : fgColor;
+
+    if (style === "below") {
+        const stripHeight = fontSize * 2.5;
+        return {
+            totalWidth: qrSizePx,
+            totalHeight: qrSizePx + stripHeight,
+            qrSize: qrSizePx,
+            label: {
+                text: options.labelText,
+                x: qrSizePx / 2,
+                y: qrSizePx + stripHeight / 2,
+                width: qrSizePx,
+                height: stripHeight,
+                fontSize,
+                fontFamily,
+                textColor,
+                bgColor: null,
+                borderRadius: 0,
+            },
+        };
+    }
+
+    if (style === "pill") {
+        const pillHeight = fontSize * 2.2;
+        const estimatedTextWidth = options.labelText.length * fontSize * 0.7;
+        const pillWidth = Math.min(Math.max(estimatedTextWidth + fontSize * 2, qrSizePx * 0.3), qrSizePx * 0.95);
+        const stripHeight = pillHeight + fontSize * 0.6;
+        return {
+            totalWidth: qrSizePx,
+            totalHeight: qrSizePx + stripHeight,
+            qrSize: qrSizePx,
+            label: {
+                text: options.labelText,
+                x: qrSizePx / 2,
+                y: qrSizePx + stripHeight / 2,
+                width: pillWidth,
+                height: pillHeight,
+                fontSize,
+                fontFamily,
+                textColor,
+                bgColor: labelBgColor,
+                borderRadius: pillHeight / 2,
+            },
+        };
+    }
+
+    // "box" style — full-width colored strip below
+    const boxHeight = fontSize * 2.2;
+    const stripHeight = boxHeight + fontSize * 0.4;
+    return {
+        totalWidth: qrSizePx,
+        totalHeight: qrSizePx + stripHeight,
+        qrSize: qrSizePx,
+        label: {
+            text: options.labelText,
+            x: qrSizePx / 2,
+            y: qrSizePx + stripHeight / 2,
+            width: qrSizePx,
+            height: boxHeight,
+            fontSize,
+            fontFamily,
+            textColor,
+            bgColor: labelBgColor,
+            borderRadius: 0,
+        },
+    };
+}
