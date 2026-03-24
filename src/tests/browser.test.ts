@@ -15,6 +15,8 @@ test.before(async () => {
     window.globalThis.TextDecoder = TextDecoder;
     window.globalThis.structuredClone = structuredClone;
     window.globalThis.Path2D = Path2D;
+    window.globalThis.CompressionStream = CompressionStream;
+    window.globalThis.DecompressionStream = DecompressionStream;
 
     for (const scriptType of ['png', 'svg', 'pdf']) {
         const scriptEl = window.document.createElement('script')
