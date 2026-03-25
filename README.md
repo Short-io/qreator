@@ -139,14 +139,10 @@ function App() {
 ## Benchmarks
 
 ```
-getPNG x 229 ops/sec ±0.45% (84 runs sampled)
-getPDF x 186 ops/sec ±24.91% (86 runs sampled)
-getSVG x 2,482 ops/sec ±0.18% (90 runs sampled)
-getPNG with logo x 69.96 ops/sec ±0.72% (68 runs sampled)
-getPDF with logo x 44.83 ops/sec ±9.52% (77 runs sampled)
-getSVG with logo x 2,494 ops/sec ±0.19% (88 runs sampled)
+getPNG x 148 ops/sec ±1.28% (61 runs sampled)
+getPDF x 494 ops/sec ±2.59% (73 runs sampled)
+getSVG x 1,977 ops/sec ±1.94% (81 runs sampled)
+getPNG with logo x 84.19 ops/sec ±1.43% (53 runs sampled)
+getPDF with logo x 43.27 ops/sec ±6.82% (60 runs sampled)
+getSVG with logo x 1,885 ops/sec ±0.35% (89 runs sampled)
 ```
-
-## TODO
-
--   Use lighter versions of PDF library
