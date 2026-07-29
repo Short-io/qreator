@@ -1,8 +1,7 @@
 import { PDFWriter } from "./pdf-writer/index.js";
 import { QR } from "./qr-base.js";
 import { ImageOptions, Matrix, ResolvedImageOptions } from "./typing/types.js";
-import { computeLabelLayout, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath, LabelLayout } from "./utils.js";
-import colorString from "color-string";
+import { computeLabelLayout, getOptions, getDotsSVGPath, getFindersSVGPath, getFinderOuterSVGPath, getFinderInnerSVGPath, parseColor, LabelLayout } from "./utils.js";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
 export async function getPDF(text: string, inOptions: ImageOptions) {
@@ -23,18 +22,12 @@ export async function getPDF(text: string, inOptions: ImageOptions) {
 }
 
 function colorToRGB(color: string | number): [number, number, number] {
-    if (typeof color === "string") {
-        const [red, green, blue] = colorString.get.rgb(color);
-        return [red / 255, green / 255, blue / 255];
-    }
-    return [((color >>> 24) % 256) / 255, ((color >>> 16) % 256) / 255, ((color >>> 8) % 256) / 255];
+    const { r, g, b } = parseColor(color);
+    return [r / 255, g / 255, b / 255];
 }
 
 function getOpacity(color: string | number): number {
-    if (typeof color === "string") {
-        return colorString.get.rgb(color)[3];
-    }
-    return (color % 256) / 255;
+    return parseColor(color).a;
 }
 
 async function PDF({
