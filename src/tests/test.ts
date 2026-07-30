@@ -5,7 +5,7 @@ import { getPNG } from "../png.js";
 import { getSVG } from "../svg.js";
 import { getPDF } from "../pdf.js";
 import type { ImageOptions } from "../typing/types.js";
-import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
+import { assertEqual, generatedImageDir, goldenDir, toArrayBuffer } from "./_common.js";
 import { readFileSync } from "node:fs";
 
 const text = "I \u2764\uFE0F QR code!";
@@ -17,8 +17,8 @@ const defaultParams = {
     parse_url: true,
 };
 
-const logoJPEG = readFileSync(`${goldenDir}/logo.jpg`).buffer;
-const turnedLogo = readFileSync(`${goldenDir}/logo_45deg.png`).buffer;
+const logoJPEG = toArrayBuffer(readFileSync(`${goldenDir}/logo.jpg`));
+const turnedLogo = toArrayBuffer(readFileSync(`${goldenDir}/logo_45deg.png`));
 
 const generatorByType = {
     pdf: getPDF,
@@ -121,7 +121,7 @@ interface TestParams {
         name: "PNG with logo (arraybuffer)",
         fn: getPNG,
         filename: "qr_with_logo.png",
-        params: { logo: (await readFile(`${goldenDir}/logo.png`)).buffer },
+        params: { logo: toArrayBuffer(await readFile(`${goldenDir}/logo.png`)) },
     },
     {
         name: "SVG",
@@ -190,7 +190,7 @@ interface TestParams {
         fn: getSVG,
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
-            logo: (await readFile(`${goldenDir}/logo.png`)).buffer,
+            logo: toArrayBuffer(await readFile(`${goldenDir}/logo.png`)),
         },
     },
     {
@@ -231,7 +231,7 @@ interface TestParams {
         fn: getPDF,
         filename: "qr_logo_arraybuffer.pdf",
         params: {
-            logo: (await readFile(`${goldenDir}/logo.png`)).buffer,
+            logo: toArrayBuffer(await readFile(`${goldenDir}/logo.png`)),
         },
     },
     {

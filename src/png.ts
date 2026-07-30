@@ -76,5 +76,7 @@ export async function generateImage({
     const { data } = await qrImage
         .png({ palette: !logo }) // no logo results in much less colors
         .toBuffer({ resolveWithObject: true });
-    return new Uint8ClampedArray(data.buffer);
+    // `data` is a view into a possibly larger allocation, so bound the copy to the view itself
+    // rather than handing back whatever else shares that ArrayBuffer.
+    return new Uint8ClampedArray(data.buffer, data.byteOffset, data.byteLength);
 }

@@ -4,7 +4,7 @@ import { writeFile } from "node:fs/promises";
 import { ImageType } from '../typing/types.js';
 import { QRImageOptions } from '../qr.js';
 import { JSDOM } from 'jsdom';
-import { assertEqual, generatedImageDir, goldenDir } from "./_common.js";
+import { assertEqual, generatedImageDir, goldenDir, toArrayBuffer } from "./_common.js";
 import { Path2D } from "canvas";
 
 let functions: Record<ImageType, (text: string, options: QRImageOptions) => Promise<ArrayBuffer>>;
@@ -84,13 +84,13 @@ const defaultParams = {
         name: "PNG with logo (PNG)",
         type: "png",
         filename: "qr_with_logo.png",
-        params: { logo: readFileSync(`${goldenDir}/logo.png`).buffer },
+        params: { logo: toArrayBuffer(readFileSync(`${goldenDir}/logo.png`)) },
     },
     {
         name: "PNG with logo (JPG)",
         type: "png",
         filename: "qr_with_logo_jpg.png",
-        params: { logo: readFileSync(`${goldenDir}/logo.jpg`).buffer },
+        params: { logo: toArrayBuffer(readFileSync(`${goldenDir}/logo.jpg`)) },
     },
     {
         name: "PNG with colors (rgba)",
@@ -153,7 +153,7 @@ const defaultParams = {
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer.svg",
         params: {
-            logo: readFileSync(`${goldenDir}/logo.png`).buffer,
+            logo: toArrayBuffer(readFileSync(`${goldenDir}/logo.png`)),
         },
     },
     {
@@ -161,7 +161,7 @@ const defaultParams = {
         type: "svg",
         filename: "qr_with_logo_as_arraybuffer_jpg.svg",
         params: {
-            logo: readFileSync(`${goldenDir}/logo.jpg`).buffer,
+            logo: toArrayBuffer(readFileSync(`${goldenDir}/logo.jpg`)),
         },
     },
     {
@@ -188,7 +188,7 @@ const defaultParams = {
         type: "pdf",
         filename: "qr_logo_arraybuffer.pdf",
         params: {
-            logo: new window.Uint8Array(readFileSync(`${goldenDir}/logo.png`).buffer),
+            logo: new window.Uint8Array(toArrayBuffer(readFileSync(`${goldenDir}/logo.png`))),
         },
     },
     {
@@ -196,7 +196,7 @@ const defaultParams = {
         type: "pdf",
         filename: "qr_logo_arraybuffer.pdf",
         params: {
-            logo: new window.Uint8Array(readFileSync(`${goldenDir}/logo.jpg`).buffer),
+            logo: new window.Uint8Array(toArrayBuffer(readFileSync(`${goldenDir}/logo.jpg`))),
         },
     },
 ] as unknown as TestParams[]) .forEach((testData) => {
