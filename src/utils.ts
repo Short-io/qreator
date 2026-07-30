@@ -7,11 +7,50 @@ export function getOptions(inOptions: ImageOptions): ResolvedImageOptions {
     return { ...defaults, ...inOptions } as ResolvedImageOptions;
 }
 
+export interface RGBA {
+    /** 0-255 */
+    r: number;
+    /** 0-255 */
+    g: number;
+    /** 0-255 */
+    b: number;
+    /** 0-1 */
+    a: number;
+}
+
+/**
+ * Single source of truth for colors: accepts a 0xRRGGBBAA number or any CSS color string.
+ * Unparseable strings throw instead of silently degrading to an invisible fill.
+ */
+export function parseColor(color: number | string): RGBA {
+    if (typeof color === "number") {
+        return {
+            r: (color >>> 24) & 0xff,
+            g: (color >>> 16) & 0xff,
+            b: (color >>> 8) & 0xff,
+            a: (color & 0xff) / 255,
+        };
+    }
+    const rgb = colorString.get.rgb(color);
+    if (!rgb) {
+        throw new Error(
+            `Invalid color: ${JSON.stringify(color)}. Expected a CSS color string or a 0xRRGGBBAA number.`
+        );
+    }
+    const [r, g, b, a] = rgb;
+    return { r, g, b, a };
+}
+
 export function colorToHex(color: number | string): string {
     if (typeof color === "string") {
-        return colorString.to.hex(colorString.get.rgb(color));
+        const { r, g, b, a } = parseColor(color);
+        return colorString.to.hex([r, g, b, a]);
     }
-    return `#${(color >>> 8).toString(16).padStart(6, "0")}`;
+    const rgb = `#${(color >>> 8).toString(16).padStart(6, "0")}`;
+    const alpha = color & 0xff;
+    // Keep the compact form when fully opaque; otherwise carry alpha through so that
+    // SVG/Canvas honour it the same way the PDF renderer already does.
+    return alpha === 0xff ? rgb : `${rgb}${alpha.toString(16).padStart(2, "0")}`;
 }
 
 const svgMove = (left: number, top: number) => ['M', left, top]
@@ -118,12 +157,15 @@ const FINDER_END = 7; // finderSize(8) - 1
 // Index 1 is always the center-facing corner (toward QR center).
 function getCornerRadii(shape: FinderShape, sideLength: number, borderRadius: number): [number, number, number, number] {
     const maxR = sideLength / 2;
+    // A non-finite radius would propagate NaN through every delta below and invalidate the
+    // whole path, making the finders disappear. Treat it as "no rounding".
+    const r = Number.isFinite(borderRadius) ? borderRadius : 0;
     switch (shape) {
         case 'square': return [0, 0, 0, 0];
-        case 'rounded': return [borderRadius, borderRadius, borderRadius, borderRadius];
+        case 'rounded': return [r, r, r, r];
         case 'circle': return [maxR, maxR, maxR, maxR];
         case 'drop': return [maxR, 0, maxR, maxR];
-        default: return [borderRadius, borderRadius, borderRadius, borderRadius];
+        default: return [r, r, r, r];
     }
 }
 
@@ -151,7 +193,7 @@ function drawFinderRect(
 
 export function getFinderOuterSVGPath(
     matrix: Matrix, size: number, margin: number,
-    borderRadius: number, shape: FinderShape
+    borderRadius: number = 0, shape: FinderShape = 'rounded'
 ): string {
     const matrixSize = matrix.length * size + margin * 2;
     const rectangles: (string | number)[] = [];
@@ -171,7 +213,7 @@ export function getFinderOuterSVGPath(
 
 export function getFinderInnerSVGPath(
     matrix: Matrix, size: number, margin: number,
-    borderRadius: number, shape: FinderShape
+    borderRadius: number = 0, shape: FinderShape = 'rounded'
 ): string {
     const matrixSize = matrix.length * size + margin * 2;
     const rectangles: (string | number)[] = [];

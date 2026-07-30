@@ -15,6 +15,14 @@ const __dirname = dirname(__filename)
 export const goldenDir = `${__dirname}/../../test_data/golden`;
 export const generatedImageDir = `${__dirname}/../../test_data/generated`;
 
+/**
+ * A Buffer is a view into a possibly larger ArrayBuffer, so reading `.buffer` off one exposes
+ * whatever else happens to live in that allocation. Slice to the view's own bounds instead.
+ */
+export const toArrayBuffer = (
+    {buffer, byteOffset, byteLength}: {buffer: ArrayBufferLike; byteOffset: number; byteLength: number},
+): ArrayBuffer => buffer.slice(byteOffset, byteOffset + byteLength) as ArrayBuffer;
+
 export const assertEqual = async (t: ExecutionContext<unknown>, filename: string) => {
     if (filename.endsWith(".png")) {
         const lsRes = await looksSame(
