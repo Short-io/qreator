@@ -2,7 +2,7 @@ import { ImageOptions, Matrix } from "./typing/types.js";
 import { QR } from "./qr-base.js";
 import { createSVG } from "./svg.js";
 import { computeLabelLayout, getOptions } from "./utils.js";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { clearMatrixCenter, zeroFillFinders } from "./bitMatrix.js";
 
 export async function getPNG(text: string, inOptions: ImageOptions = {}) {
@@ -56,7 +56,7 @@ export async function generateImage({
         labelLayout,
     });
     const qrImage = sharp(svg);
-    const layers: sharp.OverlayOptions[] = [];
+    const layers: OverlayOptions[] = [];
     if (logo) {
         const sharpLogo = sharp(logo as ArrayBuffer).resize(
             Math.round((matrixSizePx * actualLogoWidth) / 100),
