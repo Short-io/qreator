@@ -63,7 +63,7 @@
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-typescript": "^12.1.4",
-        "@size-limit/preset-small-lib": "^11.1.4",
+        "@size-limit/preset-small-lib": "^12.1.0",
         "@types/color-string": "^1.5.5",
         "@types/diff": "^5.2.1",
         "@types/jsdom": "^21.1.6",
